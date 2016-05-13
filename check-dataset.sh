@@ -8,11 +8,11 @@
 #   example:
 #      ./check-dataset.sh globalbioticinteractions/template-datasets
 
-REPO_NAME=$1
-GLOBI_VERSION=`curl -s https://api.github.com/repos/jhpoelen/eol-globi-data/releases/latest | grep -o '[0-9]\.[0-9]\.[0-9]' | head -n 1`
+export REPO_NAME=$1
+export GLOBI_VERSION=`curl -s https://api.github.com/repos/jhpoelen/eol-globi-data/releases/latest | grep -o '[0-9]\.[0-9]\.[0-9]' | head -n 1`
 export GLOBI_DATA_REPO_MASTER="https://raw.githubusercontent.com/${REPO_NAME}/master"
 
-wget http://globi.s3.amazonaws.com/release/org/eol/eol-globi-data-tool/$GLOBI_VERSION/eol-globi-data-tool-$GLOBI_VERSION-jar-with-dependencies.jar -O globi-tool.jar
+wget http://globi.s3.amazonaws.com/release/org/eol/eol-globi-data-tool/${GLOBI_VERSION}/eol-globi-data-tool-${GLOBI_VERSION}-jar-with-dependencies.jar -O globi-tool.jar
 
 java -cp globi-tool.jar org.eol.globi.tool.GitHubRepoCheck ${REPO_NAME} ${GLOBI_DATA_REPO_MASTER}
 
