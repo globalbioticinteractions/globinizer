@@ -6,7 +6,7 @@
 #     check-dataset.sh [github repo name] 
 # 
 #   example:
-#      ./check-dataset.sh globalbioticinteractions/template-datasets
+#      ./check-dataset.sh globalbioticinteractions/template-dataset
 
 export REPO_NAME=$1
 export GLOBI_VERSION=`curl -s https://api.github.com/repos/jhpoelen/eol-globi-data/releases/latest | grep -o '[0-9]\.[0-9]\.[0-9]' | head -n 1`
