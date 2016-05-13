@@ -13,7 +13,7 @@ export REPO_NAME=$1
 export GLOBI_VERSION=0.7.7
 export GLOBI_DATA_REPO_MASTER="https://raw.githubusercontent.com/${REPO_NAME}/master"
 
-echo Checking [${GLOBI_DATA_REPO_MASTER}] using GloBI tools version [$sGLOBI_VERSION}]. 
+echo Checking [${GLOBI_DATA_REPO_MASTER}] using GloBI tools version [${GLOBI_VERSION}]. 
 
 wget http://globi.s3.amazonaws.com/release/org/eol/eol-globi-data-tool/${GLOBI_VERSION}/eol-globi-data-tool-${GLOBI_VERSION}-jar-with-dependencies.jar -O globi-tool.jar
 
