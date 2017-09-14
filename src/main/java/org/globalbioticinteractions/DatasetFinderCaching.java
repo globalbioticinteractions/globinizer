@@ -7,8 +7,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eol.globi.service.Dataset;
 import org.eol.globi.service.DatasetFinder;
-import org.eol.globi.service.DatasetFinderCaching;
 import org.eol.globi.service.DatasetFinderException;
+import org.eol.globi.service.DatasetImpl;
 import org.eol.globi.util.ResourceUtil;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.ISODateTimeFormat;
@@ -28,18 +28,18 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-public class DatasetRepository implements DatasetFinder {
-    private final static Log LOG = LogFactory.getLog(DatasetFinderCaching.class);
+public class DatasetFinderCaching implements DatasetFinder {
+    private final static Log LOG = LogFactory.getLog(org.eol.globi.service.DatasetFinderCaching.class);
     public static final String SHA_256 = "SHA-256";
 
     private final DatasetFinder finder;
     private final String cacheDir;
 
-    public DatasetRepository(DatasetFinder finder) {
+    public DatasetFinderCaching(DatasetFinder finder) {
         this(finder, "target/cache/datasets");
     }
 
-    public DatasetRepository(DatasetFinder finder, String cacheDir) {
+    public DatasetFinderCaching(DatasetFinder finder, String cacheDir) {
         this.finder = finder;
         this.cacheDir = cacheDir;
     }
@@ -57,10 +57,10 @@ public class DatasetRepository implements DatasetFinder {
             File cache = cache(dataset, cacheDir);
             URI archiveCacheURI = getArchiveCacheURI(cache);
             Date accessedAt = new Date();
-            DatasetLocal datasetCached = new DatasetLocal(dataset, archiveCacheURI, accessedAt);
+            DatasetLocal datasetCached = new DatasetLocal(new DatasetImpl(namespace, archiveCacheURI), dataset.getArchiveURI(), accessedAt);
             File cacheDirFile = cacheDirForDataset(dataset, new File(cacheDir));
             String sha256 = cache.getName().replace(".zip", "");
-            List<String> accessLogEntry = accessLogEntries(accessedAt, datasetCached, sha256);
+            List<String> accessLogEntry = accessLogEntries(accessedAt, dataset, sha256);
             File accessLog = new File(cacheDirFile, "access.tsv");
             String prefix = accessLog.exists() ? "\n" : "";
             String accessLogLine = StringUtils.join(accessLogEntry, '\t');

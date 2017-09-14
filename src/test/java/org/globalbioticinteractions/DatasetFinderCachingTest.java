@@ -20,7 +20,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.core.StringStartsWith.startsWith;
 import static org.junit.Assert.assertThat;
 
-public class DatasetRepositoryTest {
+public class DatasetFinderCachingTest {
 
     @Test
     public void cacheDatasetLocal() throws DatasetFinderException, IOException, URISyntaxException {
@@ -38,13 +38,13 @@ public class DatasetRepositoryTest {
     @Test
     public void accessLogEntry() throws DatasetFinderException, IOException, URISyntaxException {
         Dataset datasetCached = datasetCached();
-        List<String> strings = DatasetRepository.accessLogEntries(new Date(0L), datasetCached, "1234");
+        List<String> strings = DatasetFinderCaching.accessLogEntries(new Date(0L), datasetCached, "1234");
         assertThat(strings, is(Arrays.asList("some/namespace", "http://example.com", "1234:SHA-256", "1970-01-01T00:00:00Z")));
     }
 
     private Dataset datasetCached() throws IOException, URISyntaxException {
-        Dataset dataset = new DatasetImpl("some/namespace", URI.create("http://example.com"));
-        URI archiveCacheURI = DatasetRepository.getArchiveCacheURI(new File(getClass().getResource("archive.zip").toURI()));
-        return new DatasetLocal(dataset, archiveCacheURI, new Date());
+        URI archiveCacheURI = DatasetFinderCaching.getArchiveCacheURI(new File(getClass().getResource("archive.zip").toURI()));
+        Dataset dataset = new DatasetImpl("some/namespace", archiveCacheURI);
+        return new DatasetLocal(dataset, URI.create("http://example.com"), new Date());
     }
 }
