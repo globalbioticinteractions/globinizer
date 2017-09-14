@@ -4,7 +4,7 @@
 
     <groupId>org.globalbioticinteractions</groupId>
     <artifactId>globinizer</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <version>0.2</version>
     <name>GloBI commandline tool</name>
     <description>Discover, cache and check species interaction data</description>
 
@@ -37,9 +37,7 @@
                             <mainClass>org.eol.globi.tool.GitHubRepoCheck</mainClass>
                         </manifest>
                         <manifestEntries>
-                            <Implementation-Version>${project.version}@${mvngit.commit.sha}</Implementation-Version>
-                            <Git-Commit-Sha>${mvngit.commit.sha}</Git-Commit-Sha>
-                            <Git-Commit-Date>${mvngit.commit.committer.date}</Git-Commit-Date>
+                            <Implementation-Version>${project.version}</Implementation-Version>
                             <Project-Version>${project.version}</Project-Version>
                         </manifestEntries>
                     </archive>
