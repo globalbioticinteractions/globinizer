@@ -60,15 +60,21 @@ public class DatasetFinderCaching implements DatasetFinder {
             DatasetLocal datasetCached = new DatasetLocal(new DatasetImpl(namespace, archiveCacheURI), dataset.getArchiveURI(), accessedAt);
             File cacheDirFile = cacheDirForDataset(dataset, new File(cacheDir));
             String sha256 = cache.getName().replace(".zip", "");
-            List<String> accessLogEntry = accessLogEntries(accessedAt, dataset, sha256);
-            File accessLog = new File(cacheDirFile, "access.tsv");
-            String prefix = accessLog.exists() ? "\n" : "";
-            String accessLogLine = StringUtils.join(accessLogEntry, '\t');
-            FileUtils.writeStringToFile(accessLog, prefix + accessLogLine, true);
+
+            appendAccessLog(dataset, accessedAt, cacheDirFile, sha256);
+
             return datasetCached;
         } catch (IOException e) {
             throw new DatasetFinderException("failed to retrieve/cache dataset in namespace [" + namespace + "]", e);
         }
+    }
+
+    private void appendAccessLog(Dataset dataset, Date accessedAt, File cacheDirFile, String sha256) throws IOException {
+        List<String> accessLogEntry = accessLogEntries(accessedAt, dataset, sha256);
+        File accessLog = new File(cacheDirFile, "access.tsv");
+        String prefix = accessLog.exists() ? "\n" : "";
+        String accessLogLine = StringUtils.join(accessLogEntry, '\t');
+        FileUtils.writeStringToFile(accessLog, prefix + accessLogLine, true);
     }
 
     static List<String> accessLogEntries(Date accessedAt, Dataset datasetCached, String sha256) {
