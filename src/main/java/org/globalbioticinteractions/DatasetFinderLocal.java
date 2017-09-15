@@ -88,8 +88,9 @@ public class DatasetFinderLocal implements DatasetFinder {
             String[] rows = IOUtils.toString(accessFile.toURI()).split("\n");
             for (String row : rows) {
                 String[] split = row.split("\t");
-                if (split.length > 3
-                        && StringUtils.equalsIgnoreCase(StringUtils.trim(split[0]), namespace)) {
+                if (split.length > 4
+                        && StringUtils.equalsIgnoreCase(StringUtils.trim(split[0]), namespace)
+                        && StringUtils.equals(StringUtils.trim(split[4]), DatasetFinderCaching.MIME_TYPE_GLOBI)) {
                     sourceURI = URI.create(split[1]);
                 }
             }

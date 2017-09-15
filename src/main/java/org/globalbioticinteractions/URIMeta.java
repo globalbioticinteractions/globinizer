@@ -10,6 +10,7 @@ public class URIMeta {
     private final String sha256;
     private final Date accessedAt;
     private final String namespace;
+    private String type;
 
     public URIMeta(String namespace, URI sourceURI, URI cachedURI, String sha256, Date accessedAt) {
         this.namespace = namespace;
@@ -37,5 +38,13 @@ public class URIMeta {
 
     public String getNamespace() {
         return namespace;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

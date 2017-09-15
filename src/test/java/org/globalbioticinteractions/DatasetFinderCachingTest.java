@@ -4,7 +4,6 @@ import org.apache.commons.io.FileUtils;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.eol.globi.service.Dataset;
-import org.eol.globi.service.DatasetFinder;
 import org.eol.globi.service.DatasetFinderException;
 import org.eol.globi.service.DatasetImpl;
 import org.junit.After;
@@ -62,8 +61,8 @@ public class DatasetFinderCachingTest {
     public void accessLogEntry() throws DatasetFinderException, IOException, URISyntaxException {
         Dataset datasetCached = datasetCached();
         URIMeta meta = new URIMeta(datasetCached.getNamespace(), URI.create("http://example.com"), URI.create("cached:file.zip"), "1234", new Date(0L));
-        List<String> strings = PullThroughCache.compileLogEntries(meta);
-        assertThat(strings, is(Arrays.asList("some/namespace", "http://example.com", "1234:SHA-256", "1970-01-01T00:00:00Z")));
+        List<String> strings = CacheLog.compileLogEntries(meta);
+        assertThat(strings, is(Arrays.asList("some/namespace", "http://example.com", "1234", "1970-01-01T00:00:00Z", null)));
     }
 
     private Dataset datasetCached() throws IOException, URISyntaxException {

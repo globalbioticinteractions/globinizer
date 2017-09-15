@@ -43,14 +43,14 @@ public class LocalReadonlyCache implements ResourceCache {
                 for (String row : rows) {
                     String[] split = row.split("\t");
                     if (split.length > 3) {
-                        String hashFull = split[2];
-                        String hash = hashFull.split(":")[0];
+                        String hash256 = split[2];
                         URI sourceURI = URI.create(split[1]);
-                        if (StringUtils.equals(resourceURI.toString(), sourceURI.toString())
-                                || StringUtils.equals(hashCandidate, hash)) {
-                            File cachedArchiveFile = new File(accessFile.getParent(), hash);
+                        if (StringUtils.isNotBlank(hash256)
+                                && (StringUtils.equals(resourceURI.toString(), sourceURI.toString())
+                                || StringUtils.equals(hashCandidate, hash256))) {
+                            File cachedArchiveFile = new File(accessFile.getParent(), hash256);
                             Date accessedAt = ISODateTimeFormat.dateTimeParser().withZoneUTC().parseDateTime(split[3]).toDate();
-                            meta = new URIMeta(namespace, sourceURI, cachedArchiveFile.toURI(), hash, accessedAt);
+                            meta = new URIMeta(namespace, sourceURI, cachedArchiveFile.toURI(), hash256, accessedAt);
                         }
                     }
                 }
