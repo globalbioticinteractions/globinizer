@@ -1,5 +1,6 @@
 package org.globalbioticinteractions;
 
+import org.apache.commons.io.FileUtils;
 import org.eol.globi.service.Dataset;
 import org.eol.globi.service.DatasetFactory;
 import org.eol.globi.service.DatasetFinder;
@@ -7,17 +8,24 @@ import org.eol.globi.service.DatasetFinderException;
 import org.eol.globi.service.DatasetFinderGitHubArchive;
 import org.eol.globi.service.DatasetFinderZenodo;
 import org.hamcrest.CoreMatchers;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 
-import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.hamcrest.core.StringStartsWith.startsWith;
 import static org.junit.Assert.assertThat;
 
 public class DatasetFinderCachingIT {
+
+    private String cachePath = "target/cache/datasets";
+
+    @Before
+    public void deleteCacheDir() {
+        FileUtils.deleteQuietly(new File(cachePath));
+    }
 
     @Test
     public void zenodoTest() throws DatasetFinderException, IOException {
@@ -48,14 +56,15 @@ public class DatasetFinderCachingIT {
     public void cacheDatasetGitHub() throws DatasetFinderException, IOException {
         Dataset dataset = new DatasetFinderGitHubArchive()
                 .datasetFor("globalbioticinteractions/template-dataset");
-        File archiveCache = DatasetFinderCaching.cache(dataset, "target/cache/dataset", dataset.getArchiveURI());
+        File cacheDir = DatasetFinderCaching.getCacheDirForNamespace(cachePath, dataset.getNamespace());
+        File archiveCache = PullThroughCache.cache(dataset.getArchiveURI(), cacheDir);
         assertThat(archiveCache.exists(), CoreMatchers.is(true));
         assertThat(archiveCache.toURI().toString(), startsWith("file:/"));
     }
 
     @Test
     public void gitHubTest() throws DatasetFinderException {
-        DatasetFinder finder = new DatasetFinderCaching(new DatasetFinderGitHubArchive());
+        DatasetFinder finder = new DatasetFinderCaching(new DatasetFinderGitHubArchive(), cachePath);
 
         Dataset dataset = DatasetFactory.datasetFor("globalbioticinteractions/Catalogue-of-Afrotropical-Bees", finder);
 

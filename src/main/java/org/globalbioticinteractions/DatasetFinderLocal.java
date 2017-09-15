@@ -6,6 +6,7 @@ import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang.StringUtils;
 import org.eol.globi.service.Dataset;
+import org.eol.globi.service.DatasetCached;
 import org.eol.globi.service.DatasetFactory;
 import org.eol.globi.service.DatasetFinder;
 import org.eol.globi.service.DatasetFinderException;
@@ -53,41 +54,24 @@ public class DatasetFinderLocal implements DatasetFinder {
 
     @Override
     public Dataset datasetFor(String namespace) throws DatasetFinderException {
-        File accessFile = new File(cacheDir + "/" + namespace + "/access.tsv");
-        Dataset dataset = null;
+        Dataset dataset;
 
         try {
-            String[] rows = IOUtils.toString(accessFile.toURI()).split("\n");
-            for (String row : rows) {
-                String[] split = row.split("\t");
-                if (split.length > 3
-                        && StringUtils.equalsIgnoreCase(StringUtils.trim(split[0]), namespace)) {
-                    String hashFull = split[2];
-                    String hash = hashFull.split(":")[0];
-                    URI sourceURI = URI.create(split[1]);
-                    File cachedArchiveFile = new File(accessFile.getParent(), hash + ".zip");
-                    URI localArchiveURI = DatasetFinderUtil.getLocalDatasetURIRoot(cachedArchiveFile);
-
-                    Dataset datasetCached = DatasetFactory.datasetFor(namespace, new DatasetFinder() {
-                        @Override
-                        public Collection<String> findNamespaces() throws DatasetFinderException {
-                            return Arrays.asList(namespace);
-                        }
-
-                        @Override
-                        public Dataset datasetFor(String s) throws DatasetFinderException {
-                            return new DatasetImpl(namespace, localArchiveURI);
-                        }
-                    });
-
-                    dataset = new DatasetLocal(datasetCached,
-                            sourceURI,
-                            ISODateTimeFormat.dateTimeParser().withZoneUTC().parseDateTime(split[3]).toDate(),
-                            hashFull);
+            final URI sourceURI = findLastCachedDatasetURI(namespace);
+            dataset = sourceURI == null ? null : DatasetFactory.datasetFor(namespace, new DatasetFinder() {
+                @Override
+                public Collection<String> findNamespaces() throws DatasetFinderException {
+                    return Arrays.asList(namespace);
                 }
-            }
+
+                @Override
+                public Dataset datasetFor(String s) throws DatasetFinderException {
+                    return new DatasetWithCache(new DatasetImpl(namespace, sourceURI),
+                            DatasetFinderCaching.cacheFor(namespace, cacheDir));
+                }
+            });
         } catch (IOException e) {
-            throw new DatasetFinderException("failed to access [" + accessFile.toURI().toString() + "]", e);
+            throw new DatasetFinderException("failed to access [" + namespace + "]", e);
         }
 
         if (dataset == null) {
@@ -95,6 +79,22 @@ public class DatasetFinderLocal implements DatasetFinder {
         }
 
         return dataset;
+    }
+
+    private URI findLastCachedDatasetURI(String namespace) throws IOException {
+        URI sourceURI = null;
+        File accessFile = new File(cacheDir + "/" + namespace + "/access.tsv");
+        if (accessFile.exists()) {
+            String[] rows = IOUtils.toString(accessFile.toURI()).split("\n");
+            for (String row : rows) {
+                String[] split = row.split("\t");
+                if (split.length > 3
+                        && StringUtils.equalsIgnoreCase(StringUtils.trim(split[0]), namespace)) {
+                    sourceURI = URI.create(split[1]);
+                }
+            }
+        }
+        return sourceURI;
     }
 
 

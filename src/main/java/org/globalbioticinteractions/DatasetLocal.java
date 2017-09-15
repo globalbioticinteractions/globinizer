@@ -18,6 +18,23 @@ public class DatasetLocal implements Dataset {
     public static final String ZENODO_URL_PREFIX = "https://zenodo.org/record/";
     private final URI datasetSourceURI;
     private final Dataset datasetCached;
+
+    public URI getDatasetSourceURI() {
+        return datasetSourceURI;
+    }
+
+    public Dataset getDatasetCached() {
+        return datasetCached;
+    }
+
+    public Date getAccessedAt() {
+        return accessedAt;
+    }
+
+    public String getHash() {
+        return hash;
+    }
+
     private final Date accessedAt;
     private final String hash;
 
@@ -30,12 +47,12 @@ public class DatasetLocal implements Dataset {
 
     @Override
     public InputStream getResource(String resourceName) throws IOException {
-        return datasetCached.getResource(resourceName);
+        return getDatasetCached().getResource(resourceName);
     }
 
     @Override
     public URI getResourceURI(String resourceName) {
-        return datasetCached.getResourceURI(resourceName);
+        return null;
     }
 
     @Override
@@ -51,19 +68,19 @@ public class DatasetLocal implements Dataset {
 
 
     public URI getArchiveURI() {
-        return this.datasetSourceURI;
+        return getDatasetSourceURI();
     }
 
     public String getNamespace() {
-        return datasetCached.getNamespace();
+        return getDatasetCached().getNamespace();
     }
 
     public JsonNode getConfig() {
-        return datasetCached.getConfig();
+        return getDatasetCached().getConfig();
     }
 
     public String getDOI() {
-        String doi = datasetCached.getDOI();
+        String doi = getDatasetCached().getDOI();
         if (StringUtils.isBlank(doi)
                 && StringUtils.startsWith(this.getArchiveURI().toString(), ZENODO_URL_PREFIX)) {
             doi = new DatasetZenodo(getNamespace(), getArchiveURI()).getDOI();
@@ -83,28 +100,28 @@ public class DatasetLocal implements Dataset {
         }
         citationGenerated.append(ReferenceUtil.separatorFor(citationGenerated.toString()));
         citationGenerated.append("Accessed on ")
-                .append(DateTimeFormat.forPattern("dd MMM YYYY").print(accessedAt.getTime()))
+                .append(DateTimeFormat.forPattern("dd MMM YYYY").print(getAccessedAt().getTime()))
                 .append(" via <")
                 .append(getArchiveURI()).append(">.");
         return citationGenerated.toString();
     }
 
     public String getFormat() {
-        return datasetCached.getFormat();
+        return getDatasetCached().getFormat();
     }
 
     public URI getConfigURI() {
-        return datasetCached.getConfigURI();
+        return getDatasetCached().getConfigURI();
     }
 
     @Override
     public void setConfig(JsonNode config) {
-        datasetCached.setConfig(config);
+        getDatasetCached().setConfig(config);
     }
 
     @Override
     public void setConfigURI(URI configURI) {
-        datasetCached.setConfigURI(configURI);
+        getDatasetCached().setConfigURI(configURI);
     }
 
 }
