@@ -6,6 +6,7 @@ import org.eol.globi.data.ReferenceUtil;
 import org.eol.globi.service.Dataset;
 import org.eol.globi.service.DatasetZenodo;
 import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.ISODateTimeFormat;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,11 +19,13 @@ public class DatasetLocal implements Dataset {
     private final URI datasetSourceURI;
     private final Dataset datasetCached;
     private final Date accessedAt;
+    private final String hash;
 
-    public DatasetLocal(Dataset datasetCached, URI datasetSourceURI, Date accessedAt) {
+    public DatasetLocal(Dataset datasetCached, URI datasetSourceURI, Date accessedAt, String hash) {
         this.datasetCached = datasetCached;
         this.datasetSourceURI = datasetSourceURI;
         this.accessedAt = accessedAt;
+        this.hash = hash;
     }
 
     @Override
@@ -37,7 +40,13 @@ public class DatasetLocal implements Dataset {
 
     @Override
     public String getOrDefault(String key, String defaultValue) {
-        return datasetCached.getOrDefault(key, defaultValue);
+        if (StringUtils.equalsIgnoreCase("accessedAt", key)) {
+            return ISODateTimeFormat.dateTime().withZoneUTC().print(accessedAt.getTime());
+        } else if (StringUtils.equalsIgnoreCase("contentHash", key)) {
+            return hash;
+        } else {
+            return datasetCached.getOrDefault(key, defaultValue);
+        }
     }
 
 

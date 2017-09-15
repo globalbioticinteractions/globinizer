@@ -39,9 +39,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class DatasetFinderLocal implements DatasetFinder {
-    private final static Log LOG = LogFactory.getLog(org.eol.globi.service.DatasetFinderCaching.class);
-    public static final String SHA_256 = "SHA-256";
-
     private final String cacheDir;
 
     public DatasetFinderLocal(String cacheDir) {
@@ -83,7 +80,8 @@ public class DatasetFinderLocal implements DatasetFinder {
             for (String row : rows) {
                 String[] split = row.split("\t");
                 if (split.length > 3) {
-                    String hash = split[2].split(":")[0];
+                    String hashFull = split[2];
+                    String hash = hashFull.split(":")[0];
                     URI sourceURI = URI.create(split[1]);
                     File cachedArchiveFile = new File(accessFile.getParent(), hash + ".zip");
                     URI cachedURI = cacheArchive(cachedArchiveFile);
@@ -103,7 +101,8 @@ public class DatasetFinderLocal implements DatasetFinder {
 
                     dataset = new DatasetLocal(datasetCached,
                             sourceURI,
-                            ISODateTimeFormat.dateTimeParser().parseDateTime(split[3]).toDate());
+                            ISODateTimeFormat.dateTimeParser().withZoneUTC().parseDateTime(split[3]).toDate(),
+                            hashFull);
 
                 }
             }

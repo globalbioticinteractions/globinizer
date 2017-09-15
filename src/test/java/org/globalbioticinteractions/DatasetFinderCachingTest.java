@@ -45,6 +45,6 @@ public class DatasetFinderCachingTest {
     private Dataset datasetCached() throws IOException, URISyntaxException {
         URI archiveCacheURI = DatasetFinderCaching.getArchiveCacheURI(new File(getClass().getResource("archive.zip").toURI()));
         Dataset dataset = new DatasetImpl("some/namespace", archiveCacheURI);
-        return new DatasetLocal(dataset, URI.create("http://example.com"), new Date());
+        return new DatasetLocal(dataset, URI.create("http://example.com"), new Date(), "");
     }
 }

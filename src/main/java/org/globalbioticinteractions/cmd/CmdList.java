@@ -1,4 +1,4 @@
-package org.globalbioticinteractions;
+package org.globalbioticinteractions.cmd;
 
 import com.beust.jcommander.Parameters;
 import org.apache.commons.lang.StringUtils;

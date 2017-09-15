@@ -1,12 +1,13 @@
-package org.globalbioticinteractions;
+package org.globalbioticinteractions.cmd;
 
 import com.beust.jcommander.JCommander;
+import org.globalbioticinteractions.cmd.CmdLine;
 import org.junit.Test;
 
 import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertThat;
 
-public class CmdLineTest {
+public class CmdUsageTest {
 
     @Test
     public void usage() {

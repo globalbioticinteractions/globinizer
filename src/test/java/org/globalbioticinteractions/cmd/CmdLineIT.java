@@ -1,6 +1,10 @@
-package org.globalbioticinteractions;
+package org.globalbioticinteractions.cmd;
 
 import com.beust.jcommander.JCommander;
+import org.globalbioticinteractions.cmd.CmdCheck;
+import org.globalbioticinteractions.cmd.CmdLine;
+import org.globalbioticinteractions.cmd.CmdList;
+import org.globalbioticinteractions.cmd.CmdUpdate;
 import org.junit.Assert;
 import org.junit.Test;
 

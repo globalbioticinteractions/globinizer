@@ -1,6 +1,9 @@
-package org.globalbioticinteractions;
+package org.globalbioticinteractions.cmd;
 
 import com.beust.jcommander.Parameter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class CmdDefaultParams implements Runnable {
     @Parameter(names = "--filter", description = "only include namespaces that match regex")
@@ -13,4 +16,11 @@ public abstract class CmdDefaultParams implements Runnable {
         return cacheDir;
     }
 
+    @Parameter(description = "namespace1, namespace2, ...")
+    private List<String> namespaces = new ArrayList<>();
+
+
+    public List<String> getNamespaces() {
+        return namespaces;
+    }
 }

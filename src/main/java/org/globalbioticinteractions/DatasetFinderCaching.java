@@ -57,9 +57,9 @@ public class DatasetFinderCaching implements DatasetFinder {
             File cache = cache(dataset, cacheDir);
             URI archiveCacheURI = getArchiveCacheURI(cache);
             Date accessedAt = new Date();
-            DatasetLocal datasetCached = new DatasetLocal(new DatasetImpl(namespace, archiveCacheURI), dataset.getArchiveURI(), accessedAt);
             File cacheDirFile = cacheDirForDataset(dataset, new File(cacheDir));
             String sha256 = cache.getName().replace(".zip", "");
+             DatasetLocal datasetCached = new DatasetLocal(new DatasetImpl(namespace, archiveCacheURI), dataset.getArchiveURI(), accessedAt, toContentHash(sha256));
 
             appendAccessLog(dataset, accessedAt, cacheDirFile, sha256);
 
@@ -80,8 +80,12 @@ public class DatasetFinderCaching implements DatasetFinder {
     static List<String> accessLogEntries(Date accessedAt, Dataset datasetCached, String sha256) {
         return Arrays.asList(datasetCached.getNamespace()
                 , datasetCached.getArchiveURI().toString()
-                , sha256 + ":" + SHA_256
-                , ISODateTimeFormat.dateTimeNoMillis().withZone(DateTimeZone.UTC).print(accessedAt.getTime()));
+                , toContentHash(sha256)
+                , ISODateTimeFormat.dateTimeNoMillis().withZoneUTC().print(accessedAt.getTime()));
+    }
+
+    private static String toContentHash(String sha256) {
+        return sha256 + ":" + SHA_256;
     }
 
     static URI getArchiveCacheURI(File archiveCache) throws IOException {
