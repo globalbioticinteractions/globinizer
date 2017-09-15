@@ -1,7 +1,6 @@
-package org.globalbioticinteractions;
+package org.globalbioticinteractions.dataset;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
 import org.eol.globi.service.Dataset;
 import org.eol.globi.service.DatasetFinder;
 import org.eol.globi.service.DatasetFinderException;

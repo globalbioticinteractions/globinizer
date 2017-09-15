@@ -1,4 +1,4 @@
-package org.globalbioticinteractions;
+package org.globalbioticinteractions.dataset;
 
 import java.io.File;
 import java.io.IOException;

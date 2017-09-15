@@ -1,4 +1,4 @@
-package org.globalbioticinteractions;
+package org.globalbioticinteractions.dataset;
 
 import org.apache.commons.io.FileUtils;
 import org.codehaus.jackson.JsonNode;
@@ -6,6 +6,11 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.eol.globi.service.Dataset;
 import org.eol.globi.service.DatasetFinderException;
 import org.eol.globi.service.DatasetImpl;
+import org.globalbioticinteractions.dataset.CacheLog;
+import org.globalbioticinteractions.dataset.DatasetFinderCaching;
+import org.globalbioticinteractions.dataset.DatasetWithCache;
+import org.globalbioticinteractions.dataset.ResourceCacheProxy;
+import org.globalbioticinteractions.dataset.URIMeta;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

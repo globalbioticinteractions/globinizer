@@ -1,4 +1,4 @@
-package org.globalbioticinteractions;
+package org.globalbioticinteractions.dataset;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -6,12 +6,10 @@ import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang.StringUtils;
 import org.eol.globi.service.Dataset;
-import org.eol.globi.service.DatasetCached;
 import org.eol.globi.service.DatasetFactory;
 import org.eol.globi.service.DatasetFinder;
 import org.eol.globi.service.DatasetFinderException;
 import org.eol.globi.service.DatasetImpl;
-import org.joda.time.format.ISODateTimeFormat;
 
 import java.io.File;
 import java.io.IOException;

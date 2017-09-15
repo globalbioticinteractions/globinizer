@@ -12,7 +12,7 @@ import org.eol.globi.service.Dataset;
 import org.eol.globi.service.DatasetFactory;
 import org.eol.globi.service.DatasetFinderException;
 import org.eol.globi.service.GitHubImporterFactory;
-import org.globalbioticinteractions.DatasetFinderLocal;
+import org.globalbioticinteractions.dataset.DatasetFinderLocal;
 
 import java.util.stream.Collectors;
 import java.util.stream.Stream;

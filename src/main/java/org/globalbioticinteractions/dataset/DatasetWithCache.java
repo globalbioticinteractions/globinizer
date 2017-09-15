@@ -1,4 +1,4 @@
-package org.globalbioticinteractions;
+package org.globalbioticinteractions.dataset;
 
 import org.eol.globi.service.Dataset;
 import org.eol.globi.util.ResourceUtil;

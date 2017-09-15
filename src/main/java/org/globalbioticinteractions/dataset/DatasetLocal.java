@@ -1,4 +1,4 @@
-package org.globalbioticinteractions;
+package org.globalbioticinteractions.dataset;
 
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.JsonNode;

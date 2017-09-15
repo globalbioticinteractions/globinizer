@@ -1,4 +1,4 @@
-package org.globalbioticinteractions;
+package org.globalbioticinteractions.dataset;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;

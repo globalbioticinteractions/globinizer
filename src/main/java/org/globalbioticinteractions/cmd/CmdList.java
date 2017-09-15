@@ -8,7 +8,7 @@ import org.eol.globi.service.DatasetFinderException;
 import org.eol.globi.service.DatasetFinderGitHubArchive;
 import org.eol.globi.service.DatasetFinderProxy;
 import org.eol.globi.service.DatasetFinderZenodo;
-import org.globalbioticinteractions.DatasetFinderLocal;
+import org.globalbioticinteractions.dataset.DatasetFinderLocal;
 
 import java.util.Arrays;
 import java.util.List;

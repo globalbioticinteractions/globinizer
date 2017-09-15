@@ -1,4 +1,4 @@
-package org.globalbioticinteractions;
+package org.globalbioticinteractions.dataset;
 
 import org.apache.commons.io.FileUtils;
 import org.eol.globi.service.Dataset;
@@ -7,6 +7,8 @@ import org.eol.globi.service.DatasetFinder;
 import org.eol.globi.service.DatasetFinderException;
 import org.eol.globi.service.DatasetFinderGitHubArchive;
 import org.eol.globi.service.DatasetFinderZenodo;
+import org.globalbioticinteractions.dataset.DatasetFinderCaching;
+import org.globalbioticinteractions.dataset.PullThroughCache;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,8 +44,7 @@ public class DatasetFinderCachingIT {
     }
 
     private void assertTemplateDataset(String expectedURIFragment, DatasetFinder datasetFinder, String expectedCitation) throws DatasetFinderException {
-        String cacheDir = "target/cache/datasets";
-        DatasetFinder finder = new DatasetFinderCaching(datasetFinder, cacheDir);
+        DatasetFinder finder = new DatasetFinderCaching(datasetFinder, cachePath);
 
         Dataset dataset = DatasetFactory.datasetFor("globalbioticinteractions/template-dataset", finder);
 
