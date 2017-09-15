@@ -49,7 +49,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>org.eol.globi.tool.GitHubRepoCheck</mainClass>
+                            <mainClass>org.globalbioticinteractions.Elton</mainClass>
                         </manifest>
                         <manifestEntries>
                             <Implementation-Version>${project.version}</Implementation-Version>

@@ -20,9 +20,7 @@ public class CmdLineIT {
         Assert.assertEquals(actual.getObjects().size(), 1);
         Assert.assertEquals(actual.getObjects().get(0).getClass(), CmdList.class);
 
-        if (actual.getObjects().get(0) instanceof Runnable) {
-            ((Runnable) actual.getObjects().get(0)).run();
-        }
+        CmdLine.run(actual);
     }
 
     @Test
@@ -45,9 +43,7 @@ public class CmdLineIT {
         Assert.assertEquals(actual.getObjects().size(), 1);
         Assert.assertEquals(actual.getObjects().get(0).getClass(), CmdUpdate.class);
 
-        if (actual.getObjects().get(0) instanceof Runnable) {
-            ((Runnable) actual.getObjects().get(0)).run();
-        }
+        CmdLine.run(actual);
     }
 
     @Test
@@ -59,9 +55,7 @@ public class CmdLineIT {
         Assert.assertEquals(actual.getObjects().size(), 1);
         Assert.assertEquals(actual.getObjects().get(0).getClass(), CmdCheck.class);
 
-        if (actual.getObjects().get(0) instanceof Runnable) {
-            ((Runnable) actual.getObjects().get(0)).run();
-        }
+        CmdLine.run(actual);
     }
 
     private void assertUpdateCmd(JCommander jc) {
