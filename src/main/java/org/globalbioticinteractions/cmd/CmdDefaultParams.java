@@ -6,9 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class CmdDefaultParams implements Runnable {
-    @Parameter(names = "--filter", description = "only include namespaces that match regex")
-    private String regex = ".*";
-
     @Parameter(names = {"--cache-dir", "-c"}, description = "cache directory")
     private String cacheDir = "./datasets";
 

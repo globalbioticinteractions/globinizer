@@ -1,5 +1,7 @@
 package org.globalbioticinteractions.cmd;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eol.globi.service.DatasetFinder;
 import org.eol.globi.service.DatasetFinderException;
 
@@ -7,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 class CmdUtil {
+    private static final Log LOG = LogFactory.getLog(CmdUtil.class);
 
     static void handleNamespaces(DatasetFinder finder, NamespaceHandler handler, List<String> namespaces) throws DatasetFinderException {
         List<String> selectedNamespaces = new ArrayList<>(namespaces);
@@ -18,7 +21,7 @@ class CmdUtil {
             try {
                 handler.onNamespace(namespace);
             } catch (Exception e) {
-                throw new DatasetFinderException("failed to handle [" + namespace + "]", e);
+                LOG.error("failed to handle namespace [" + namespace + "]", e);
             }
         }
     }

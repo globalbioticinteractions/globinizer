@@ -1,10 +1,9 @@
 package org.globalbioticinteractions.cmd;
 
 import com.beust.jcommander.Parameters;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eol.globi.data.NodeFactoryException;
-import org.eol.globi.data.ParserFactoryLocal;
-import org.eol.globi.data.StudyImporter;
-import org.eol.globi.data.StudyImporterForGitHubData;
 import org.eol.globi.domain.Interaction;
 import org.eol.globi.domain.Specimen;
 import org.eol.globi.domain.Study;
@@ -20,14 +19,13 @@ import java.util.stream.Stream;
 
 @Parameters(separators = "= ", commandDescription = "List Dataset (Taxon) Names For Local Datasets")
 public class CmdNames extends CmdDefaultParams {
+    private final static Log LOG = LogFactory.getLog(CmdNames.class);
 
     @Override
     public void run() {
         DatasetFinderLocal finder = new DatasetFinderLocal(getCacheDir());
 
-        ParserFactoryLocal parserFactory = new ParserFactoryLocal();
         NodeFactoryNull nodeFactory = new NodeFactoryNull() {
-
             Dataset dataset;
 
             @Override
@@ -69,14 +67,17 @@ public class CmdNames extends CmdDefaultParams {
 
         try {
             CmdUtil.handleNamespaces(finder, namespace -> {
+                String msg = "scanning for names in [" + namespace + "]...";
+                LOG.info(msg);
                 Dataset dataset = DatasetFactory.datasetFor(namespace, finder);
                 nodeFactory.getOrCreateDataset(dataset);
                 new GitHubImporterFactory()
                         .createImporter(dataset, nodeFactory)
                         .importStudy();
+                LOG.info(msg + "done.");
             }, getNamespaces());
         } catch (DatasetFinderException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("failed to complete name scan", e);
         }
 
     }

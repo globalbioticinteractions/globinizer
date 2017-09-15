@@ -1,11 +1,14 @@
 package org.globalbioticinteractions.cmd;
 
 import com.beust.jcommander.JCommander;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 public class CmdLine {
+    private final static Log LOG = LogFactory.getLog(CmdLine.class);
 
     public static void run(JCommander actual) {
         if (null != actual && actual.getObjects().get(0) instanceof Runnable) {
@@ -19,6 +22,7 @@ public class CmdLine {
             jc.parse(args);
             CmdLine.run(jc.getCommands().get(jc.getParsedCommand()));
         } catch (Exception ex) {
+            LOG.error("unexpected exception", ex);
             StringBuilder out = new StringBuilder();
             jc.usage(out);
             System.err.append(out.toString());
@@ -29,7 +33,7 @@ public class CmdLine {
 
         @Override
         public void run() {
-            // ignore
+
         }
     }
 
