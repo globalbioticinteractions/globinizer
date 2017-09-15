@@ -58,9 +58,9 @@ public class DatasetLocal implements Dataset {
     @Override
     public String getOrDefault(String key, String defaultValue) {
         if (StringUtils.equalsIgnoreCase("accessedAt", key)) {
-            return ISODateTimeFormat.dateTime().withZoneUTC().print(accessedAt.getTime());
+            return ISODateTimeFormat.dateTime().withZoneUTC().print(getAccessedAt().getTime());
         } else if (StringUtils.equalsIgnoreCase("contentHash", key)) {
-            return hash;
+            return getHash();
         } else {
             return datasetCached.getOrDefault(key, defaultValue);
         }

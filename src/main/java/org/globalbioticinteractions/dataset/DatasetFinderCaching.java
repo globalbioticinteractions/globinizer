@@ -44,7 +44,7 @@ public class DatasetFinderCaching implements DatasetFinder {
         try {
             URIMeta meta = new URIMeta(namespace, dataset.getArchiveURI(), null, null, new Date());
             meta.setType(MIME_TYPE_GLOBI);
-            CacheLog.appendAccessLog(meta, new File(getCacheDir()));
+            CacheLog.appendAccessLog(meta, getCacheDirForNamespace(getCacheDir(), namespace));
         } catch (IOException e) {
             throw new DatasetFinderException("failed to record access", e);
         }
