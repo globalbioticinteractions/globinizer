@@ -5,6 +5,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eol.globi.service.Dataset;
 import org.eol.globi.service.DatasetFactory;
 import org.eol.globi.service.DatasetFinder;
@@ -16,9 +18,12 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.TreeSet;
 
 public class DatasetFinderLocal implements DatasetFinder {
+    private final static Log LOG = LogFactory.getLog(DatasetFinderLocal.class);
     private final String cacheDir;
 
     public DatasetFinderLocal(String cacheDir) {
@@ -27,7 +32,19 @@ public class DatasetFinderLocal implements DatasetFinder {
 
     @Override
     public Collection<String> findNamespaces() throws DatasetFinderException {
-        Collection<File> accessFiles = FileUtils.listFiles(new File(cacheDir), new FileFileFilter() {
+        File directory = new File(cacheDir);
+        Collection<String> namespaces = Collections.emptyList();
+        if (directory.exists() && directory.isDirectory()) {
+            namespaces = collectNamespaces(directory);
+        }
+        else {
+            LOG.warn("Directory [" + cacheDir + "] does not exist.");
+        }
+        return namespaces;
+    }
+
+    private Collection<String> collectNamespaces(File directory) throws DatasetFinderException {
+        Collection<File> accessFiles = FileUtils.listFiles(directory, new FileFileFilter() {
             @Override
             public boolean accept(File file) {
                 return "access.tsv".endsWith(file.getName());
@@ -45,7 +62,6 @@ public class DatasetFinderLocal implements DatasetFinder {
                 throw new DatasetFinderException("failed to read ", e);
             }
         }
-
         return namespaces;
     }
 
