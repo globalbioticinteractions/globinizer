@@ -38,12 +38,12 @@ public class DatasetFinderCachingTest {
     @Test
     public void accessLogEntry() throws DatasetFinderException, IOException, URISyntaxException {
         Dataset datasetCached = datasetCached();
-        List<String> strings = DatasetFinderCaching.accessLogEntries(new Date(0L), datasetCached, "1234");
+        List<String> strings = DatasetFinderCaching.compileLogEntries(datasetCached.getNamespace(), datasetCached.getArchiveURI().toString(), "1234", new Date(0L));
         assertThat(strings, is(Arrays.asList("some/namespace", "http://example.com", "1234:SHA-256", "1970-01-01T00:00:00Z")));
     }
 
     private Dataset datasetCached() throws IOException, URISyntaxException {
-        URI archiveCacheURI = DatasetFinderCaching.getArchiveCacheURI(new File(getClass().getResource("archive.zip").toURI()));
+        URI archiveCacheURI = DatasetFinderUtil.getLocalDatasetURIRoot(new File(getClass().getResource("archive.zip").toURI()));
         Dataset dataset = new DatasetImpl("some/namespace", archiveCacheURI);
         return new DatasetLocal(dataset, URI.create("http://example.com"), new Date(), "");
     }

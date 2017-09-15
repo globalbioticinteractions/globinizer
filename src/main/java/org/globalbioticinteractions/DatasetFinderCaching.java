@@ -10,7 +10,6 @@ import org.eol.globi.service.DatasetFinder;
 import org.eol.globi.service.DatasetFinderException;
 import org.eol.globi.service.DatasetImpl;
 import org.eol.globi.util.ResourceUtil;
-import org.joda.time.DateTimeZone;
 import org.joda.time.format.ISODateTimeFormat;
 
 import java.io.File;
@@ -23,10 +22,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 public class DatasetFinderCaching implements DatasetFinder {
     private final static Log LOG = LogFactory.getLog(org.eol.globi.service.DatasetFinderCaching.class);
@@ -44,6 +40,7 @@ public class DatasetFinderCaching implements DatasetFinder {
         this.cacheDir = cacheDir;
     }
 
+
     @Override
     public Collection<String> findNamespaces() throws DatasetFinderException {
         return this.finder.findNamespaces();
@@ -54,32 +51,32 @@ public class DatasetFinderCaching implements DatasetFinder {
     public Dataset datasetFor(String namespace) throws DatasetFinderException {
         try {
             Dataset dataset = finder.datasetFor(namespace);
-            File cache = cache(dataset, cacheDir);
-            URI archiveCacheURI = getArchiveCacheURI(cache);
-            Date accessedAt = new Date();
-            File cacheDirFile = cacheDirForDataset(dataset, new File(cacheDir));
-            String sha256 = cache.getName().replace(".zip", "");
-             DatasetLocal datasetCached = new DatasetLocal(new DatasetImpl(namespace, archiveCacheURI), dataset.getArchiveURI(), accessedAt, toContentHash(sha256));
-
-            appendAccessLog(dataset, accessedAt, cacheDirFile, sha256);
-
-            return datasetCached;
+            return cacheAndLog(namespace, dataset);
         } catch (IOException e) {
             throw new DatasetFinderException("failed to retrieve/cache dataset in namespace [" + namespace + "]", e);
         }
     }
 
-    private void appendAccessLog(Dataset dataset, Date accessedAt, File cacheDirFile, String sha256) throws IOException {
-        List<String> accessLogEntry = accessLogEntries(accessedAt, dataset, sha256);
+    private Dataset cacheAndLog(String namespace, Dataset dataset) throws IOException {
+        File cache = cache(dataset, cacheDir, dataset.getArchiveURI());
+        Date accessedAt = new Date();
+        File cacheDirFile = cacheDirForDataset(dataset, new File(cacheDir));
+        String sha256 = cache.getName().replace(".zip", "");
+        appendAccessLog(namespace, dataset.getArchiveURI().toString(), sha256, accessedAt, cacheDirFile);
+        return new DatasetLocal(new DatasetImpl(namespace, DatasetFinderUtil.getLocalDatasetURIRoot(cache)), dataset.getArchiveURI(), accessedAt, toContentHash(sha256));
+    }
+
+    private void appendAccessLog(String namespace, String sourceURI, String sha256, Date accessedAt, File cacheDirFile) throws IOException {
+        List<String> accessLogEntry = compileLogEntries(namespace, sourceURI, sha256, accessedAt);
         File accessLog = new File(cacheDirFile, "access.tsv");
         String prefix = accessLog.exists() ? "\n" : "";
         String accessLogLine = StringUtils.join(accessLogEntry, '\t');
         FileUtils.writeStringToFile(accessLog, prefix + accessLogLine, true);
     }
 
-    static List<String> accessLogEntries(Date accessedAt, Dataset datasetCached, String sha256) {
-        return Arrays.asList(datasetCached.getNamespace()
-                , datasetCached.getArchiveURI().toString()
+    static List<String> compileLogEntries(String namespace, String sourceURI, String sha256, Date accessedAt) {
+        return Arrays.asList(namespace
+                , sourceURI
                 , toContentHash(sha256)
                 , ISODateTimeFormat.dateTimeNoMillis().withZoneUTC().print(accessedAt.getTime()));
     }
@@ -88,27 +85,13 @@ public class DatasetFinderCaching implements DatasetFinder {
         return sha256 + ":" + SHA_256;
     }
 
-    static URI getArchiveCacheURI(File archiveCache) throws IOException {
-        Enumeration<? extends ZipEntry> entries = new ZipFile(archiveCache).entries();
 
-        String archiveRoot = null;
-        while (entries.hasMoreElements()) {
-            ZipEntry entry = entries.nextElement();
-            if (entry.isDirectory()) {
-                archiveRoot = entry.getName();
-                break;
-            }
-        }
-
-        return URI.create("jar:" + archiveCache.toURI() + "!/" + archiveRoot);
-    }
-
-    static File cache(Dataset dataset, String pathname) throws IOException {
-        File cacheDir = new File(pathname);
+    static File cache(Dataset dataset, String cachePath, URI sourceURI) throws IOException {
+        File cacheDir = new File(cachePath);
         FileUtils.forceMkdir(cacheDir);
-        URI sourceURI = dataset.getArchiveURI();
-        InputStream sourceStream = ResourceUtil.asInputStream(sourceURI, null);
         File directory = cacheDirForDataset(dataset, cacheDir);
+
+        InputStream sourceStream = ResourceUtil.asInputStream(sourceURI, null);
 
         File destinationFile = new File(directory, "archive.tmp");
         String msg = "caching [" + sourceURI + "]";
