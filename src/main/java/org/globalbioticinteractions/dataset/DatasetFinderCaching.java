@@ -7,22 +7,13 @@ import org.globalbioticinteractions.cache.CacheLog;
 import org.globalbioticinteractions.cache.CacheUtil;
 import org.globalbioticinteractions.cache.CachedURI;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 
 public class DatasetFinderCaching implements DatasetFinder {
-
-    public DatasetFinder getFinder() {
-        return finder;
-    }
-
     private final DatasetFinder finder;
-
-    public String getCacheDir() {
-        return cacheDir;
-    }
-
     private final String cacheDir;
 
     public DatasetFinderCaching(DatasetFinder finder, String cacheDir) {
@@ -41,13 +32,21 @@ public class DatasetFinderCaching implements DatasetFinder {
         try {
             CachedURI meta = new CachedURI(namespace, dataset.getArchiveURI(), null, null, new Date());
             meta.setType(CacheUtil.MIME_TYPE_GLOBI);
-            CacheLog.appendAccessLog(meta, CacheUtil.getCacheDirForNamespace(getCacheDir(), namespace));
+            CacheLog.appendAccessLog(meta, CacheLog.getAccessFile(CacheUtil.getCacheDirForNamespace(getCacheDir(), namespace)));
         } catch (IOException e) {
             throw new DatasetFinderException("failed to record access", e);
         }
         return new DatasetWithCache(dataset, CacheUtil.cacheFor(namespace, getCacheDir()));
 
     }
+    private String getCacheDir() {
+        return cacheDir;
+    }
+    private DatasetFinder getFinder() {
+        return finder;
+    }
+
+
 
 
 }

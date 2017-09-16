@@ -37,7 +37,7 @@ public class CacheLocalReadonly implements Cache {
             File cacheDirForNamespace = CacheUtil.getCacheDirForNamespace(cachePath, namespace);
 
             String hashCandidate = getHashCandidate(resourceURI, cacheDirForNamespace);
-            accessFile = new File(cacheDirForNamespace, "access.tsv");
+            accessFile = CacheLog.getAccessFile(cacheDirForNamespace);
             if (accessFile.exists()) {
                 String[] rows = IOUtils.toString(accessFile.toURI()).split("\n");
                 for (String row : rows) {

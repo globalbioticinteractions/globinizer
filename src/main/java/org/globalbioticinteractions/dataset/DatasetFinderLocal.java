@@ -12,6 +12,7 @@ import org.eol.globi.service.DatasetFactory;
 import org.eol.globi.service.DatasetFinder;
 import org.eol.globi.service.DatasetFinderException;
 import org.eol.globi.service.DatasetImpl;
+import org.globalbioticinteractions.cache.CacheLog;
 import org.globalbioticinteractions.cache.CacheUtil;
 
 import java.io.File;
@@ -47,7 +48,7 @@ public class DatasetFinderLocal implements DatasetFinder {
         Collection<File> accessFiles = FileUtils.listFiles(directory, new FileFileFilter() {
             @Override
             public boolean accept(File file) {
-                return "access.tsv".endsWith(file.getName());
+                return CacheLog.ACCESS_LOG_FILENAME.endsWith(file.getName());
             }
         }, TrueFileFilter.INSTANCE);
 
@@ -97,7 +98,7 @@ public class DatasetFinderLocal implements DatasetFinder {
 
     private URI findLastCachedDatasetURI(String namespace) throws IOException {
         URI sourceURI = null;
-        File accessFile = new File(cacheDir + "/" + namespace + "/access.tsv");
+        File accessFile = CacheLog.getAccessFile(namespace, cacheDir);
         if (accessFile.exists()) {
             String[] rows = IOUtils.toString(accessFile.toURI()).split("\n");
             for (String row : rows) {

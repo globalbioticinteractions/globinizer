@@ -13,16 +13,17 @@ import java.util.List;
 
 public class CacheLog {
 
+    public final static String ACCESS_LOG_FILENAME = "access.tsv";
+
     static void appendCacheLog(String namespace, URI resourceURI, File cacheDir, URI localResourceCacheURI) throws IOException {
         Date accessedAt = new Date();
         String sha256 = new File(localResourceCacheURI).getName();
         CachedURI meta = new CachedURI(namespace, resourceURI, localResourceCacheURI, sha256, accessedAt);
-        appendAccessLog(meta, cacheDir);
+        appendAccessLog(meta, getAccessFile(cacheDir));
     }
 
-    public static void appendAccessLog(CachedURI meta, File cacheDirFile) throws IOException {
+    public static void appendAccessLog(CachedURI meta, File accessLog) throws IOException {
         List<String> accessLogEntry = compileLogEntries(meta);
-        File accessLog = new File(cacheDirFile, "access.tsv");
         String prefix = accessLog.exists() ? "\n" : "";
         String accessLogLine = StringUtils.join(accessLogEntry, '\t');
         FileUtils.writeStringToFile(accessLog, prefix + accessLogLine, true);
@@ -36,7 +37,10 @@ public class CacheLog {
                , meta.getType());
     }
 
-    private static String toContentHash(String sha256) {
-        return sha256;
+    public static File getAccessFile(String namespace, String cacheDir) {
+        return getAccessFile(new File(cacheDir + "/" + namespace));
+    }
+    public static File getAccessFile(File dir) {
+        return new File(dir, ACCESS_LOG_FILENAME);
     }
 }
