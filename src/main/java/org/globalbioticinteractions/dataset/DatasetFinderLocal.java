@@ -12,6 +12,7 @@ import org.eol.globi.service.DatasetFactory;
 import org.eol.globi.service.DatasetFinder;
 import org.eol.globi.service.DatasetFinderException;
 import org.eol.globi.service.DatasetImpl;
+import org.globalbioticinteractions.cache.CacheUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +20,6 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.TreeSet;
 
 public class DatasetFinderLocal implements DatasetFinder {
@@ -81,7 +81,7 @@ public class DatasetFinderLocal implements DatasetFinder {
                 @Override
                 public Dataset datasetFor(String s) throws DatasetFinderException {
                     return new DatasetWithCache(new DatasetImpl(namespace, sourceURI),
-                            DatasetFinderCaching.cacheFor(namespace, cacheDir));
+                            CacheUtil.cacheFor(namespace, cacheDir));
                 }
             });
         } catch (IOException e) {
@@ -104,7 +104,7 @@ public class DatasetFinderLocal implements DatasetFinder {
                 String[] split = row.split("\t");
                 if (split.length > 4
                         && StringUtils.equalsIgnoreCase(StringUtils.trim(split[0]), namespace)
-                        && StringUtils.equals(StringUtils.trim(split[4]), DatasetFinderCaching.MIME_TYPE_GLOBI)) {
+                        && StringUtils.equals(StringUtils.trim(split[4]), CacheUtil.MIME_TYPE_GLOBI)) {
                     sourceURI = URI.create(split[1]);
                 }
             }

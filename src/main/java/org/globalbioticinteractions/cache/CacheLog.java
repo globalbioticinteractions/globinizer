@@ -1,4 +1,4 @@
-package org.globalbioticinteractions.dataset;
+package org.globalbioticinteractions.cache;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -16,11 +16,11 @@ public class CacheLog {
     static void appendCacheLog(String namespace, URI resourceURI, File cacheDir, URI localResourceCacheURI) throws IOException {
         Date accessedAt = new Date();
         String sha256 = new File(localResourceCacheURI).getName();
-        URIMeta meta = new URIMeta(namespace, resourceURI, localResourceCacheURI, sha256, accessedAt);
+        CachedURI meta = new CachedURI(namespace, resourceURI, localResourceCacheURI, sha256, accessedAt);
         appendAccessLog(meta, cacheDir);
     }
 
-    public static void appendAccessLog(URIMeta meta, File cacheDirFile) throws IOException {
+    public static void appendAccessLog(CachedURI meta, File cacheDirFile) throws IOException {
         List<String> accessLogEntry = compileLogEntries(meta);
         File accessLog = new File(cacheDirFile, "access.tsv");
         String prefix = accessLog.exists() ? "\n" : "";
@@ -28,7 +28,7 @@ public class CacheLog {
         FileUtils.writeStringToFile(accessLog, prefix + accessLogLine, true);
     }
 
-    static List<String> compileLogEntries(URIMeta meta) {
+    static List<String> compileLogEntries(CachedURI meta) {
         return Arrays.asList(meta.getNamespace()
                 , meta.getSourceURI().toString()
                 , meta.getSha256() == null ? "" : meta.getSha256()

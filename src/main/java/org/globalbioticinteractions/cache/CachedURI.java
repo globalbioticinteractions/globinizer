@@ -1,9 +1,9 @@
-package org.globalbioticinteractions.dataset;
+package org.globalbioticinteractions.cache;
 
 import java.net.URI;
 import java.util.Date;
 
-public class URIMeta {
+public class CachedURI {
 
     private final URI sourceURI;
     private final URI cachedURI;
@@ -12,7 +12,7 @@ public class URIMeta {
     private final String namespace;
     private String type;
 
-    public URIMeta(String namespace, URI sourceURI, URI cachedURI, String sha256, Date accessedAt) {
+    public CachedURI(String namespace, URI sourceURI, URI cachedURI, String sha256, Date accessedAt) {
         this.namespace = namespace;
         this.sourceURI = sourceURI;
         this.cachedURI = cachedURI;

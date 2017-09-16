@@ -7,14 +7,15 @@ import org.eol.globi.service.DatasetFinder;
 import org.eol.globi.service.DatasetFinderException;
 import org.eol.globi.service.DatasetFinderGitHubArchive;
 import org.eol.globi.service.DatasetFinderZenodo;
-import org.globalbioticinteractions.dataset.DatasetFinderCaching;
-import org.globalbioticinteractions.dataset.PullThroughCache;
+import org.globalbioticinteractions.cache.CacheUtil;
+import org.globalbioticinteractions.cache.CachePullThrough;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 
 import static org.hamcrest.core.StringContains.containsString;
 import static org.hamcrest.core.StringStartsWith.startsWith;
@@ -53,15 +54,6 @@ public class DatasetFinderCachingIT {
         assertThat(dataset.getCitation(), startsWith(expectedCitation));
     }
 
-    @Test
-    public void cacheDatasetGitHub() throws DatasetFinderException, IOException {
-        Dataset dataset = new DatasetFinderGitHubArchive()
-                .datasetFor("globalbioticinteractions/template-dataset");
-        File cacheDir = DatasetFinderCaching.getCacheDirForNamespace(cachePath, dataset.getNamespace());
-        File archiveCache = PullThroughCache.cache(dataset.getArchiveURI(), cacheDir);
-        assertThat(archiveCache.exists(), CoreMatchers.is(true));
-        assertThat(archiveCache.toURI().toString(), startsWith("file:/"));
-    }
 
     @Test
     public void gitHubTest() throws DatasetFinderException {

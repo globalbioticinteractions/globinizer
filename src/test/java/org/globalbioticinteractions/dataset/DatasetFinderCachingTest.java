@@ -6,11 +6,10 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.eol.globi.service.Dataset;
 import org.eol.globi.service.DatasetFinderException;
 import org.eol.globi.service.DatasetImpl;
-import org.globalbioticinteractions.dataset.CacheLog;
-import org.globalbioticinteractions.dataset.DatasetFinderCaching;
-import org.globalbioticinteractions.dataset.DatasetWithCache;
-import org.globalbioticinteractions.dataset.ResourceCacheProxy;
-import org.globalbioticinteractions.dataset.URIMeta;
+import org.globalbioticinteractions.cache.Cache;
+import org.globalbioticinteractions.cache.CacheLog;
+import org.globalbioticinteractions.cache.CacheUtil;
+import org.globalbioticinteractions.cache.CachedURI;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,17 +61,10 @@ public class DatasetFinderCachingTest {
         assertThat(Arrays.asList(list), hasItem("access.tsv"));
     }
 
-    @Test
-    public void accessLogEntry() throws DatasetFinderException, IOException, URISyntaxException {
-        Dataset datasetCached = datasetCached();
-        URIMeta meta = new URIMeta(datasetCached.getNamespace(), URI.create("http://example.com"), URI.create("cached:file.zip"), "1234", new Date(0L));
-        List<String> strings = CacheLog.compileLogEntries(meta);
-        assertThat(strings, is(Arrays.asList("some/namespace", "http://example.com", "1234", "1970-01-01T00:00:00Z", null)));
-    }
 
     private Dataset datasetCached() throws IOException, URISyntaxException {
         Dataset dataset = new DatasetImpl("some/namespace", getClass().getResource("archive.zip").toURI());
-        ResourceCacheProxy cache = DatasetFinderCaching.cacheFor("some/namespace", cachePath);
+        Cache cache = CacheUtil.cacheFor("some/namespace", cachePath);
         return new DatasetWithCache(dataset, cache);
     }
 }

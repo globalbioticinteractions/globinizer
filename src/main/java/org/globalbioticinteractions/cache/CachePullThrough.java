@@ -1,4 +1,4 @@
-package org.globalbioticinteractions.dataset;
+package org.globalbioticinteractions.cache;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -14,18 +14,18 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class PullThroughCache implements ResourceCache {
-    private final static Log LOG = LogFactory.getLog(PullThroughCache.class);
+public class CachePullThrough implements Cache {
+    private final static Log LOG = LogFactory.getLog(CachePullThrough.class);
     private String namespace;
     private String cachePath;
 
-    public PullThroughCache(String namespace, String cachePath) {
+    public CachePullThrough(String namespace, String cachePath) {
         this.namespace = namespace;
         this.cachePath = cachePath;
     }
 
     static File cache(URI sourceURI, File cacheDir) throws IOException {
-        InputStream sourceStream = ResourceUtil.asInputStream(sourceURI, null);
+        InputStream sourceStream = ResourceUtil.asInputStream(sourceURI.toString());
 
         File destinationFile = File.createTempFile("archive", "tmp", cacheDir);
         destinationFile.deleteOnExit();
@@ -52,21 +52,21 @@ public class PullThroughCache implements ResourceCache {
 
     @Override
     public URI asURI(URI resourceURI) throws IOException {
-        File cacheDir = DatasetFinderCaching.getCacheDirForNamespace(cachePath, namespace);
+        File cacheDir = CacheUtil.getCacheDirForNamespace(cachePath, namespace);
         File resourceCached = cache(resourceURI, cacheDir);
         CacheLog.appendCacheLog(namespace, resourceURI, cacheDir, resourceCached.toURI());
         return resourceCached.toURI();
     }
 
     @Override
-    public URIMeta asMeta(URI resourceURI) {
+    public CachedURI asMeta(URI resourceURI) {
         return null;
     }
 
     @Override
     public InputStream asInputStream(URI resourceURI) throws IOException {
         URI resourceURI1 = asURI(resourceURI);
-        return resourceURI1 == null ? null : ResourceUtil.asInputStream(resourceURI1, null);
+        return resourceURI1 == null ? null : ResourceUtil.asInputStream(resourceURI1.toString());
     }
 }
 

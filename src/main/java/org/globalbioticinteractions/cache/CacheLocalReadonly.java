@@ -1,4 +1,4 @@
-package org.globalbioticinteractions.dataset;
+package org.globalbioticinteractions.cache;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -12,29 +12,29 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.Date;
 
-public class LocalReadonlyCache implements ResourceCache {
-    private final Log LOG = LogFactory.getLog(LocalReadonlyCache.class);
+public class CacheLocalReadonly implements Cache {
+    private final Log LOG = LogFactory.getLog(CacheLocalReadonly.class);
 
     private final String namespace;
     private final String cachePath;
 
-    public LocalReadonlyCache(String namespace, String cachePath) {
+    public CacheLocalReadonly(String namespace, String cachePath) {
         this.namespace = namespace;
         this.cachePath = cachePath;
     }
 
     @Override
     public URI asURI(URI resourceURI) throws IOException {
-        URIMeta uriMeta = asMeta(resourceURI);
-        return uriMeta == null ? null : uriMeta.getCachedURI();
+        CachedURI cachedUri = asMeta(resourceURI);
+        return cachedUri == null ? null : cachedUri.getCachedURI();
     }
 
     @Override
-    public URIMeta asMeta(URI resourceURI) {
-        URIMeta meta = null;
+    public CachedURI asMeta(URI resourceURI) {
+        CachedURI meta = null;
         File accessFile;
         try {
-            File cacheDirForNamespace = DatasetFinderCaching.getCacheDirForNamespace(cachePath, namespace);
+            File cacheDirForNamespace = CacheUtil.getCacheDirForNamespace(cachePath, namespace);
 
             String hashCandidate = getHashCandidate(resourceURI, cacheDirForNamespace);
             accessFile = new File(cacheDirForNamespace, "access.tsv");
@@ -50,7 +50,7 @@ public class LocalReadonlyCache implements ResourceCache {
                                 || StringUtils.equals(hashCandidate, hash256))) {
                             File cachedArchiveFile = new File(accessFile.getParent(), hash256);
                             Date accessedAt = ISODateTimeFormat.dateTimeParser().withZoneUTC().parseDateTime(split[3]).toDate();
-                            meta = new URIMeta(namespace, sourceURI, cachedArchiveFile.toURI(), hash256, accessedAt);
+                            meta = new CachedURI(namespace, sourceURI, cachedArchiveFile.toURI(), hash256, accessedAt);
                         }
                     }
                 }

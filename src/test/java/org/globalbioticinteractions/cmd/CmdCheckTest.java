@@ -2,20 +2,13 @@ package org.globalbioticinteractions.cmd;
 
 import com.beust.jcommander.JCommander;
 import org.apache.commons.io.FileUtils;
-import org.globalbioticinteractions.cmd.CmdCheck;
-import org.globalbioticinteractions.cmd.CmdLine;
-import org.globalbioticinteractions.cmd.CmdList;
-import org.globalbioticinteractions.cmd.CmdUpdate;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
-public class CmdLineIT {
+public class CmdCheckTest {
 
     @Before
     public void emptyCache() {
