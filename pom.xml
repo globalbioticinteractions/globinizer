@@ -4,7 +4,7 @@
 
     <groupId>org.globalbioticinteractions</groupId>
     <artifactId>globinizer</artifactId>
-    <version>0.3.1</version>
+    <version>0.3.2-SNAPSHOT</version>
     <name>GloBI commandline tool</name>
     <description>Discover, cache and check species interaction data</description>
 
