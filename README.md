@@ -1,5 +1,3 @@
-
-# dataset-tester
 Imports single github [GloBI](https://globalbioticinteractions.org) data repository and check whether it can be read.
 
 Used for automated travis checks for GloBI datasets. Example see https://github.com/globalbioticinteractions/template-dataset/blob/master/.travis.yml and https://github.com/globalbioticinteractions/template-dataset#enable-integration-testing .
