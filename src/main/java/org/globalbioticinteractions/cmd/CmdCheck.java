@@ -16,13 +16,10 @@ import org.eol.globi.domain.Specimen;
 import org.eol.globi.domain.Study;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.service.DatasetFinder;
-import org.eol.globi.service.DatasetFinderCaching;
-import org.eol.globi.service.DatasetFinderException;
 import org.eol.globi.service.DatasetFinderGitHubArchiveMaster;
 import org.eol.globi.service.DatasetFinderProxy;
-import org.eol.globi.tool.GitHubRepoCheck;
+import org.globalbioticinteractions.dataset.DatasetFinderCaching;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -36,7 +33,7 @@ public class CmdCheck extends CmdDefaultParams {
     @Override
     public void run() {
         try {
-            LOG.info(Version.getVersionInfo(GitHubRepoCheck.class));
+            LOG.info(Version.getVersionInfo(CmdCheck.class));
             for (String namespace : getNamespaces()) {
                 check(namespace);
             }
@@ -54,7 +51,7 @@ public class CmdCheck extends CmdDefaultParams {
         List<DatasetFinder> finders = Collections.singletonList(new DatasetFinderGitHubArchiveMaster(Collections.singletonList(repoName)));
         DatasetFinderCaching finder = new DatasetFinderCaching(new DatasetFinderProxy(finders));
         ParserFactoryLocal parserFactory = new ParserFactoryLocal();
-        StudyImporterForGitHubData studyImporterForGitHubData = new StudyImporterForGitHubData(parserFactory, nodeFactory);
+        StudyImporterForGitHubData studyImporterForGitHubData = new StudyImporterForGitHubData(parserFactory, nodeFactory, finder);
         studyImporterForGitHubData.setLogger(new ImportLogger() {
             @Override
             public void info(LogContext study, String message) {
@@ -84,7 +81,6 @@ public class CmdCheck extends CmdDefaultParams {
         });
 
         try {
-            studyImporterForGitHubData.setFinder(finder);
             studyImporterForGitHubData.importData(repoName);
             if (warnings.size() > 0 || errors.size() > 0 || NodeFactoryLogging.counter.get() == 0) {
                 throw new StudyImporterException(getResultMsg(repoName, warnings, errors) + ", please check your log.");
