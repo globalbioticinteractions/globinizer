@@ -6,7 +6,6 @@ Used for automated travis checks for GloBI datasets. Example see https://github.
 
 - [Install](#install)
 - [Usage](#usage)
-- [Building](#building)
 - [Contribute](#contribute)
 - [License](#license)
 
@@ -32,4 +31,4 @@ Feel free to join in. All welcome. Open an [issue](https://github.com/globalbiot
 
 ## License
 
-[GLP](LICENSE)
+[MIT](LICENSE)
