@@ -8,24 +8,24 @@
 #   example:
 #      ./check-dataset.sh globalbioticinteractions/template-dataset
 
-function download_jar {
-    local NAME=$1
-    local JAR_VERSION=$2
-    export URL_PREFIX="https://depot.globalbioticinteractions.org/release/org/globalbioticinteractions/${NAME}/${VERSION}/${NAME}-${VERSION}"
+download_jar() {
+    NAME=$1
+    VERSION=$2
+    URL_PREFIX="https://depot.globalbioticinteractions.org/release/org/globalbioticinteractions/${NAME}/${VERSION}/${NAME}-${VERSION}"
     wget ${URL_PREFIX}-jar-with-dependencies.jar -O ${NAME}.jar
 }
 
-export REPO_NAME=$1
+REPO_NAME=$1
 
-export NOMER_VERSION=0.0.3
-export ELTON_VERSION=0.4.2
+NOMER_VERSION="0.0.3"
+ELTON_VERSION="0.4.2"
 
 download_jar nomer ${NOMER_VERSION}
 download_jar elton ${ELTON_VERSION}
 
 
-export JAVA_HOME=/usr/lib/jvm/java-8-oracle
-export JAVA=${JAVA_HOME}/jre/bin/java
+JAVA_HOME=/usr/lib/jvm/java-8-oracle
+JAVA=${JAVA_HOME}/jre/bin/java
 
 echo Checking [${REPO_NAME}] readability using Elton version [${ELTON_VERSION}].
 ${JAVA} -jar elton.jar update ${REPO_NAME}
