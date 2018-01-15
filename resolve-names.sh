@@ -8,7 +8,7 @@
 #   example:
 #      ./check-dataset.sh globalbioticinteractions/template-dataset
 
-function download_jar() {
+function download_jar {
     local NAME=$1
     local JAR_VERSION=$2
     export URL_PREFIX="https://depot.globalbioticinteractions.org/release/org/globalbioticinteractions/${NAME}/${VERSION}/${NAME}-${VERSION}"
