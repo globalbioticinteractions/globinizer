@@ -36,10 +36,12 @@ ${JAVA} -jar elton.jar names ${REPO_NAME} | awk -F '\t' '{ print $1 "\t" $2 }' |
 
 echo number of unmatched names
 cat names.tsv | grep NONE | sort | uniq > names_unmatched.tsv
+cat names_unmatched.tsv | wc -l
 echo first 10 unmatched names
 head -n 10 names_unmatched.tsv
 
 echo number of unique names
 cat names.tsv | grep -v NONE | sort | uniq > names_unique.tsv
+cat names_unique.tsv | wc -l
 echo first 10 unique names
 head -n 10 names_unique.tsv
