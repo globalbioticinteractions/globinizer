@@ -22,8 +22,9 @@ wget ${URL_PREFIX}-jar-with-dependencies.jar -O nomer.jar
 
 export JAVA_HOME=/usr/lib/jvm/java-8-oracle
 export JAVA=${JAVA_HOME}/jre/bin/java
-${JAVA} -jar elton update ${REPO_NAME}
-${JAVA} -jar elton names ${REPO_NAME} | ${JAVA} -jar nomer.jar append globi-globalnames | tee names.tsv
+${JAVA} -jar elton.jar update ${REPO_NAME}
+${JAVA} -jar elton.jar check --offline ${REPO_NAME}
+${JAVA} -jar elton.jar names ${REPO_NAME} | ${JAVA} -jar nomer.jar append globi-globalnames | tee names.tsv
 
 echo unmatched names
 cat names.tsv | grep NONE | sort | uniq
