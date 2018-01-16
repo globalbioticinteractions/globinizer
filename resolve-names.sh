@@ -23,6 +23,8 @@ ELTON_VERSION="0.4.2"
 download_jar nomer ${NOMER_VERSION}
 download_jar elton ${ELTON_VERSION}
 
+wget https://depot.globalbioticinteractions.org/datasets/org/globalbioticinteractions/taxon/0.1/taxon-0.1.zip -O taxon.zip
+unzip taxon.zip
 
 JAVA_HOME=/usr/lib/jvm/java-8-oracle
 JAVA=${JAVA_HOME}/jre/bin/java
@@ -32,7 +34,7 @@ ${JAVA} -jar elton.jar update ${REPO_NAME}
 ${JAVA} -jar elton.jar check --offline ${REPO_NAME}
 
 echo Checking names of [${REPO_NAME}] using Nomer version [${NOMER_VERSION}]. 
-${JAVA} -jar elton.jar names ${REPO_NAME} | awk -F '\t' '{ print $1 "\t" $2 }' | sort | uniq | ${JAVA} -jar nomer.jar append globi-globalnames > names.tsv
+${JAVA} -jar elton.jar names ${REPO_NAME} | awk -F '\t' '{ print $1 "\t" $2 }' | sort | uniq | ${JAVA} -Xmx4G -Dterm.cache.url=file://${PWD}/taxonCache.tsv.gz -Dterm.map.url=file://${PWD}/taxonMap.tsv.gz -jar nomer.jar append globi-cache > names.tsv
 
 echo number of unmatched names
 cat names.tsv | grep NONE | sort | uniq > names_unmatched.tsv
