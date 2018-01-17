@@ -33,8 +33,11 @@ echo Checking [${REPO_NAME}] readability using Elton version [${ELTON_VERSION}].
 ${JAVA} -jar elton.jar update ${REPO_NAME}
 ${JAVA} -jar elton.jar check --offline ${REPO_NAME}
 
+echo nomer.term.map.url=file://${PWD}/taxonMap.tsv.gz > nomer.properties
+echo nomer.term.cache.url=file://${PWD}/taxonCache.tsv.gz >> nomer.properties
+
 echo Checking names of [${REPO_NAME}] using Nomer version [${NOMER_VERSION}]. 
-${JAVA} -jar elton.jar names ${REPO_NAME} | awk -F '\t' '{ print $1 "\t" $2 }' | sort | uniq | ${JAVA} -Xmx4G -Dnomer.term.cache.url=file://${PWD}/taxonCache.tsv.gz -Dnomer.term.map.url=file://${PWD}/taxonMap.tsv.gz -jar nomer.jar append globi-cache > names.tsv
+${JAVA} -jar elton.jar names ${REPO_NAME} | awk -F '\t' '{ print $1 "\t" $2 }' | sort | uniq | ${JAVA} -Xmx4G -jar nomer.jar append --properties nomer.properties globi-cache > names.tsv
 
 echo number of unmatched names
 cat names.tsv | grep NONE | sort | uniq > names_unmatched.tsv
