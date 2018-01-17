@@ -45,8 +45,7 @@ NOMER="${JAVA} -Xmx4G -jar nomer.jar append"
 echo Checking names of [${REPO_NAME}] using Nomer version [${NOMER_VERSION}]. 
 $ELTON names ${REPO_NAME} | awk -F '\t' '{ print $1 "\t" $2 }' | sort | uniq > names_orig.tsv
 
-
-cat $1 names_orig.tsv | $NOMER --properties nomer.properties globi-cache > names_map_cached.tsv
+cat names_orig.tsv | $NOMER --properties nomer.properties globi-cache > names_map_cached.tsv
 
 . ./create-taxon-cache-map.sh
 create_taxon_cache_map names_map_cached.tsv
