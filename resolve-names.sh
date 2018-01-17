@@ -53,19 +53,19 @@ create_taxon_cache_map names_map_cached.tsv
 echo number of unmatched names
 zcat taxonUnresolved.tsv.gz | awk -F '\t' '{ print $1 "\t" $2 }' | sort | uniq > names_unmatched.tsv
 cat names_unmatched.tsv | wc -l
-echo first 10 unmatched names
+echo "unmatched names (first 10)"
 head -n 10 names_unmatched.tsv
 
 echo number of unique names
 cat names_orig.tsv | grep -v NONE | awk -F '\t' '{ print $5 }' | sort | uniq > names_unique.tsv
 cat names_unique.tsv | wc -l
-echo first 10 unique names
+echo "unique names (first 10)"
 head -n 10 names_unique.tsv
 
-echo taxonMap (first 10)
+echo "taxonMap (first 10)"
 zcat taxonMap.tsv.gz | head -n 10
-echo taxonCache (first 10)
+echo "taxonCache (first 10)"
 zcat taxonCache.tsv.gz | head -n 10
 
-echo taxonUnresolved (first 10)
+echo "taxonUnresolved (first 10)"
 zcat taxonUnresolved.tsv.gz | head -n 10
