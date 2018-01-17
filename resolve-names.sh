@@ -29,7 +29,7 @@ unzip taxon.zip
 JAVA_HOME=/usr/lib/jvm/java-8-oracle
 JAVA=${JAVA_HOME}/jre/bin/java
 
-echo Checking [${REPO_NAME}] readability using Elton version [${ELTON_VERSION}].
+echo Checking readability of [${REPO_NAME}] using Elton version [${ELTON_VERSION}].
 ${JAVA} -jar elton.jar update ${REPO_NAME}
 ${JAVA} -jar elton.jar check --offline ${REPO_NAME}
 
