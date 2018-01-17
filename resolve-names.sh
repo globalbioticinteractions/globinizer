@@ -40,24 +40,19 @@ $ELTON check --offline ${REPO_NAME}
 echo nomer.term.map.url=file://${PWD}/taxonMap.tsv.gz > nomer.properties
 echo nomer.term.cache.url=file://${PWD}/taxonCache.tsv.gz >> nomer.properties
 
-PROVIDED_NAME_ID="awk -F '\t' '{ print $1 "\t" $2 }' | sort | uniq"
-RESOLVED_NAME_ID="awk -F '\t' '{ print $4 "\t" $5 }' | sort | uniq"
-TERM_MAP="awk -F '\t' '{ print $1 "\t" $2 "\t" $4 "\t" $5 }' | sort | uniq"
-RESOLVED_TERM_FULL="awk -F '\t' '{ print $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9 "\t" $10 "\t" $11 "\t" $12  }' | sort | uniq"
-
 NOMER="${JAVA} -Xmx4G -jar nomer.jar append"
 
 echo Checking names of [${REPO_NAME}] using Nomer version [${NOMER_VERSION}]. 
-$ELTON names ${REPO_NAME} | ${PROVIDED_NAME_ID} > names_orig.tsv
+$ELTON names ${REPO_NAME} | awk -F '\t' '{ print $1 "\t" $2 }' | sort | uniq > names_orig.tsv
 
-cat names_orig.tsv | $NOMER --properties nomer.properties globi-cache > names_map_cached.tsv
 
-cat names_map_cached.tsv | grep -E -e "(SAME_AS|SYNONYM_OF)" | $TERM_MAP | gzip > taxonMap.tsv.gz
-cat names_map_cached.tsv | grep -E -e "(SAME_AS|SYNONYM_OF)" | $RESOLVED_TERM_FULL | gzip > taxonCache.tsv.gz
-cat names_map_cached.tsv | grep -v -E -e "(SAME_AS|SYNONYM_OF)" | $TERM_MAP | gzip > taxonUnresolved.tsv.gz
+cat $1 names_orig.tsv | $NOMER --properties nomer.properties globi-cache > names_map_cached.tsv
+
+. ./create-taxon-cache-map.sh
+create_taxon_cache_map names_map_cached.tsv
 
 echo number of unmatched names
-zcat taxonUnresolved.tsv.gz | $PROVIDED_NAME_ID | sort | uniq > names_unmatched.tsv
+zcat taxonUnresolved.tsv.gz | awk -F '\t' '{ print $1 "\t" $2 }' | sort | uniq > names_unmatched.tsv
 cat names_unmatched.tsv | wc -l
 echo first 10 unmatched names
 head -n 10 names_unmatched.tsv
