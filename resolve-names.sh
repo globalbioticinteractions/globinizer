@@ -32,7 +32,7 @@ fi
 
 JAVA=${JAVA_HOME}/jre/bin/java
 
-ELTON="$JAVA -jar elton.jar names"
+ELTON="$JAVA -jar elton.jar"
 echo Checking readability of [${REPO_NAME}] using Elton version [${ELTON_VERSION}].
 $ELTON update ${REPO_NAME}
 $ELTON check --offline ${REPO_NAME}
