@@ -17,7 +17,7 @@ download_jar() {
 
 REPO_NAME=$1
 
-NOMER_VERSION="0.0.3"
+NOMER_VERSION="0.0.4"
 ELTON_VERSION="0.4.2"
 
 download_jar nomer ${NOMER_VERSION}
@@ -43,7 +43,7 @@ echo first 10 unmatched names
 head -n 10 names_unmatched.tsv
 
 echo number of unique names
-cat names.tsv | grep -v NONE | sort | uniq > names_unique.tsv
+cat names.tsv | grep -v NONE | awk -F '\t' '{ print $5 }' | sort | uniq > names_unique.tsv
 cat names_unique.tsv | wc -l
 echo first 10 unique names
 head -n 10 names_unique.tsv
