@@ -57,7 +57,7 @@ echo "unmatched names (first 10)"
 head -n 10 names_unmatched.tsv
 
 echo number of unique names
-cat names_orig.tsv | grep -v NONE | awk -F '\t' '{ print $5 }' | sort | uniq > names_unique.tsv
+cat names_map_cached.tsv | grep -v NONE | awk -F '\t' '{ print $5 }' | sort | uniq > names_unique.tsv
 cat names_unique.tsv | wc -l
 echo "unique names (first 10)"
 head -n 10 names_unique.tsv
