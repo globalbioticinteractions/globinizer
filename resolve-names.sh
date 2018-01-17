@@ -26,28 +26,52 @@ download_jar elton ${ELTON_VERSION}
 wget https://depot.globalbioticinteractions.org/datasets/org/globalbioticinteractions/taxon/0.1/taxon-0.1.zip -O taxon.zip
 unzip taxon.zip
 
-JAVA_HOME=/usr/lib/jvm/java-8-oracle
+if [ -z $TRAVIS ]; then 
+  JAVA_HOME=/usr/lib/jvm/java-8-oracle;
+fi
+
 JAVA=${JAVA_HOME}/jre/bin/java
 
+ELTON="$JAVA -jar elton.jar names"
 echo Checking readability of [${REPO_NAME}] using Elton version [${ELTON_VERSION}].
-${JAVA} -jar elton.jar update ${REPO_NAME}
-${JAVA} -jar elton.jar check --offline ${REPO_NAME}
+$ELTON update ${REPO_NAME}
+$ELTON check --offline ${REPO_NAME}
 
 echo nomer.term.map.url=file://${PWD}/taxonMap.tsv.gz > nomer.properties
 echo nomer.term.cache.url=file://${PWD}/taxonCache.tsv.gz >> nomer.properties
 
+PROVIDED_NAME_ID="awk -F '\t' '{ print $1 "\t" $2 }' | sort | uniq"
+RESOLVED_NAME_ID="awk -F '\t' '{ print $4 "\t" $5 }' | sort | uniq"
+TERM_MAP="awk -F '\t' '{ print $1 "\t" $2 "\t" $4 "\t" $5 }' | sort | uniq"
+RESOLVED_TERM_FULL="awk -F '\t' '{ print $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9 "\t" $10 "\t" $11 "\t" $12  }' | sort | uniq"
+
+NOMER="${JAVA} -Xmx4G -jar nomer.jar append"
+
 echo Checking names of [${REPO_NAME}] using Nomer version [${NOMER_VERSION}]. 
-${JAVA} -jar elton.jar names ${REPO_NAME} | awk -F '\t' '{ print $1 "\t" $2 }' | sort | uniq > names_orig.tsv
-cat names_orig.tsv | ${JAVA} -Xmx4G -jar nomer.jar append --properties nomer.properties globi-cache > names.tsv
+$ELTON names ${REPO_NAME} | ${PROVIDED_NAME_ID} > names_orig.tsv
+
+cat names_orig.tsv | $NOMER --properties nomer.properties globi-cache > names_map_cached.tsv
+
+cat names_map_cached.tsv | grep -E -e "(SAME_AS|SYNONYM_OF)" | $TERM_MAP | gzip > taxonMap.tsv.gz
+cat names_map_cached.tsv | grep -E -e "(SAME_AS|SYNONYM_OF)" | $RESOLVED_TERM_FULL | gzip > taxonCache.tsv.gz
+cat names_map_cached.tsv | grep -v -E -e "(SAME_AS|SYNONYM_OF)" | $TERM_MAP | gzip > taxonUnresolved.tsv.gz
 
 echo number of unmatched names
-cat names.tsv | grep NONE | sort | uniq > names_unmatched.tsv
+zcat taxonUnresolved.tsv.gz | $PROVIDED_NAME_ID | sort | uniq > names_unmatched.tsv
 cat names_unmatched.tsv | wc -l
 echo first 10 unmatched names
 head -n 10 names_unmatched.tsv
 
 echo number of unique names
-cat names.tsv | grep -v NONE | awk -F '\t' '{ print $5 }' | sort | uniq > names_unique.tsv
+cat names_orig.tsv | grep -v NONE | awk -F '\t' '{ print $5 }' | sort | uniq > names_unique.tsv
 cat names_unique.tsv | wc -l
 echo first 10 unique names
 head -n 10 names_unique.tsv
+
+echo taxonMap (first 10)
+zcat taxonMap.tsv.gz | head -n 10
+echo taxonCache (first 10)
+zcat taxonCache.tsv.gz | head -n 10
+
+echo taxonUnresolved (first 10)
+zcat taxonUnresolved.tsv.gz | head -n 10
