@@ -3,10 +3,11 @@
 #   imports single github globi data repository and check whether it can be read by GloBI.
 #
 #   usage:
-#     check-dataset.sh [github repo name] 
+#     resolve-names.sh [github repo name] 
 # 
 #   example:
-#      ./check-dataset.sh globalbioticinteractions/template-dataset
+#      ./resolve-names.sh globalbioticinteractions/template-dataset
+set -x
 
 download_jar() {
     NAME=$1
@@ -19,12 +20,24 @@ REPO_NAME=$1
 
 NOMER_VERSION="0.0.4"
 ELTON_VERSION="0.4.2"
+GLOBI_TAXON_VERSION="0.2"
 
-download_jar nomer ${NOMER_VERSION}
-download_jar elton ${ELTON_VERSION}
+download_jars() {
+  download_jar nomer ${NOMER_VERSION}
+  download_jar elton ${ELTON_VERSION}
+}
 
-wget https://depot.globalbioticinteractions.org/datasets/org/globalbioticinteractions/taxon/0.1/taxon-0.1.zip -O taxon.zip
-unzip taxon.zip
+download_taxon_cache() {
+  wget https://depot.globalbioticinteractions.org/datasets/org/globalbioticinteractions/taxon/${GLOBI_TAXON_VERSION}/taxon-${GLOBI_TAXON_VERSION}.zip -O taxon.zip
+  unzip taxon.zip
+}
+
+download() {
+ download_jars
+ download_taxon_cache
+}
+
+download
 
 if [ -z $TRAVIS ]; then 
   JAVA_HOME=/usr/lib/jvm/java-8-oracle;
@@ -32,20 +45,26 @@ fi
 
 JAVA=${JAVA_HOME}/jre/bin/java
 
-ELTON="$JAVA -jar elton.jar"
-echo Checking readability of [${REPO_NAME}] using Elton version [${ELTON_VERSION}].
-$ELTON update ${REPO_NAME}
-$ELTON check --offline ${REPO_NAME}
+ELTON="$JAVA -Xmx4G -jar elton.jar"
 
-echo nomer.term.map.url=file://${PWD}/taxonMap.tsv.gz > nomer.properties
-echo nomer.term.cache.url=file://${PWD}/taxonCache.tsv.gz >> nomer.properties
+check () {
+  echo Checking readability of [${REPO_NAME}] using Elton version [${ELTON_VERSION}].
+  $ELTON update ${REPO_NAME}
+  $ELTON check --offline ${REPO_NAME}
+}
+
+check
+
+echo nomer.term.map.url=jar:file://${PWD}/taxon.zip!/taxonMap.tsv.gz > nomer.properties
+echo nomer.term.cache.url=jar:file://${PWD}/taxon.zip!/taxonCache.tsv.gz >> nomer.properties
 
 NOMER="${JAVA} -Xmx4G -jar nomer.jar append"
 
 echo Checking names of [${REPO_NAME}] using Nomer version [${NOMER_VERSION}]. 
-$ELTON names ${REPO_NAME} | awk -F '\t' '{ print $1 "\t" $2 }' | sort | uniq > names_orig.tsv
+$ELTON names --cache-dir=/home/jhpoelen/elton/datasets ${REPO_NAME} | awk -F '\t' '{ print $1 "\t" $2 }' > names_orig.tsv
+cat names_orig.tsv | sort | uniq | gzip > names_orig_uniq.tsv.gz
 
-cat names_orig.tsv | $NOMER --properties nomer.properties globi-cache > names_map_cached.tsv
+zcat names_orig_uniq.tsv.gz | $NOMER --properties nomer.properties globi-cache > names_map_cached.tsv
 
 . ./create-taxon-cache-map.sh
 create_taxon_cache_map names_map_cached.tsv
