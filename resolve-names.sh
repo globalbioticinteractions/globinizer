@@ -21,6 +21,7 @@ REPO_NAME=$1
 NOMER_VERSION="0.0.4"
 ELTON_VERSION="0.4.2"
 GLOBI_TAXON_VERSION="0.2"
+CACHE_DIR="$PWD/datasets"
 
 download_jars() {
   download_jar nomer ${NOMER_VERSION}
@@ -61,7 +62,7 @@ echo nomer.term.cache.url=jar:file://${PWD}/taxon.zip!/taxonCache.tsv.gz >> nome
 NOMER="${JAVA} -Xmx4G -jar nomer.jar append"
 
 echo Checking names of [${REPO_NAME}] using Nomer version [${NOMER_VERSION}]. 
-$ELTON names --cache-dir=/home/jhpoelen/elton/datasets ${REPO_NAME} | awk -F '\t' '{ print $1 "\t" $2 }' > names_orig.tsv
+$ELTON names --cache-dir=${CACHE_DIR} ${REPO_NAME} | awk -F '\t' '{ print $1 "\t" $2 }' > names_orig.tsv
 cat names_orig.tsv | sort | uniq | gzip > names_orig_uniq.tsv.gz
 
 zcat names_orig_uniq.tsv.gz | $NOMER --properties nomer.properties globi-cache > names_map_cached.tsv
