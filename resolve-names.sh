@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 #   imports single github globi data repository and check whether it can be read by GloBI.
 #
@@ -9,7 +9,7 @@
 #      ./resolve-names.sh globalbioticinteractions/template-dataset
 set -x
 
-download_jar() {
+function download_jar {
     NAME=$1
     VERSION=$2
     URL_PREFIX="https://depot.globalbioticinteractions.org/release/org/globalbioticinteractions/${NAME}/${VERSION}/${NAME}-${VERSION}"
@@ -23,17 +23,17 @@ ELTON_VERSION="0.4.3"
 GLOBI_TAXON_VERSION="0.2"
 CACHE_DIR="$PWD/datasets"
 
-download_jars() {
+function download_jars {
   download_jar nomer ${NOMER_VERSION}
   download_jar elton ${ELTON_VERSION}
 }
 
-download_taxon_cache() {
+function download_taxon_cache {
   wget https://depot.globalbioticinteractions.org/datasets/org/globalbioticinteractions/taxon/${GLOBI_TAXON_VERSION}/taxon-${GLOBI_TAXON_VERSION}.zip -O taxon.zip
   unzip taxon.zip
 }
 
-download() {
+function download {
  download_jars
  download_taxon_cache
 }
@@ -48,7 +48,7 @@ JAVA=${JAVA_HOME}/jre/bin/java
 
 ELTON="$JAVA -Xmx4G -jar elton.jar"
 
-check () {
+function check {
   echo Checking readability of [${REPO_NAME}] using Elton version [${ELTON_VERSION}].
   $ELTON update ${REPO_NAME}
   $ELTON check --offline ${REPO_NAME}

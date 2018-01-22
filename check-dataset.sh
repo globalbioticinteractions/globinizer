@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 #   imports single github globi data repository and check whether it can be read by GloBI.
 #

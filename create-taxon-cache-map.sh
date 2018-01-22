@@ -1,4 +1,22 @@
-create_taxon_cache_map() {
+#!/bin/bash
+
+function taxon_cache_map_for_scheme {
+  TAXON_SCHEME=$1
+  # create taxon specific mappings
+  zcat taxonMap.tsv.gz | grep -P -e "\t${TAXON_SCHEME}:" > taxonMap${TAXON_SCHEME}.tsv.gz
+  zcat taxonCache.tsv.gz | grep "^${TAXON_SCHEME}:" > taxonCache${TAXON_SCHEME}.tsv.gz
+}
+
+function create_taxon_cache_map_schemes {
+  schemes=( "ITIS" "NCBI" "OTT" "GBIF" "WORMS" "INAT_TAXON" "EOL" )
+  for SCHEME in "${schemes[@]}" 
+  do
+    taxon_cache_map_for_scheme ${SCHEME}
+  done
+
+}
+
+function create_taxon_cache_map {
   TAXON_CACHE_HEADER="id\tname\trank\tcommonNames\tpath\tpathIds\tpathNames\texternalUrl\tthumbnailUrl"
   TAXON_MAP_HEADER="providedTaxonId\tprovidedTaxonName\tresolvedTaxonId\tresolvedTaxonName"
   echo -e $TAXON_MAP_HEADER | gzip > taxonMap.tsv.gz
