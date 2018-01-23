@@ -15,8 +15,8 @@ function taxon_cache_map_for_scheme {
   TAXON_SCHEME_DIR=${PWD}/$(echo $1 | tr '[:upper:]' '[:lower:'])
   mkdir -p ${TAXON_SCHEME_DIR}
   create_taxon_cache_map_headers ${TAXON_SCHEME_DIR}
-  zcat taxonMap.tsv.gz | grep -P -e "\t${TAXON_SCHEME}:" | gzip >> ${TAXON_SCHEME_DIR}/taxonMap.tsv.gz
-  zcat taxonCache.tsv.gz | grep "^${TAXON_SCHEME}:" | gzip >> ${TAXON_SCHEME_DIR}/taxonCache.tsv.gz
+  zcat taxonMap.tsv.gz | grep -P -e "\t${TAXON_SCHEME}:" | sort | uniq | gzip >> ${TAXON_SCHEME_DIR}/taxonMap.tsv.gz
+  zcat taxonCache.tsv.gz | grep "^${TAXON_SCHEME}:" | sort | uniq | gzip >> ${TAXON_SCHEME_DIR}/taxonCache.tsv.gz
   zip -j taxon-${TAXON_SCHEME_DIRNAME}.zip ${TAXON_SCHEME_DIRNAME}/*
 }
 
