@@ -2,10 +2,12 @@
 #
 #
 
+NOMER_APPEND="java -Xmx4G -jar nomer.jar append"
+
 function map_interactions {
   INTERACTIONS_FILE=$1
-  cat ${INTERACTIONS_FILE} | java -jar nomer.jar append --properties nomer.properties globi-cache > $INTERACTIONS_FILE.source
-  cat ${INTERACTIONS_FILE}.source | java -jar nomer.jar append --properties nomer-target.properties globi-cache > $INTERACTIONS_FILE.source.target
+  #cat ${INTERACTIONS_FILE} | ${NOMER_APPEND} --properties nomer.properties globi-cache > $INTERACTIONS_FILE.source
+  cat ${INTERACTIONS_FILE}.source | ${NOMER_APPEND} --properties nomer-target.properties globi-cache > $INTERACTIONS_FILE.source.target
   cat ${INTERACTIONS_FILE}.source.target | awk -F '\t' '{ print $24 "\t" $25 "\t" $26 "\t" $27 "\t" $28 "\t" $29 "\t" $30 "\t" $31 "\t" $7 "\t" $8 "\t" $33 "\t" $34 "\t" $35 "\t" $36 "\t" $37 "\t" $38 "\t" $39 "\t" $15 "\t" $16 "\t" $17 "\t" $18 "\t" $19 "\t" $20 "\t" $21 "\t" $22 }' > ${INTERACTIONS_FILE}.mapped.tsv
 }
 
