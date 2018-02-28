@@ -80,10 +80,14 @@ cat names_unique.tsv | wc -l
 
 echo "--- unique names (first 10)"
 head -n 10 names_unique.tsv
+echo "--- unique names (end)"
 echo "--- taxonMap (first 10)"
 zcat taxonMap.tsv.gz | head -n 10
+echo "--- taxonMap (end)"
 echo "--- taxonCache (first 10)"
 zcat taxonCache.tsv.gz | head -n 10
+echo "--- taxonCache (end)"
 
 echo "--- taxonUnresolved (first 10)"
 zcat taxonUnresolved.tsv.gz | head -n 10
+echo "--- taxonUnresolved (end)"
