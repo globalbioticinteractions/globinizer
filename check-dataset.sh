@@ -7,6 +7,7 @@
 # 
 #   example:
 #      ./check-dataset.sh globalbioticinteractions/template-dataset
+set -e
 
 export REPO_NAME=$1
 export ELTON_VERSION=0.4.3
