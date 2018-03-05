@@ -21,7 +21,7 @@ function taxon_cache_map_for_scheme {
 }
 
 function create_taxon_cache_map_schemes {
-  schemes=( "ITIS" "NCBI" "OTT" "GBIF" "WORMS" "INAT_TAXON" "EOL" "FBC" )
+  schemes=( "ITIS" "NCBI" "OTT" "GBIF" "WORMS" "INAT_TAXON" "EOL" "FBC" "WD" )
   for SCHEME in "${schemes[@]}" 
   do
     taxon_cache_map_for_scheme ${SCHEME}
