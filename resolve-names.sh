@@ -31,7 +31,7 @@ function download_jars {
 
 function download_taxon_cache {
   wget https://depot.globalbioticinteractions.org/datasets/org/globalbioticinteractions/taxon/${GLOBI_TAXON_VERSION}/taxon-${GLOBI_TAXON_VERSION}.zip -O taxon.zip
-  unzip -o taxon.zip
+  unzip -o taxon.zip taxonCache.tsv.gz taxonMap.tsv.gz
 }
 
 function download {
@@ -78,7 +78,7 @@ head -n 10 names_unmatched.tsv
 echo --- number of unique names
 cat names_map_cached.tsv | grep -v NONE | awk -F '\t' '{ print $5 }' | sort | uniq > names_unique.tsv
 cat names_unique.tsv | wc -l
-
+echo --- number of unique names (end)
 echo "--- unique names (first 10)"
 head -n 10 names_unique.tsv
 echo "--- unique names (end)"
