@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#   imports single github globi data repository and check whether it can be read by GloBI.
+#   extracts name from datasets and attempt to resolve them.
 #
 #   usage:
 #     resolve-names.sh [github repo name] 
@@ -8,6 +8,7 @@
 #   example:
 #      ./resolve-names.sh globalbioticinteractions/template-dataset
 set -e
+set -x
 
 function download_jar {
     NAME=$1
@@ -19,8 +20,8 @@ function download_jar {
 REPO_NAME=$1
 
 NOMER_VERSION="0.0.5"
-ELTON_VERSION="0.4.3"
-GLOBI_TAXON_VERSION="0.2"
+ELTON_VERSION="0.4.4"
+GLOBI_TAXON_VERSION="0.4"
 CACHE_DIR="$PWD/datasets"
 
 function download_jars {
@@ -30,7 +31,7 @@ function download_jars {
 
 function download_taxon_cache {
   wget https://depot.globalbioticinteractions.org/datasets/org/globalbioticinteractions/taxon/${GLOBI_TAXON_VERSION}/taxon-${GLOBI_TAXON_VERSION}.zip -O taxon.zip
-  unzip taxon.zip
+  unzip -o taxon.zip
 }
 
 function download {
