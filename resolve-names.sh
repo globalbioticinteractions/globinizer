@@ -75,10 +75,10 @@ zcat taxonUnresolved.tsv.gz | awk -F '\t' '{ print $1 "\t" $2 }' | sort | uniq >
 cat names_unmatched.tsv | wc -l
 echo "--- unmatched names (first 10)"
 head -n 10 names_unmatched.tsv
-echo --- number of unique names
+echo "--- number of unique names"
 cat names_map_cached.tsv | grep -v NONE | awk -F '\t' '{ print $5 }' | sort | uniq > names_unique.tsv
 cat names_unique.tsv | wc -l
-echo --- number of unique names (end)
+echo "--- number of unique names (end)"
 echo "--- unique names (first 10)"
 head -n 10 names_unique.tsv
 echo "--- unique names (end)"
