@@ -14,7 +14,7 @@ function download_jar {
     NAME=$1
     VERSION=$2
     URL_PREFIX="https://depot.globalbioticinteractions.org/release/org/globalbioticinteractions/${NAME}/${VERSION}/${NAME}-${VERSION}"
-    wget ${URL_PREFIX}-jar-with-dependencies.jar -O ${NAME}.jar
+    curl -Ls ${URL_PREFIX}-jar-with-dependencies.jar > ${NAME}.jar
 }
 
 REPO_NAME=$1
@@ -30,7 +30,7 @@ function download_jars {
 }
 
 function download_taxon_cache {
-  wget https://depot.globalbioticinteractions.org/datasets/org/globalbioticinteractions/taxon/${GLOBI_TAXON_VERSION}/taxon-${GLOBI_TAXON_VERSION}.zip -O taxon.zip
+  curl -Ls https://depot.globalbioticinteractions.org/datasets/org/globalbioticinteractions/taxon/${GLOBI_TAXON_VERSION}/taxon-${GLOBI_TAXON_VERSION}.zip > taxon.zip
   unzip -o taxon.zip taxonCache.tsv.gz taxonMap.tsv.gz
 }
 
