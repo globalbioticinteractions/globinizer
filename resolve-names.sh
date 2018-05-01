@@ -66,6 +66,10 @@ echo Checking names of [${REPO_NAME}] using Nomer version [${NOMER_VERSION}].
 $ELTON names --cache-dir=${CACHE_DIR} ${REPO_NAME} | awk -F '\t' '{ print $1 "\t" $2 }' > names_orig.tsv
 cat names_orig.tsv | sort | uniq | gzip > names_orig_uniq.tsv.gz
 
+# notify GloBI
+echo notifying GloBI of names
+zcat names_orig_uniq.tsv.gz | kafkacat -b 178.63.23.174 -t names
+
 zcat names_orig_uniq.tsv.gz | $NOMER --properties nomer.properties globi-cache > names_map_cached.tsv
 
 . ./create-taxon-cache-map.sh
