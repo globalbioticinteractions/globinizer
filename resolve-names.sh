@@ -68,6 +68,7 @@ cat names_orig.tsv | sort | uniq | gzip > names_orig_uniq.tsv.gz
 
 # notify GloBI
 echo notifying GloBI of names
+sudo apt-get -qq update
 sudo apt-get install kafkacat
 zcat names_orig_uniq.tsv.gz | kafkacat -b 178.63.23.174 -t names
 
