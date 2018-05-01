@@ -63,15 +63,15 @@ echo nomer.term.cache.url=jar:file://${PWD}/taxon.zip!/taxonCache.tsv.gz >> nome
 NOMER="${JAVA} -Xmx4G -jar nomer.jar append"
 
 echo Checking names of [${REPO_NAME}] using Nomer version [${NOMER_VERSION}]. 
-$ELTON names --cache-dir=${CACHE_DIR} ${REPO_NAME} | awk -F '\t' '{ print $1 "\t" $2 }' > names_orig.tsv
+$ELTON names --cache-dir=${CACHE_DIR} ${REPO_NAME} | awk -F '\t' '{ print $1 "\t" $2 "\t" $7 }' > names_orig.tsv
 cat names_orig.tsv | sort | uniq | gzip > names_orig_uniq.tsv.gz
 
 # notify GloBI
 echo notifying GloBI of names
 git clone https://github.com/edenhill/kafkacat.git 
 docker build -t kafkacat kafkacat/
-zcat names_orig_uniq.tsv.gz | awk -F '\t' '{ print $1 $2 "|" $1 "\t" $2 }' | docker run -i --rm --net=host kafkacat -b 178.63.23.174 -t ${REPO_NAME} -K '|'
-echo ${REPO_NAME} | docker run -i --rm --net=host kafkacat -b 178.63.23.174 -t datasets
+zcat names_orig_uniq.tsv.gz | awk -F '\t' '{ print $1 $2 $3 "|" $1 "\t" $2 "\t" $3 }' | docker run -i --rm --net=host kafkacat -b 178.63.23.174 -t term -K '|' -z snappy
+echo ${REPO_NAME} | docker run -i --rm --net=host kafkacat -b 178.63.23.174 -t dataset
 
 zcat names_orig_uniq.tsv.gz | awk -F '\t' '{ print $1 "\t" $2 }' | $NOMER --properties nomer.properties globi-cache > names_map_cached.tsv
 
