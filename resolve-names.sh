@@ -70,7 +70,7 @@ cat names_orig.tsv | sort | uniq | gzip > names_orig_uniq.tsv.gz
 echo notifying GloBI of names
 git clone https://github.com/edenhill/kafkacat.git 
 docker build -t kafkacat kafkacat/
-zcat names_orig_uniq.tsv.gz | awk -F '\t' '{ print $1 $2 $3 "|" $1 "\t" $2 "\t" $3 }' | docker run -i --rm --net=host kafkacat -b 178.63.23.174 -t term -K '|' -z snappy
+zcat names_orig_uniq.tsv.gz | awk -F '\t' '{ print $1 $2 $3 "|" $1 "\t" $2 "\t" $3 }' | docker run -i --rm --net=host kafkacat -b 178.63.23.174 -t nomer_log -K '|' -z snappy
 echo ${REPO_NAME} | docker run -i --rm --net=host kafkacat -b 178.63.23.174 -t dataset
 
 zcat names_orig_uniq.tsv.gz | awk -F '\t' '{ print $1 "\t" $2 }' | $NOMER --properties nomer.properties globi-cache > names_map_cached.tsv
