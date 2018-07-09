@@ -51,8 +51,7 @@ ELTON="$JAVA -Xmx4G -jar elton.jar"
 
 function check {
   echo Checking readability of [${REPO_NAME}] using Elton version [${ELTON_VERSION}].
-  $ELTON update ${REPO_NAME}
-  $ELTON check --offline ${REPO_NAME}
+  $ELTON check ${REPO_NAME}
 }
 
 function resolve {
