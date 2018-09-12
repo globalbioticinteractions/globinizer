@@ -19,9 +19,9 @@ function download_jar {
 
 REPO_NAME=$1
 
-NOMER_VERSION="0.0.5"
-ELTON_VERSION="0.4.4"
-GLOBI_TAXON_VERSION="0.4.1"
+NOMER_VERSION="0.1.2"
+ELTON_VERSION="0.5.1"
+GLOBI_TAXON_VERSION="0.3.6"
 CACHE_DIR="$PWD/datasets"
 
 function download_jars {
