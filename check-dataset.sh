@@ -11,7 +11,7 @@ set -e
 set -x
 
 export REPO_NAME=$1
-export ELTON_VERSION=0.5.2
+export ELTON_VERSION=0.5.3
 export ELTON_DATA_REPO_MASTER="https://raw.githubusercontent.com/${REPO_NAME}/master"
 
 echo Checking [${ELTON_DATA_REPO_MASTER}] using Elton version [${ELTON_VERSION}]. 
