@@ -11,16 +11,15 @@ set -e
 set -x
 
 export REPO_NAME=$1
-export ELTON_VERSION=0.5.3
+export ELTON_VERSION=0.5.4
 export ELTON_DATA_REPO_MASTER="https://raw.githubusercontent.com/${REPO_NAME}/master"
 
 echo Checking [${ELTON_DATA_REPO_MASTER}] using Elton version [${ELTON_VERSION}]. 
 
 export URL_PREFIX="http://depot.globalbioticinteractions.org/release/org/globalbioticinteractions/elton/${ELTON_VERSION}/elton-${ELTON_VERSION}"
 
-wget ${URL_PREFIX}-jar-with-dependencies.jar -O elton.jar
+wget ${URL_PREFIX}-jar-with-dependencies.jar -O elton
 
-export JAVA_HOME=/usr/lib/jvm/java-8-oracle
-#${JAVA_HOME}/jre/bin/java -jar elton.jar check ${REPO_NAME}
-# check local only for now
-${JAVA_HOME}/jre/bin/java -jar elton.jar check
+chmod +x elton
+
+./elton check
