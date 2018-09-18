@@ -18,9 +18,9 @@ export ELTON_DATA_REPO_MASTER="https://raw.githubusercontent.com/${REPO_NAME}/ma
 
 echo Checking [${ELTON_DATA_REPO_MASTER}] using Elton version [${ELTON_VERSION}]. 
 
-export URL_PREFIX="https://github.com/globalbioticinteractions/elton/releases/download/${ELTON_VERSION}/elton.jar"
+export URL_PREFIX="https://github.com/globalbioticinteractions/elton/releases/download/${ELTON_VERSION}"
 
-wget ${URL_PREFIX}-jar-with-dependencies.jar -O elton
+wget ${URL_PREFIX}/elton.jar -O elton
 
 chmod u+x elton
 ./elton check
