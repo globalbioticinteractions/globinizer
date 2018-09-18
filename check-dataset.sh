@@ -21,5 +21,5 @@ export URL_PREFIX="http://depot.globalbioticinteractions.org/release/org/globalb
 
 wget ${URL_PREFIX}-jar-with-dependencies.jar -O elton
 
-chmod +x elton
+sudo chmod +x elton
 ./elton check
