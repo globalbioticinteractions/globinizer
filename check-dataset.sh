@@ -10,6 +10,7 @@
 set -e
 set -x
 
+export JAVA_HOME=/usr/lib/jvm/java-8-oracle
 export REPO_NAME=$1
 export ELTON_VERSION=0.5.4
 export ELTON_DATA_REPO_MASTER="https://raw.githubusercontent.com/${REPO_NAME}/master"
@@ -21,5 +22,4 @@ export URL_PREFIX="http://depot.globalbioticinteractions.org/release/org/globalb
 wget ${URL_PREFIX}-jar-with-dependencies.jar -O elton
 
 chmod +x elton
-
 ./elton check
