@@ -10,13 +10,8 @@
 set -e
 set -x
 
-if [ -z $TRAVIS ]; then 
-  export JAVA_HOME=/usr/lib/jvm/java-8-oracle;
-fi
-
-export JAVA=${JAVA_HOME}/jre/bin/java
-
 export JAVA_HOME=/usr/lib/jvm/java-8-oracle
+export JAVA=${JAVA_HOME}/jre/bin/java
 export REPO_NAME=$1
 export ELTON_VERSION=0.5.4
 export ELTON_DATA_REPO_MASTER="https://raw.githubusercontent.com/${REPO_NAME}/master"
@@ -27,4 +22,6 @@ export URL_PREFIX="http://depot.globalbioticinteractions.org/release/org/globalb
 
 wget ${URL_PREFIX}-jar-with-dependencies.jar -O elton.jar
 
-$JAVA -Xmx1G -jar elton.jar check
+chmod u+x elton.jar
+./elton.jar check
+# $JAVA -Xmx1G -jar elton.jar check
