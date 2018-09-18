@@ -20,8 +20,6 @@ echo Checking [${ELTON_DATA_REPO_MASTER}] using Elton version [${ELTON_VERSION}]
 
 export URL_PREFIX="https://github.com/globalbioticinteractions/elton/releases/download/${ELTON_VERSION}"
 
-wget ${URL_PREFIX}/elton.jar -O elton
+wget ${URL_PREFIX}/elton.jar -O elton.jar
 
-chmod u+x elton
-./elton check
-# $JAVA -Xmx1G -jar elton.jar check
+$JAVA -Xmx1G -jar elton.jar check
