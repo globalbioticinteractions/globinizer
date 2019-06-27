@@ -7,16 +7,17 @@
 # 
 #   example:
 #      ./check-dataset.sh globalbioticinteractions/template-dataset
-set -e
-set -x
+set -xe
 
-export JAVA_HOME=/usr/lib/jvm/java-8-oracle
+if [ -z $TRAVIS ]; then 
+  JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64;
+  ls /usr/lib/jvm;
+fi
+
 export JAVA=${JAVA_HOME}/jre/bin/java
 export REPO_NAME=$1
 export ELTON_VERSION=0.5.9
 export ELTON_DATA_REPO_MASTER="https://raw.githubusercontent.com/${REPO_NAME}/master"
-
-ls /usr/lib/jvm/
 
 echo Checking [${ELTON_DATA_REPO_MASTER}] using Elton version [${ELTON_VERSION}]. 
 
