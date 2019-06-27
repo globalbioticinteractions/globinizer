@@ -42,8 +42,8 @@ function download {
 download
 
 if [ -z $TRAVIS ]; then 
-  JAVA_HOME=/usr/lib/jvm/java-8-oracle;
-  ls /usr/lib/jvm
+  JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64;
+  ls /usr/lib/jvm;
 fi
 
 JAVA=${JAVA_HOME}/jre/bin/java
