@@ -10,7 +10,7 @@
 set -xe
 
 if [ -z $TRAVIS ]; then 
-  JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64;
+  jdk_switcher use openjdk8;
   ls /usr/lib/jvm;
 fi
 
