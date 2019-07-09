@@ -9,12 +9,6 @@
 #      ./check-dataset.sh globalbioticinteractions/template-dataset
 set -xe
 
-if [ -z $TRAVIS ]; then 
-  jdk_switcher use openjdk8;
-  ls /usr/lib/jvm;
-fi
-
-export JAVA=${JAVA_HOME}/jre/bin/java
 export REPO_NAME=$1
 export ELTON_VERSION=0.5.9
 export ELTON_DATA_REPO_MASTER="https://raw.githubusercontent.com/${REPO_NAME}/master"
@@ -25,4 +19,4 @@ export URL_PREFIX="https://github.com/globalbioticinteractions/elton/releases/do
 
 wget ${URL_PREFIX}/elton.jar -O elton.jar
 
-$JAVA -Xmx1G -jar elton.jar check
+java -Xmx1G -jar elton.jar check
