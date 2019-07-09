@@ -48,7 +48,7 @@ fi
 
 JAVA=${JAVA_HOME}/jre/bin/java
 
-ELTON="$JAVA -Xmx4G -jar elton.jar"
+ELTON="java -Xmx4G -jar elton.jar"
 
 function check {
   echo Checking readability of [${REPO_NAME}] using Elton version [${ELTON_VERSION}].
