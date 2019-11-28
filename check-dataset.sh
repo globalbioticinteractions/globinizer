@@ -7,7 +7,7 @@
 # 
 #   example:
 #      ./check-dataset.sh globalbioticinteractions/template-dataset
-set -xe
+set -e
 
 export REPO_NAME=$1
 export ELTON_VERSION=0.6.0
@@ -17,6 +17,6 @@ echo Checking [${ELTON_DATA_REPO_MASTER}] using Elton version [${ELTON_VERSION}]
 
 export URL_PREFIX="https://github.com/globalbioticinteractions/elton/releases/download/${ELTON_VERSION}"
 
-wget ${URL_PREFIX}/elton.jar -O elton.jar
+wget --quiet ${URL_PREFIX}/elton.jar -O elton.jar
 
 java -Xmx1G -jar elton.jar check
