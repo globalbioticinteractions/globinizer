@@ -20,7 +20,7 @@ function download_jar {
 REPO_NAME=$1
 
 NOMER_VERSION="0.1.2"
-ELTON_VERSION="0.6.0"
+ELTON_VERSION="0.6.1"
 GLOBI_TAXON_VERSION="0.3.18"
 CACHE_DIR="$PWD/datasets"
 
@@ -53,7 +53,7 @@ ELTON="java -Xmx4G -jar elton.jar"
 function check {
   echo Checking readability of [${REPO_NAME}] using Elton version [${ELTON_VERSION}].
   #$ELTON check ${REPO_NAME}
-  $ELTON check
+  $ELTON check -n 100
 }
 
 function resolve {
