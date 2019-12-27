@@ -34,4 +34,4 @@ then
   echo "For full review, please install GloBI's Elton via https://github.com/globalbioticinteractions/elton and run \"elton update $REPO_NAME && elton check $REPO_NAME > review.tsv\""
 fi
 
-$REVIEW_RESULT
+exit $REVIEW_RESULT

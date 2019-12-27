@@ -25,7 +25,7 @@ GLOBI_TAXON_VERSION="0.3.18"
 CACHE_DIR="$PWD/datasets"
 
 function download_jars {
-  download_jar nomer ${NOMER_VERSION}
+  #download_jar nomer ${NOMER_VERSION}
   download_jar elton ${ELTON_VERSION}
 }
 
@@ -36,7 +36,7 @@ function download_taxon_cache {
 
 function download {
  download_jars
- download_taxon_cache
+ #download_taxon_cache
 }
 
 download
@@ -68,7 +68,7 @@ function check {
     echo "To get full review, please install GloBI's Elton via https://github.com/globalbioticinteractions/elton and run \"elton update $REPO_NAME && elton check $REPO_NAME > review.tsv\""
   fi
 
-  $REVIEW_RESULT
+  return $REVIEW_RESULT
 }
 
 function resolve {
