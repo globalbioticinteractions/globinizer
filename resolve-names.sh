@@ -53,7 +53,7 @@ ELTON="java -Xmx4G -jar elton.jar"
 function check {
   echo Checking readability of [${REPO_NAME}] using Elton version [${ELTON_VERSION}].
   #$ELTON check ${REPO_NAME}
-  $ELTON check -n 100
+  $ELTON check -n 100 | cut -f5-9,11
 }
 
 function resolve {
