@@ -19,7 +19,7 @@ export URL_PREFIX="https://github.com/globalbioticinteractions/elton/releases/do
 
 wget --quiet ${URL_PREFIX}/elton.jar -O elton.jar
 
-java -Xmx4G -jar elton.jar check > review.tsv
+java -Xmx1G -jar elton.jar check > review.tsv
 REVIEW_RESULT=$?
 
 cat review.tsv | gzip > review.tsv.gz
