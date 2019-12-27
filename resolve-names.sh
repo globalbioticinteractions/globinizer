@@ -1,123 +1,39 @@
 #!/bin/bash
 #
-#   extracts name from datasets and attempt to resolve them.
+#   imports single github globi data repository and check whether it can be read by GloBI.
 #
 #   usage:
-#     resolve-names.sh [github repo name] 
+#     check-dataset.sh [github repo name] 
 # 
 #   example:
-#      ./resolve-names.sh globalbioticinteractions/template-dataset
+#      ./check-dataset.sh globalbioticinteractions/template-dataset
 set -e
-set -x
 
-function download_jar {
-    NAME=$1
-    VERSION=$2
-    URL_PREFIX="https://depot.globalbioticinteractions.org/release/org/globalbioticinteractions/${NAME}/${VERSION}/${NAME}-${VERSION}"
-    curl -Ls ${URL_PREFIX}-jar-with-dependencies.jar > ${NAME}.jar
-}
+export REPO_NAME=$1
+export ELTON_VERSION=0.6.1
+export ELTON_DATA_REPO_MASTER="https://raw.githubusercontent.com/${REPO_NAME}/master"
 
-REPO_NAME=$1
+echo Reviewing [${ELTON_DATA_REPO_MASTER}] using Elton version [${ELTON_VERSION}]. 
 
-NOMER_VERSION="0.1.2"
-ELTON_VERSION="0.6.1"
-GLOBI_TAXON_VERSION="0.3.18"
-CACHE_DIR="$PWD/datasets"
+export URL_PREFIX="https://github.com/globalbioticinteractions/elton/releases/download/${ELTON_VERSION}"
 
-function download_jars {
-  #download_jar nomer ${NOMER_VERSION}
-  download_jar elton ${ELTON_VERSION}
-}
+wget --quiet ${URL_PREFIX}/elton.jar -O elton.jar
 
-function download_taxon_cache {
-  curl -Ls https://depot.globalbioticinteractions.org/datasets/org/globalbioticinteractions/taxon/${GLOBI_TAXON_VERSION}/taxon-${GLOBI_TAXON_VERSION}.zip > taxon.zip
-  unzip -o taxon.zip taxonCache.tsv.gz taxonMap.tsv.gz
-}
+java -Xmx1G -jar elton.jar check > review.tsv
+REVIEW_RESULT=$?
 
-function download {
- download_jars
- #download_taxon_cache
-}
+cat review.tsv | gzip > review.tsv.gz
+zcat review.tsv.gz | tail
 
-download
+curl -F "file=@review.tsv.gz" https://file.io
 
-if [ -z $TRAVIS ]; then 
-  jdk_switcher use openjdk8;
-  ls /usr/lib/jvm;
+if [ $REVIEW_RESULT -gt 0 ]
+then
+  echo "[$REPO_NAME] has reviewer comments, including:"
+  zcat review.tsv.gz | tail -n+2 | cut -f5 | sort | uniq -c | sort -nr
+  echo "For full review, please install GloBI's Elton via https://github.com/globalbioticinteractions/elton and run \"elton update $REPO_NAME && elton check $REPO_NAME > review.tsv\""
+else
+  echo "Hurray! [$REPO_NAME] passed the GloBI review."
 fi
 
-JAVA=${JAVA_HOME}/jre/bin/java
-
-ELTON="java -Xmx4G -jar elton.jar"
-
-function check {
-  echo Reviewing [${REPO_NAME}] using Elton version [${ELTON_VERSION}].
-  #$ELTON check ${REPO_NAME}
-  $ELTON check > review.tsv
-  REVIEW_RESULT=$?
-
-  cat review.tsv | gzip > review.tsv.gz
-  zcat review.tsv.gz | tail 
-
-  curl -F "file=@review.tsv.gz" https://file.io
-
-  if [ $REVIEW_RESULT -gt 0 ]
-  then
-    echo "[$REPO_NAME] has reviewer comments, including:"
-    zcat review.tsv.gz | tail -n+2 | cut -f5 | sort | uniq -c | sort -nr
-    echo "To get full review, please install GloBI's Elton via https://github.com/globalbioticinteractions/elton and run \"elton update $REPO_NAME && elton check $REPO_NAME > review.tsv\""
-  else 
-    echo "Hurray! [$REPO_NAME] passed the GloBI review."
-  fi
-
-  return $REVIEW_RESULT
-}
-
-function resolve {
-  echo nomer.term.map.url=jar:file://${PWD}/taxon.zip!/taxonMap.tsv.gz > nomer.properties
-  echo nomer.term.cache.url=jar:file://${PWD}/taxon.zip!/taxonCache.tsv.gz >> nomer.properties
-
-  NOMER="${JAVA} -Xmx4G -jar nomer.jar append"
-
-  echo Checking names of [${REPO_NAME}] using Nomer version [${NOMER_VERSION}]. 
-  $ELTON names --cache-dir=${CACHE_DIR} ${REPO_NAME} | awk -F '\t' '{ print $1 "\t" $2 "\t" $7 }' > names_orig.tsv
-  cat names_orig.tsv | sort | uniq | gzip > names_orig_uniq.tsv.gz
-
-  # notify GloBI
-  # echo notifying GloBI of names
-  # git clone https://github.com/edenhill/kafkacat.git 
-  # docker build -t kafkacat kafkacat/
-  # zcat names_orig_uniq.tsv.gz | awk -F '\t' '{ print $1 $2 $3 "|" $1 "\t" $2 "\t" $3 }' | docker run -i --rm --net=host kafkacat -b 178.63.23.174 -t nomer_log -K '|' -z snappy
-  #echo ${REPO_NAME} | docker run -i --rm --net=host kafkacat -b 178.63.23.174 -t dataset
-
-  zcat names_orig_uniq.tsv.gz | awk -F '\t' '{ print $1 "\t" $2 }' | $NOMER --properties nomer.properties globi-cache > names_map_cached.tsv
-
-  . ./create-taxon-cache-map.sh
-  create_taxon_cache_map names_map_cached.tsv
-  echo --- number of unmatched names
-  zcat taxonUnresolved.tsv.gz | awk -F '\t' '{ print $1 "\t" $2 }' | sort | uniq > names_unmatched.tsv
-  cat names_unmatched.tsv | wc -l
-  echo "--- unmatched names (first 10)"
-  head -n 10 names_unmatched.tsv
-  echo "--- number of unique names"
-  cat names_map_cached.tsv | grep -v NONE | awk -F '\t' '{ print $5 }' | sort | uniq > names_unique.tsv
-  cat names_unique.tsv | wc -l
-  echo "--- number of unique names (end)"
-  echo "--- unique names (first 10)"
-  head -n 10 names_unique.tsv
-  echo "--- unique names (end)"
-  echo "--- taxonMap (first 10)"
-  zcat taxonMap.tsv.gz | head -n 10
-  echo "--- taxonMap (end)"
-  echo "--- taxonCache (first 10)"
-  zcat taxonCache.tsv.gz | head -n 10
-  echo "--- taxonCache (end)"
-
-  echo "--- taxonUnresolved (first 10)"
-  zcat taxonUnresolved.tsv.gz | head -n 10
-  echo "--- taxonUnresolved (end)"
-}
-
-check
-#name resolving disabled; re-enable after stable execution on travis
-#resolve
+exit $REVIEW_RESULT
