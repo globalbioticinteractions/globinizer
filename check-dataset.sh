@@ -19,4 +19,18 @@ export URL_PREFIX="https://github.com/globalbioticinteractions/elton/releases/do
 
 wget --quiet ${URL_PREFIX}/elton.jar -O elton.jar
 
-java -Xmx1G -jar elton.jar check -n 100
+java -Xmx1G -jar elton.jar check > review.tsv
+REVIEW_RESULT=$?
+
+cat review.tsv | gzip > review.tsv.gz
+zcat review.tsv.gz | tail
+
+curl -F "file=@review.tsv.gz" https://file.io
+
+if [ $REVIEW_RESULT -gt 0 ]; then
+  echo "data review comments exist, including:"
+  zcat review.tsv.gz | tail -n+2 | cut -f5 | sort | uniq -c | sort -nr
+  echo "to get full report, install GloBI's Elton via https://github.com/globalbioticinteractions/elton and run \"elton update $REPO_NAME && elton check $REPO_NAME > review.tsv\""
+fi
+
+$REVIEW_RESULT

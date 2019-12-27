@@ -53,7 +53,21 @@ ELTON="java -Xmx4G -jar elton.jar"
 function check {
   echo Checking readability of [${REPO_NAME}] using Elton version [${ELTON_VERSION}].
   #$ELTON check ${REPO_NAME}
-  $ELTON check -n 100
+  $ELTON check > review.tsv
+  REVIEW_RESULT=$?
+
+  cat review.tsv | gzip > review.tsv.gz
+  zcat review.tsv.gz | tail 
+
+  curl -F "file=@review.tsv.gz" https://file.io
+
+  if [ $REVIEW_RESULT -gt 0 ]; then
+    echo "data review comments exist, including:"
+    zcat review.tsv.gz | tail -n+2 | cut -f5 | sort | uniq -c | sort -nr
+    echo "To get full report, install GloBI's Elton via https://github.com/globalbioticinteractions/elton and run \"elton update $REPO_NAME && elton check $REPO_NAME > review.tsv\""
+  fi
+
+  $REVIEW_RESULT
 }
 
 function resolve {
