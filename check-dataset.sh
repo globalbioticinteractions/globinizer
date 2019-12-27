@@ -13,7 +13,7 @@ export REPO_NAME=$1
 export ELTON_VERSION=0.6.1
 export ELTON_DATA_REPO_MASTER="https://raw.githubusercontent.com/${REPO_NAME}/master"
 
-echo Checking [${ELTON_DATA_REPO_MASTER}] using Elton version [${ELTON_VERSION}]. 
+echo Reviewing [${ELTON_DATA_REPO_MASTER}] using Elton version [${ELTON_VERSION}]. 
 
 export URL_PREFIX="https://github.com/globalbioticinteractions/elton/releases/download/${ELTON_VERSION}"
 
@@ -27,10 +27,11 @@ zcat review.tsv.gz | tail
 
 curl -F "file=@review.tsv.gz" https://file.io
 
-if [ $REVIEW_RESULT -gt 0 ]; then
+if [ $REVIEW_RESULT -gt 0 ]
+then
   echo "data review comments exist, including:"
   zcat review.tsv.gz | tail -n+2 | cut -f5 | sort | uniq -c | sort -nr
-  echo "to get full report, install GloBI's Elton via https://github.com/globalbioticinteractions/elton and run \"elton update $REPO_NAME && elton check $REPO_NAME > review.tsv\""
+  echo "For full review, please install GloBI's Elton via https://github.com/globalbioticinteractions/elton and run \"elton update $REPO_NAME && elton check $REPO_NAME > review.tsv\""
 fi
 
 $REVIEW_RESULT
