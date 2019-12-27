@@ -8,7 +8,6 @@
 #   example:
 #      ./check-dataset.sh globalbioticinteractions/template-dataset
 set -e
-set -o pipefail
 
 export REPO_NAME=$1
 export ELTON_VERSION=0.6.1
@@ -20,4 +19,4 @@ export URL_PREFIX="https://github.com/globalbioticinteractions/elton/releases/do
 
 wget --quiet ${URL_PREFIX}/elton.jar -O elton.jar
 
-java -Xmx1G -jar elton.jar check -n 100 | cut -f5-9,11
+java -Xmx1G -jar elton.jar check -n 100
