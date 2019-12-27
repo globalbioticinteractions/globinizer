@@ -8,7 +8,7 @@
 #   example:
 #      ./resolve-names.sh globalbioticinteractions/template-dataset
 set -e
-set -x
+#set -x
 
 function download_jar {
     NAME=$1
@@ -63,9 +63,11 @@ function check {
 
   if [ $REVIEW_RESULT -gt 0 ]
   then
-    echo "data review comments exist, including:"
+    echo "[$REPO_NAME] has reviewer comments, including:"
     zcat review.tsv.gz | tail -n+2 | cut -f5 | sort | uniq -c | sort -nr
     echo "To get full review, please install GloBI's Elton via https://github.com/globalbioticinteractions/elton and run \"elton update $REPO_NAME && elton check $REPO_NAME > review.tsv\""
+  else 
+    echo "Hurray! [$REPO_NAME] passed the GloBI review."
   fi
 
   return $REVIEW_RESULT
