@@ -8,7 +8,7 @@
 #   example:
 #      ./resolve-names.sh globalbioticinteractions/template-dataset
 set -e
-#set -x
+set -x
 
 function download_jar {
     NAME=$1
