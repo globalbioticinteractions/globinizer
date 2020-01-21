@@ -30,6 +30,11 @@ echo -e "\n"
 
 echo "Download the full review report with the single-use, and expiring, file.io link at:"
 curl -F "file=@review.tsv.gz" https://file.io 
+echo -e "\n\nIf https://file.io link above no longer works, access a full review by:"
+echo "  - installing GloBI's Elton via https://github.com/globalbioticinteractions/elton"
+echo "  - running \"elton update $REPO_NAME && elton check $REPO_NAME > review.tsv\""
+echo "  - inspecting review.tsv"
+echo -e "\nPlease email info@globalbioticinteractions.org for questions/ comments."
 
 echo -e "\n\n"
 
@@ -37,11 +42,6 @@ if [ $REVIEW_RESULT -gt 0 ]
 then
   echo -e "[$REPO_NAME] has the following reviewer comments:"
   zcat review.tsv.gz | tail -n+2 | cut -f5 | tac | tail -n+5 | sort | uniq -c | sort -nr
-  echo -e "\nIf https://file.io link above no longer works, access a full review by:"
-  echo "  - installing GloBI's Elton via https://github.com/globalbioticinteractions/elton"
-  echo "  - running \"elton update $REPO_NAME && elton check $REPO_NAME > review.tsv\""
-  echo "  - inspecting review.tsv"
-  echo -e "\nPlease email info@globalbioticinteractions.org for questions/ comments."
 else
   echo -e "Hurray! [$REPO_NAME] passed the GloBI review."
 fi
