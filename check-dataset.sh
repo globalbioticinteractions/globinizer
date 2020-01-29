@@ -25,13 +25,13 @@ REVIEW_RESULT=$?
 cat review.tsv | gzip > review.tsv.gz
 
 echo -e "\nReview of [$REPO_NAME] included:"
-zcat review.tsv.gz | tail -n3 | cut -f5 | sed s/^/\ \ -\ /g
+zcat review.tsv.gz | tail -n3 | cut -f6 | sed s/^/\ \ -\ /g
 
 echo -e "\nDownload the full review report with the single-use, and expiring, file.io link at:"
 curl -F "file=@review.tsv.gz" https://file.io 
-echo -e "\n\nIf https://file.io link above no longer works, access a full review by:"
+echo -e "\n\nIf https://file.io link above no longer works, access review notes by:"
 echo "  - installing GloBI's Elton via https://github.com/globalbioticinteractions/elton"
-echo "  - running \"elton update $REPO_NAME && elton check $REPO_NAME > review.tsv\""
+echo "  - running \"elton update $REPO_NAME && elton review --type note,summary $REPO_NAME > review.tsv\""
 echo "  - inspecting review.tsv"
 echo -e "\nPlease email info@globalbioticinteractions.org for questions/ comments."
 
