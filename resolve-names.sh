@@ -10,7 +10,7 @@
 #set -e
 
 export REPO_NAME=$1
-export ELTON_VERSION=0.6.1
+export ELTON_VERSION=0.7.0
 export ELTON_DATA_REPO_MASTER="https://raw.githubusercontent.com/${REPO_NAME}/master"
 
 echo Reviewing [${ELTON_DATA_REPO_MASTER}] using Elton version [${ELTON_VERSION}]. 
@@ -19,7 +19,7 @@ export URL_PREFIX="https://github.com/globalbioticinteractions/elton/releases/do
 
 wget --quiet ${URL_PREFIX}/elton.jar -O elton.jar
 
-java -Xmx4G -jar elton.jar check > review.tsv
+java -Xmx4G -jar elton.jar review --type note,summary > review.tsv
 REVIEW_RESULT=$?
 
 cat review.tsv | gzip > review.tsv.gz
