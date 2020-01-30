@@ -10,7 +10,7 @@
 #set -e
 
 export REPO_NAME=$1
-export ELTON_VERSION=0.7.0
+export ELTON_VERSION=0.7.1
 export ELTON_DATA_REPO_MASTER="https://raw.githubusercontent.com/${REPO_NAME}/master"
 
 echo Reviewing [${ELTON_DATA_REPO_MASTER}] using Elton version [${ELTON_VERSION}]. 
@@ -37,10 +37,10 @@ echo -e "\nPlease email info@globalbioticinteractions.org for questions/ comment
 
 if [ $REVIEW_RESULT -gt 0 ]
 then
-  echo -e "[$REPO_NAME] has the following reviewer comments:"
+  echo -e "\n[$REPO_NAME] has the following reviewer comments:"
   zcat review.tsv.gz | tail -n+2 | cut -f6 | tac | tail -n+5 | sort | uniq -c | sort -nr
 else
-  echo -e "Hurray! [$REPO_NAME] passed the GloBI review."
+  echo -e "\nHurray! [$REPO_NAME] passed the GloBI review."
 fi
 
 exit $REVIEW_RESULT
