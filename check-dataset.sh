@@ -38,7 +38,7 @@ echo -e "\nPlease email info@globalbioticinteractions.org for questions/ comment
 if [ $REVIEW_RESULT -gt 0 ]
 then
   echo -e "[$REPO_NAME] has the following reviewer comments:"
-  zcat review.tsv.gz | tail -n+2 | cut -f5 | tac | tail -n+5 | sort | uniq -c | sort -nr
+  zcat review.tsv.gz | tail -n+2 | cut -f6 | tac | tail -n+5 | sort | uniq -c | sort -nr
 else
   echo -e "Hurray! [$REPO_NAME] passed the GloBI review."
 fi
