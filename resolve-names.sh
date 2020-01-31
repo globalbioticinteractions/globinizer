@@ -20,7 +20,6 @@ export URL_PREFIX="https://github.com/globalbioticinteractions/elton/releases/do
 wget --quiet ${URL_PREFIX}/elton.jar -O elton.jar
 
 java -Xmx4G -jar elton.jar review --type note,summary > review.tsv
-REVIEW_RESULT=$?
 
 cat review.tsv | gzip > review.tsv.gz
 
@@ -35,12 +34,14 @@ echo "  - running \"elton update $REPO_NAME && elton review --type note,summary 
 echo "  - inspecting review.tsv"
 echo -e "\nPlease email info@globalbioticinteractions.org for questions/ comments."
 
-if [ $REVIEW_RESULT -gt 0 ]
+NUMBER_OF_NOTES=$(zcat review.tsv.gz | cut -f5 | grep "^note$" | wc -l)
+
+if [ $NUMBER_OF_NOTES -gt 0 ]
 then
-  echo -e "\n[$REPO_NAME] has the following reviewer notes:"
+  echo -e "\n[$REPO_NAME] has $NUMBER_OF_NOTES reviewer note(s):"
   zcat review.tsv.gz | tail -n+2 | cut -f6 | tac | tail -n+5 | sort | uniq -c | sort -nr
 else
   echo -e "\nHurray! [$REPO_NAME] passed the GloBI review."
 fi
 
-exit $REVIEW_RESULT
+exit $NUMBER_OF_NOTES
