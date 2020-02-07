@@ -10,7 +10,7 @@
 #set -e
 
 export REPO_NAME=$1
-export ELTON_VERSION=0.7.6
+export ELTON_VERSION=0.8.0
 export ELTON_DATA_REPO_MASTER="https://raw.githubusercontent.com/${REPO_NAME}/master"
 
 echo Reviewing [${ELTON_DATA_REPO_MASTER}] using Elton version [${ELTON_VERSION}]. 
