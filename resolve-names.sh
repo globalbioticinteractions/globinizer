@@ -26,6 +26,14 @@ cat review.tsv | gzip > review.tsv.gz
 echo -e "\nReview of [$REPO_NAME] included:"
 zcat review.tsv.gz | tail -n3 | cut -f6 | sed s/^/\ \ -\ /g
 
+if [ -n "${ARTIFACTS_KEY}" ] && [ -n "${ARTIFACTS_SECRET}" ] && [ -n "${ARTIFACTS_BUCKET}" ] 
+then
+  echo "got artifacts config: ${ARTIFACTS_BUCKET}"
+  artifacts upload --target-paths "reviews/$TRAVIS_REPO_SLUG" review.tsv.gz
+else
+  echo "no artifacts config, uploading to file.io instead"
+fi
+
 echo -e "\nDownload the full review report with the single-use, and expiring, file.io link at:"
 curl -F "file=@review.tsv.gz" https://file.io 
 echo -e "\n\nIf https://file.io link above no longer works, access review notes by:"
@@ -42,6 +50,13 @@ then
   zcat review.tsv.gz | tail -n+2 | cut -f6 | tac | tail -n+5 | sort | uniq -c | sort -nr
 else
   echo -e "\nHurray! [$REPO_NAME] passed the GloBI review."
+fi
+
+if [ -z $ARTIFACTS_KEY && -z $ARTIFACTS_SECRET && -z $ARTIFACTS_BUCKET && -z $ARTIFACTS_REGION ]
+then
+  echo "got artifacts config"
+else
+  echo "no artifacts config, uploading to file.io instead"
 fi
 
 exit $NUMBER_OF_NOTES
