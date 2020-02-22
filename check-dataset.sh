@@ -26,21 +26,6 @@ cat review.tsv | gzip > review.tsv.gz
 echo -e "\nReview of [$REPO_NAME] included:"
 zcat review.tsv.gz | tail -n3 | cut -f6 | sed s/^/\ \ -\ /g
 
-if [ -n "${ARTIFACTS_KEY}" ] && [ -n "${ARTIFACTS_SECRET}" ] && [ -n "${ARTIFACTS_BUCKET}" ] 
-then
-  echo "got artifacts config: ${ARTIFACTS_BUCKET}"
-  artifacts upload --target-paths "reviews/$TRAVIS_REPO_SLUG" review.tsv.gz
-else
-  echo "no artifacts config, uploading to file.io instead"
-fi
-
-echo -e "\nDownload the full review report with the single-use, and expiring, file.io link at:"
-curl -F "file=@review.tsv.gz" https://file.io 
-echo -e "\n\nIf https://file.io link above no longer works, access review notes by:"
-echo "  - installing GloBI's Elton via https://github.com/globalbioticinteractions/elton"
-echo "  - running \"elton update $REPO_NAME && elton review --type note,summary $REPO_NAME > review.tsv\""
-echo "  - inspecting review.tsv"
-echo -e "\nPlease email info@globalbioticinteractions.org for questions/ comments."
 
 NUMBER_OF_NOTES=$(zcat review.tsv.gz | cut -f5 | grep "^note$" | wc -l)
 
@@ -52,11 +37,29 @@ else
   echo -e "\nHurray! [$REPO_NAME] passed the GloBI review."
 fi
 
-if [ -z $ARTIFACTS_KEY && -z $ARTIFACTS_SECRET && -z $ARTIFACTS_BUCKET && -z $ARTIFACTS_REGION ]
+#
+# publish review artifacts
+#
+
+function upload_file_io {
+  echo -e "\nDownload the full review report with the single-use, and expiring, file.io link at:"
+  curl -F "file=@review.tsv.gz" https://file.io 
+  echo -e "\n\nIf https://file.io link above no longer works, access review notes by:"
+  echo "  - installing GloBI's Elton via https://github.com/globalbioticinteractions/elton"
+  echo "  - running \"elton update $REPO_NAME && elton review --type note,summary $REPO_NAME > review.tsv\""
+  echo "  - inspecting review.tsv"
+}
+
+
+# atttempt to use travis artifacts tool if available
+if [[ -n $(which artifacts) ]] && [[ -n ${ARTIFACTS_KEY} ]] && [[ -n ${ARTIFACTS_SECRET} ]] && [[ -n ${ARTIFACTS_BUCKET} ]]
 then
   echo "got artifacts config"
+  artifacts upload --target-paths "reviews/$TRAVIS_REPO_SLUG" review.tsv.gz
+  echo "see also https://depot.globalbioticinteractions.org/reviews/$TRAVIS_REPO_SLUG/review.tsv.gz"
 else
-  echo "no artifacts config, uploading to file.io instead"
+  upload_file_io
 fi
 
+echo -e "\nPlease email info@globalbioticinteractions.org for questions/ comments."
 exit $NUMBER_OF_NOTES
