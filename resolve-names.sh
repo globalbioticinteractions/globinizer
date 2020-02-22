@@ -58,7 +58,7 @@ then
   artifacts upload --target-paths "reviews/$TRAVIS_REPO_SLUG" review.tsv.gz 
   echo "see also https://depot.globalbioticinteractions.org/reviews/$TRAVIS_REPO_SLUG/reviews.tsv.gz"
 else
-  echo "no artifacts found, please use file.io instead"
+  echo "no artifacts found, use file.io instead"
 fi
 
 exit $NUMBER_OF_NOTES
