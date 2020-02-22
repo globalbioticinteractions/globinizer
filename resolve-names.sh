@@ -52,7 +52,7 @@ else
   echo -e "\nHurray! [$REPO_NAME] passed the GloBI review."
 fi
 
-if [[ -n ${ARTIFACTS_KEY} ]] && [[ -n ${ARTIFACTS_SECRET} ]] && [[ -n ${ARTIFACTS_BUCKET ]]
+if ([[ -n ${ARTIFACTS_KEY} ]] && [[ -n ${ARTIFACTS_SECRET} ]] && [[ -n ${ARTIFACTS_BUCKET} ]])
 then
   echo "got artifacts config: ${ARTIFACTS_BUCKET}"
   artifacts upload --target-paths "reviews/$TRAVIS_REPO_SLUG" review.tsv.gz 
