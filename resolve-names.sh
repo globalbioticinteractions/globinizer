@@ -54,7 +54,7 @@ fi
 
 if [[ -n ${ARTIFACTS_KEY} ]] && [[ -n ${ARTIFACTS_SECRET} ]] && [[ -n ${ARTIFACTS_BUCKET} ]]
 then
-  echo "got artifacts config: ${ARTIFACTS_BUCKET}"
+  echo "got artifacts config"
   artifacts upload --target-paths "reviews/$TRAVIS_REPO_SLUG" review.tsv.gz
   echo "see also https://depot.globalbioticinteractions.org/reviews/$TRAVIS_REPO_SLUG/reviews.tsv.gz"
 else
