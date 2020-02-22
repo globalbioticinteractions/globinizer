@@ -18,6 +18,7 @@ echo Reviewing [${ELTON_DATA_REPO_MASTER}] using Elton version [${ELTON_VERSION}
 export URL_PREFIX="https://github.com/globalbioticinteractions/elton/releases/download/${ELTON_VERSION}"
 
 wget --quiet ${URL_PREFIX}/elton.jar -O elton.jar
+curl -sL https://raw.githubusercontent.com/travis-ci/artifacts/master/install | bash
 
 java -Xmx4G -jar elton.jar review --type note,summary > review.tsv
 
