@@ -59,6 +59,7 @@ then
   echo "got artifacts config"
   artifacts upload --target-paths "reviews/$TRAVIS_REPO_SLUG" review.tsv.gz indexed-interactions.tsv.gz
   echo "see also https://depot.globalbioticinteractions.org/reviews/$TRAVIS_REPO_SLUG/review.tsv.gz"
+  echo "and https://depot.globalbioticinteractions.org/reviews/$TRAVIS_REPO_SLUG/indexed-interactions.tsv.gz"
 else
   upload_file_io
 fi
