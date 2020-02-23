@@ -21,6 +21,7 @@ wget --quiet ${URL_PREFIX}/elton.jar -O elton.jar
 curl -sL https://raw.githubusercontent.com/travis-ci/artifacts/master/install | bash
 
 java -Xmx4G -jar elton.jar review --type note,summary > review.tsv
+java -Xmx4G -jar elton.jar interactions | gzip > indexed-interactions.tsv.gz
 
 cat review.tsv | gzip > review.tsv.gz
 
@@ -56,7 +57,7 @@ function upload_file_io {
 if [[ -n $(which artifacts) ]] && [[ -n ${ARTIFACTS_KEY} ]] && [[ -n ${ARTIFACTS_SECRET} ]] && [[ -n ${ARTIFACTS_BUCKET} ]]
 then
   echo "got artifacts config"
-  artifacts upload --target-paths "reviews/$TRAVIS_REPO_SLUG" review.tsv.gz
+  artifacts upload --target-paths "reviews/$TRAVIS_REPO_SLUG" review.tsv.gz indexed-interactions.tsv.gz
   echo "see also https://depot.globalbioticinteractions.org/reviews/$TRAVIS_REPO_SLUG/review.tsv.gz"
 else
   upload_file_io
