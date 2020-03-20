@@ -20,7 +20,11 @@ export URL_PREFIX="https://github.com/globalbioticinteractions/elton/releases/do
 wget --quiet ${URL_PREFIX}/elton.jar -O elton.jar
 curl -sL https://raw.githubusercontent.com/travis-ci/artifacts/master/install | bash
 
-java -Xmx4G -jar elton.jar review --type note,summary > review.tsv
+# build local cache using information in local git repo.
+# this local caching is to avoid downloading all resources twice (review + interactions)
+java -Xmx4G -jar elton.jar update --registries local
+
+java -Xmx4G -jar elton.jar review --type note,summary local > review.tsv
 
 cat review.tsv | gzip > review.tsv.gz
 
@@ -59,7 +63,7 @@ then
   artifacts upload --target-paths "reviews/$TRAVIS_REPO_SLUG" review.tsv.gz 
   echo "see also https://depot.globalbioticinteractions.org/reviews/$TRAVIS_REPO_SLUG/review.tsv.gz"
   
-  java -Xmx4G -jar elton.jar interactions | gzip > indexed-interactions.tsv.gz
+  java -Xmx4G -jar elton.jar interactions local | gzip > indexed-interactions.tsv.gz
   artifacts upload --target-paths "reviews/$TRAVIS_REPO_SLUG" indexed-interactions.tsv.gz
   echo "and https://depot.globalbioticinteractions.org/reviews/$TRAVIS_REPO_SLUG/indexed-interactions.tsv.gz"
 else
