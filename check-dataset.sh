@@ -13,6 +13,27 @@ export REPO_NAME=$1
 export ELTON_VERSION=0.9.1
 export ELTON_DATA_REPO_MASTER="https://raw.githubusercontent.com/${REPO_NAME}/master"
 
+function echo_logo {
+  echo "$(cat <<_EOF_
+   _____ _       ____ _____   _____            _                
+  / ____| |     |  _ \_   _| |  __ \          (_)               
+ | |  __| | ___ | |_) || |   | |__) |_____   ___  _____      __ 
+ | | |_ | |/ _ \|  _ < | |   |  _  // _ \ \ / / |/ _ \ \ /\ / / 
+ | |__| | | (_) | |_) || |_  | | \ \  __/\ V /| |  __/\ V  V /  
+  \_____|_|\___/|____/_____| |_|  \_\___| \_/ |_|\___| \_/\_/   
+ | |           |  ____| | |                                     
+ | |__  _   _  | |__  | | |_ ___  _ __                          
+ | '_ \| | | | |  __| | | __/ _ \| '_ \                         
+ | |_) | |_| | | |____| | || (_) | | | |                        
+ |_.__/ \__, | |______|_|\__\___/|_| |_|                        
+         __/ |                                                  
+        |___/                                                   
+_EOF_
+)"
+}
+
+echo_logo 
+
 echo Reviewing [${ELTON_DATA_REPO_MASTER}] using Elton version [${ELTON_VERSION}]. 
 
 export URL_PREFIX="https://github.com/globalbioticinteractions/elton/releases/download/${ELTON_VERSION}"
@@ -67,3 +88,5 @@ fi
 
 echo -e "\nPlease email info@globalbioticinteractions.org for questions/ comments."
 exit $NUMBER_OF_NOTES
+
+
