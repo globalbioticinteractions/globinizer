@@ -60,7 +60,7 @@ then
   
   java -Xmx4G -jar elton.jar interactions | gzip > indexed-interactions.tsv.gz
   artifacts --quiet upload --target-paths "reviews/$TRAVIS_REPO_SLUG" indexed-interactions.tsv.gz
-  echo -e "\nFor a list of indexed interactions, please download:\nhttps://depot.globalbioticinteractions.org/reviews/$TRAVIS_REPO_SLUG/indexed-interactions.tsv.gz\n"
+  echo -e "\n\nFor a list of indexed interactions, please download:\nhttps://depot.globalbioticinteractions.org/reviews/$TRAVIS_REPO_SLUG/indexed-interactions.tsv.gz\n"
 else
   upload_file_io
 fi
