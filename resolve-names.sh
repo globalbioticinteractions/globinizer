@@ -55,11 +55,11 @@ function upload_file_io {
 # atttempt to use travis artifacts tool if available
 if [[ -n $(which artifacts) ]] && [[ -n ${ARTIFACTS_KEY} ]] && [[ -n ${ARTIFACTS_SECRET} ]] && [[ -n ${ARTIFACTS_BUCKET} ]]
 then
-  artifacts upload --quiet --target-paths "reviews/$TRAVIS_REPO_SLUG" review.tsv.gz
+  artifacts --quiet upload --target-paths "reviews/$TRAVIS_REPO_SLUG" review.tsv.gz
   echo -e "\n\nFor a detailed review, please download:\nhttps://depot.globalbioticinteractions.org/reviews/$TRAVIS_REPO_SLUG/review.tsv.gz"
   
   java -Xmx4G -jar elton.jar interactions | gzip > indexed-interactions.tsv.gz
-  artifacts upload --quiet --target-paths "reviews/$TRAVIS_REPO_SLUG" indexed-interactions.tsv.gz
+  artifacts --quiet upload --target-paths "reviews/$TRAVIS_REPO_SLUG" indexed-interactions.tsv.gz
   echo -e "\nFor a list of indexed interactions, please download:\nhttps://depot.globalbioticinteractions.org/reviews/$TRAVIS_REPO_SLUG/indexed-interactions.tsv.gz\n"
 else
   upload_file_io
