@@ -82,9 +82,9 @@ then
   export AWS_ACCESS_KEY_ID=${ARTIFACTS_KEY}
   export AWS_SECRET_ACCESS_KEY=${ARTIFACTS_SECRET}
   ENDPOINT_CONFIG=""
-  if [[ -z ${ARTIFACT_ENDPOINT_URL} ]]
+  if [[ -n ${ARTIFACT_ENDPOINT} ]]
   then
-    ENDPOINT_CONFIG="--endpoint-url=${ARTIFACT_ENDPOINT_URL}"
+    ENDPOINT_CONFIG="--endpoint-url=${ARTIFACT_ENDPOINT}"
   fi
   aws s3 ${ENDPOINT_CONFIG} cp review.tsv.gz s3://${ARTIFACTS_BUCKET}/reviews/$TRAVIS_REPO_SLUG/review.tsv.gz
   #artifacts --quiet upload --target-paths "reviews/$TRAVIS_REPO_SLUG" review.tsv.gz
