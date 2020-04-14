@@ -73,7 +73,7 @@ function upload_file_io {
 }
 
 
-sudo apt-get -q update && apt-get -q install awscli -y 
+sudo apt-get -q update && sudo apt-get -q install awscli -y > /dev/null
 
 # atttempt to use travis artifacts tool if available
 if [[ -n $(which aws) ]] && [[ -n ${ARTIFACTS_KEY} ]] && [[ -n ${ARTIFACTS_SECRET} ]] && [[ -n ${ARTIFACTS_BUCKET} ]]
