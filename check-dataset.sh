@@ -73,8 +73,7 @@ function upload_file_io {
 }
 
 
-sudo apt-get -qq update 
-sudo apt-get -qq install awscli -y
+sudo apt-get -q update && apt-get -q install awscli -y 
 
 # atttempt to use travis artifacts tool if available
 if [[ -n $(which aws) ]] && [[ -n ${ARTIFACTS_KEY} ]] && [[ -n ${ARTIFACTS_SECRET} ]] && [[ -n ${ARTIFACTS_BUCKET} ]]
@@ -87,12 +86,10 @@ then
     export ENDPOINT_CONFIG="--endpoint-url=${ARTIFACTS_ENDPOINT}"
   fi
   aws s3 ${ENDPOINT_CONFIG} cp review.tsv.gz s3://${ARTIFACTS_BUCKET}/reviews/$TRAVIS_REPO_SLUG/review.tsv.gz
-  #artifacts --quiet upload --target-paths "reviews/$TRAVIS_REPO_SLUG" review.tsv.gz
   echo -e "\nFor a detailed review, please download:\nhttps://depot.globalbioticinteractions.org/reviews/$TRAVIS_REPO_SLUG/review.tsv.gz\n"
   
   java -Xmx4G -jar elton.jar interactions | gzip > indexed-interactions.tsv.gz
   aws s3 ${ENDPOINT_CONFIG} cp indexed-interactions.tsv.gz s3://${ARTIFACTS_BUCKET}/reviews/$TRAVIS_REPO_SLUG/indexed-interactions.tsv.gz
-  #artifacts --quiet upload --target-paths "reviews/$TRAVIS_REPO_SLUG" indexed-interactions.tsv.gz
   echo -e "\nFor a list of indexed interactions, please download:\nhttps://depot.globalbioticinteractions.org/reviews/$TRAVIS_REPO_SLUG/indexed-interactions.tsv.gz"
 else
   upload_file_io
