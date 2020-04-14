@@ -86,6 +86,7 @@ then
   then
     export ENDPOINT_CONFIG="--endpoint-url=${ARTIFACT_ENDPOINT}"
   fi
+  echo $ENDPOINT_CONFIG
   aws s3 ${ENDPOINT_CONFIG} cp review.tsv.gz s3://${ARTIFACTS_BUCKET}/reviews/$TRAVIS_REPO_SLUG/review.tsv.gz
   #artifacts --quiet upload --target-paths "reviews/$TRAVIS_REPO_SLUG" review.tsv.gz
   echo -e "\nFor a detailed review, please download:\nhttps://depot.globalbioticinteractions.org/reviews/$TRAVIS_REPO_SLUG/review.tsv.gz\n"
