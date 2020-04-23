@@ -39,7 +39,6 @@ echo Reviewing [${ELTON_DATA_REPO_MASTER}] using Elton version [${ELTON_VERSION}
 export URL_PREFIX="https://github.com/globalbioticinteractions/elton/releases/download/${ELTON_VERSION}"
 
 wget --quiet ${URL_PREFIX}/elton.jar -O elton.jar
-curl -sL https://raw.githubusercontent.com/travis-ci/artifacts/master/install | bash
 
 java -Xmx4G -jar elton.jar review --type note,summary > review.tsv
 
@@ -73,8 +72,8 @@ function upload_file_io {
 }
 
 
-sudo apt-get -q update > /dev/null
-sudo apt-get -q install awscli -y > /dev/null
+sudo apt-get -q update &> /dev/null
+sudo apt-get -q install awscli -y &> /dev/null
 
 # atttempt to use travis artifacts tool if available
 if [[ -n $(which aws) ]] && [[ -n ${ARTIFACTS_KEY} ]] && [[ -n ${ARTIFACTS_SECRET} ]] && [[ -n ${ARTIFACTS_BUCKET} ]]
@@ -86,11 +85,18 @@ then
   then
     export ENDPOINT_CONFIG="--endpoint-url=${ARTIFACTS_ENDPOINT}"
   fi
-  aws s3 ${ENDPOINT_CONFIG} cp review.tsv.gz s3://${ARTIFACTS_BUCKET}/reviews/$TRAVIS_REPO_SLUG/review.tsv.gz
+  aws s3 ${ENDPOINT_CONFIG} cp review.tsv.gz s3://${ARTIFACTS_BUCKET}/reviews/$TRAVIS_REPO_SLUG/review.tsv.gz &> /dev/null
+  if [[ $? -ne 0 ]] ; then
+     echo "failed to upload review report, please check credentials"
+  fi
   echo -e "\nFor a detailed review, please download:\nhttps://depot.globalbioticinteractions.org/reviews/$TRAVIS_REPO_SLUG/review.tsv.gz\n"
   
   java -Xmx4G -jar elton.jar interactions | gzip > indexed-interactions.tsv.gz
-  aws s3 ${ENDPOINT_CONFIG} cp indexed-interactions.tsv.gz s3://${ARTIFACTS_BUCKET}/reviews/$TRAVIS_REPO_SLUG/indexed-interactions.tsv.gz
+  aws s3 ${ENDPOINT_CONFIG} cp indexed-interactions.tsv.gz s3://${ARTIFACTS_BUCKET}/reviews/$TRAVIS_REPO_SLUG/indexed-interactions.tsv.gz &> /dev/null
+  if [[ $? -ne 0 ]] ; then
+     echo "failed to upload indexed-interactions, please check credentials"
+  fi
+
   echo -e "\nFor a list of indexed interactions, please download:\nhttps://depot.globalbioticinteractions.org/reviews/$TRAVIS_REPO_SLUG/indexed-interactions.tsv.gz"
 else
   upload_file_io
