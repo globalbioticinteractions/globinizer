@@ -71,6 +71,16 @@ function upload_file_io {
   echo "  - inspecting review.tsv"
 }
 
+function upload {
+  aws s3 ${ENDPOINT_CONFIG} cp $1.tsv.gz s3://${ARTIFACTS_BUCKET}/reviews/$TRAVIS_REPO_SLUG/$1.tsv.gz &> /dev/null
+  if [[ $? -ne 0 ]] ; then
+     echo -e "\nfailed to upload $1 , please check credentials"
+  else
+     echo -e "\nFor a detailed $1 , please download:\nhttps://depot.globalbioticinteractions.org/reviews/$TRAVIS_REPO_SLUG/$1.tsv.gz\n"
+  fi
+
+}
+
 
 sudo apt-get -q update &> /dev/null
 sudo apt-get -q install awscli -y &> /dev/null
@@ -85,19 +95,12 @@ then
   then
     export ENDPOINT_CONFIG="--endpoint-url=${ARTIFACTS_ENDPOINT}"
   fi
-  aws s3 ${ENDPOINT_CONFIG} cp review.tsv.gz s3://${ARTIFACTS_BUCKET}/reviews/$TRAVIS_REPO_SLUG/review.tsv.gz &> /dev/null
-  if [[ $? -ne 0 ]] ; then
-     echo "failed to upload review report, please check credentials"
-  fi
-  echo -e "\nFor a detailed review, please download:\nhttps://depot.globalbioticinteractions.org/reviews/$TRAVIS_REPO_SLUG/review.tsv.gz\n"
+ 
+  upload review
   
   java -Xmx4G -jar elton.jar interactions | gzip > indexed-interactions.tsv.gz
-  aws s3 ${ENDPOINT_CONFIG} cp indexed-interactions.tsv.gz s3://${ARTIFACTS_BUCKET}/reviews/$TRAVIS_REPO_SLUG/indexed-interactions.tsv.gz &> /dev/null
-  if [[ $? -ne 0 ]] ; then
-     echo "failed to upload indexed-interactions, please check credentials"
-  fi
+  upload indexed-interactions
 
-  echo -e "\nFor a list of indexed interactions, please download:\nhttps://depot.globalbioticinteractions.org/reviews/$TRAVIS_REPO_SLUG/indexed-interactions.tsv.gz"
 else
   upload_file_io
 fi
