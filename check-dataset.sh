@@ -40,7 +40,8 @@ export URL_PREFIX="https://github.com/globalbioticinteractions/elton/releases/do
 
 wget --quiet ${URL_PREFIX}/elton.jar -O elton.jar
 
-java -Xmx4G -jar elton.jar review --type note,summary > review.tsv
+java -Xmx4G -jar elton.jar update --registry local
+java -Xmx4G -jar elton.jar review local --type note,summary > review.tsv
 
 cat review.tsv | gzip > review.tsv.gz
 
@@ -98,7 +99,7 @@ then
  
   upload review
   
-  java -Xmx4G -jar elton.jar interactions | gzip > indexed-interactions.tsv.gz
+  java -Xmx4G -jar elton.jar interactions local | gzip > indexed-interactions.tsv.gz
   upload indexed-interactions
 
 else
