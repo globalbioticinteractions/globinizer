@@ -73,11 +73,11 @@ function upload_file_io {
 }
 
 function upload {
-  aws s3 ${ENDPOINT_CONFIG} cp $1.tsv.gz s3://${ARTIFACTS_BUCKET}/reviews/$TRAVIS_REPO_SLUG/$1.tsv.gz &> /dev/null
+  aws s3 ${ENDPOINT_CONFIG} cp $1 s3://${ARTIFACTS_BUCKET}/reviews/$TRAVIS_REPO_SLUG/$1 &> /dev/null
   if [[ $? -ne 0 ]] ; then
-     echo -e "\nfailed to upload $1 , please check credentials"
+     echo -e "\nfailed to upload $2 , please check credentials"
   else
-     echo -e "\nFor a detailed $1 , please download:\nhttps://depot.globalbioticinteractions.org/reviews/$TRAVIS_REPO_SLUG/$1.tsv.gz\n"
+     echo -e "\nFor a detailed $2 , please download:\nhttps://depot.globalbioticinteractions.org/reviews/$TRAVIS_REPO_SLUG/$1\n"
   fi
 
 }
@@ -97,10 +97,13 @@ then
     export ENDPOINT_CONFIG="--endpoint-url=${ARTIFACTS_ENDPOINT}"
   fi
  
-  upload review
+  upload review.tsv.gz "data review"
   
   java -Xmx4G -jar elton.jar interactions local | gzip > indexed-interactions.tsv.gz
-  upload indexed-interactions
+  upload indexed-interactions.tsv.gz "indexed interactions"
+
+  tar cv datasets/* | gzip > datasets.tar.gz
+  upload datasets.tar.gz "cached datasets"
 
 else
   upload_file_io
