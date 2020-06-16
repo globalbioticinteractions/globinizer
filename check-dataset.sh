@@ -75,9 +75,9 @@ function upload_file_io {
 function upload {
   aws s3 ${ENDPOINT_CONFIG} cp $1 s3://${ARTIFACTS_BUCKET}/reviews/$TRAVIS_REPO_SLUG/$1 &> /dev/null
   if [[ $? -ne 0 ]] ; then
-     echo -e "\nfailed to upload $2 , please check credentials"
+     echo -e "\nfailed to upload $2, please check credentials"
   else
-     echo -e "\nFor a detailed $2 , please download:\nhttps://depot.globalbioticinteractions.org/reviews/$TRAVIS_REPO_SLUG/$1\n"
+     echo -e "\nFor a detailed $2, please download:\nhttps://depot.globalbioticinteractions.org/reviews/$TRAVIS_REPO_SLUG/$1\n"
   fi
 
 }
@@ -103,7 +103,7 @@ then
   upload indexed-interactions.tsv.gz "indexed interactions"
 
   tar cv datasets/* | gzip > datasets.tar.gz
-  upload datasets.tar.gz "cached datasets"
+  upload datasets.tar.gz "cached dataset archive"
 
 else
   upload_file_io
