@@ -102,7 +102,7 @@ then
   java -Xmx4G -jar elton.jar interactions local | gzip > indexed-interactions.tsv.gz
   upload indexed-interactions.tsv.gz "indexed interactions"
 
-  tar cv datasets/* | gzip > datasets.tar.gz
+  tar c datasets/* | gzip > datasets.tar.gz
   upload datasets.tar.gz "cached dataset archive"
 
 else
