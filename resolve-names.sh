@@ -10,7 +10,7 @@
 #set -e
 
 export REPO_NAME=$1
-export ELTON_VERSION=0.10.1
+export ELTON_VERSION=0.10.2
 export ELTON_DATA_REPO_MASTER="https://raw.githubusercontent.com/${REPO_NAME}/master"
 
 function echo_logo {
