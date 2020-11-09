@@ -66,10 +66,6 @@ fi
 function upload_file_io {
   echo -e "\nDownload the full review report with the single-use, and expiring, file.io link at:"
   curl -F "file=@review.tsv.gz" https://file.io 
-  echo -e "\n\nIf https://file.io link above no longer works, access review notes by:"
-  echo "  - installing GloBI's Elton via https://github.com/globalbioticinteractions/elton"
-  echo "  - running \"elton update $REPO_NAME && elton review --type note,summary $REPO_NAME > review.tsv\""
-  echo "  - inspecting review.tsv"
 }
 
 function upload {
@@ -109,7 +105,12 @@ else
   upload_file_io
 fi
 
+echo -e "\n\nIf you'd like, you can generate your own review notes by:"
+echo "  - installing GloBI's Elton via https://github.com/globalbioticinteractions/elton"
+echo "  - running \"elton update $REPO_NAME && elton review --type note,summary $REPO_NAME > review.tsv\""
+echo "  - inspecting review.tsv"
 echo -e "\nPlease email info@globalbioticinteractions.org for questions/ comments."
+
 exit $NUMBER_OF_NOTES
 
 
