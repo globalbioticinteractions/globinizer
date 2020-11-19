@@ -12,6 +12,7 @@
 export REPO_NAME=$1
 export ELTON_VERSION=0.10.4
 export ELTON_DATA_REPO_MASTER="https://raw.githubusercontent.com/${REPO_NAME}/master"
+export README=$(mktemp)
 
 function echo_logo {
   echo "$(cat <<_EOF_
@@ -32,31 +33,42 @@ _EOF_
 )"
 }
 
-echo_logo 
+function echo_reproduce {
+  echo -e "\n\nIf you'd like, you can generate your own review notes by:"
+  echo "  - installing GloBI's Elton via https://github.com/globalbioticinteractions/elton"
+  echo "  - running \"elton update $REPO_NAME && elton review --type note,summary $REPO_NAME > review.tsv\""
+  echo "  - inspecting review.tsv"
+  echo -e "\nPlease email info@globalbioticinteractions.org for questions/ comments."
+}
 
-echo Reviewing [${ELTON_DATA_REPO_MASTER}] using Elton version [${ELTON_VERSION}]. 
+function tee_readme {
+  tee --append $README
+}
+
+echo_logo | tee_readme 
+
+echo Reviewing [${ELTON_DATA_REPO_MASTER}] using Elton version [${ELTON_VERSION}]. | tee_readme 
 
 export URL_PREFIX="https://github.com/globalbioticinteractions/elton/releases/download/${ELTON_VERSION}"
 
 wget --quiet ${URL_PREFIX}/elton.jar -O elton.jar
 
 java -Xmx4G -jar elton.jar update --registry local
-java -Xmx4G -jar elton.jar review local --type note,summary > review.tsv
-
-cat review.tsv | gzip > review.tsv.gz
-
-echo -e "\nReview of [$REPO_NAME] included:"
-zcat review.tsv.gz | tail -n3 | cut -f6 | sed s/^/\ \ -\ /g
+java -Xmx4G -jar elton.jar review local --type note,summary | gzip > review.tsv.gz
+cat review.tsv.gz | gunzip | head -n501 > review-sample.tsv
 
 
-NUMBER_OF_NOTES=$(zcat review.tsv.gz | cut -f5 | grep "^note$" | wc -l)
+echo -e "\nReview of [$REPO_NAME] included:" | tee_readme
+cat review.tsv.gz | gunzip | tail -n3 | cut -f6 | sed s/^/\ \ -\ /g | tee_readme
+
+NUMBER_OF_NOTES=$(cat review.tsv.gz | gunzip | cut -f5 | grep "^note$" | wc -l)
 
 if [ $NUMBER_OF_NOTES -gt 0 ]
 then
-  echo -e "\n[$REPO_NAME] has $NUMBER_OF_NOTES reviewer note(s):"
-  zcat review.tsv.gz | tail -n+2 | cut -f6 | tac | tail -n+5 | sort | uniq -c | sort -nr
+  echo -e "\n[$REPO_NAME] has $NUMBER_OF_NOTES reviewer note(s):" | tee_readme
+  cat review.tsv.gz | unzip | tail -n+2 | cut -f6 | tac | tail -n+5 | sort | uniq -c | sort -nr | tee_readme
 else
-  echo -e "\nHurray! [$REPO_NAME] passed the GloBI review."
+  echo -e "\nHurray! [$REPO_NAME] passed the GloBI review." | tee_readme
 fi
 
 #
@@ -82,6 +94,8 @@ function upload {
 sudo apt-get -q update &> /dev/null
 sudo apt-get -q install awscli -y &> /dev/null
 
+echo_reproduce >> $README
+
 # atttempt to use travis artifacts tool if available
 if [[ -n $(which aws) ]] && [[ -n ${ARTIFACTS_KEY} ]] && [[ -n ${ARTIFACTS_SECRET} ]] && [[ -n ${ARTIFACTS_BUCKET} ]]
 then
@@ -94,22 +108,24 @@ then
   fi
  
   upload review.tsv.gz "data review"
+  upload review-sample.tsv "data review sample"
   
   java -Xmx4G -jar elton.jar interactions local | gzip > indexed-interactions.tsv.gz
   upload indexed-interactions.tsv.gz "indexed interactions"
 
+  cat indexed-interactions.tsv.gz | unzip | head -n501 > indexed-interactions-sample.tsv
+  upload indexed-interactions-sample.tsv "indexed interactions sample"
+
   tar c datasets/* | gzip > datasets.tar.gz
   upload datasets.tar.gz "cached dataset archive"
+
+  zip -r review.zip $README datasets/* indexed-interactions* review* elton.jar
 
 else
   upload_file_io
 fi
 
-echo -e "\n\nIf you'd like, you can generate your own review notes by:"
-echo "  - installing GloBI's Elton via https://github.com/globalbioticinteractions/elton"
-echo "  - running \"elton update $REPO_NAME && elton review --type note,summary $REPO_NAME > review.tsv\""
-echo "  - inspecting review.tsv"
-echo -e "\nPlease email info@globalbioticinteractions.org for questions/ comments."
+cat $README
 
 exit $NUMBER_OF_NOTES
 
