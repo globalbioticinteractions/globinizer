@@ -119,7 +119,9 @@ then
   tar c datasets/* | gzip > datasets.tar.gz
   upload datasets.tar.gz "cached dataset archive"
 
-  zip -r review.zip $README datasets/* indexed-interactions* review* elton.jar
+  cat $README > README
+
+  zip -r review.zip README datasets/* indexed-interactions* review* elton.jar
 
 else
   upload_file_io
