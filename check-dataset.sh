@@ -112,7 +112,7 @@ then
   upload review.tsv.gz "data review"
   upload review-sample.tsv "data review sample tab-separated"
   upload review-sample.json "data review sample json"
-  upload review-sample.tsv "data review sample csv"
+  upload review-sample.csv "data review sample csv"
   
   java -Xmx4G -jar elton.jar interactions local | gzip > indexed-interactions.tsv.gz
   upload indexed-interactions.tsv.gz "indexed interactions"
