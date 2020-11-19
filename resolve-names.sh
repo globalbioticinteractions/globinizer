@@ -66,7 +66,7 @@ NUMBER_OF_NOTES=$(cat review.tsv.gz | gunzip | cut -f5 | grep "^note$" | wc -l)
 if [ $NUMBER_OF_NOTES -gt 0 ]
 then
   echo -e "\n[$REPO_NAME] has $NUMBER_OF_NOTES reviewer note(s):" | tee_readme
-  cat review.tsv.gz | unzip | tail -n+2 | cut -f6 | tac | tail -n+5 | sort | uniq -c | sort -nr | tee_readme
+  cat review.tsv.gz | gunzip | tail -n+2 | cut -f6 | tac | tail -n+5 | sort | uniq -c | sort -nr | tee_readme
 else
   echo -e "\nHurray! [$REPO_NAME] passed the GloBI review." | tee_readme
 fi
@@ -113,7 +113,7 @@ then
   java -Xmx4G -jar elton.jar interactions local | gzip > indexed-interactions.tsv.gz
   upload indexed-interactions.tsv.gz "indexed interactions"
 
-  cat indexed-interactions.tsv.gz | unzip | head -n501 > indexed-interactions-sample.tsv
+  cat indexed-interactions.tsv.gz | gunzip | head -n501 > indexed-interactions-sample.tsv
   upload indexed-interactions-sample.tsv "indexed interactions sample"
 
   tar c datasets/* | gzip > datasets.tar.gz
