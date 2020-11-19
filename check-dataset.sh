@@ -122,6 +122,7 @@ then
   cat $README > README
 
   zip -r review.zip README datasets/* indexed-interactions* review* elton.jar
+  update review.zip "review archive"
 
 else
   upload_file_io
