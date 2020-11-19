@@ -94,7 +94,7 @@ function upload {
 
 
 sudo apt-get -q update &> /dev/null
-sudo apt-get -q install awscli miller jq -y &> /dev/null
+sudo apt-get -q install awscli miller jq -y 
 
 echo_reproduce >> $README
 
