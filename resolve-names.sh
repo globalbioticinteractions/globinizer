@@ -45,7 +45,14 @@ function tee_readme {
   tee --append $README
 }
 
+function install_deps {
+  sudo apt-get -q update &> /dev/null
+  sudo apt-get -q install awscli miller jq -y &> /dev/null
+}
+
 echo_logo | tee_readme 
+
+install_deps
 
 echo Reviewing [${ELTON_DATA_REPO_MASTER}] using Elton version [${ELTON_VERSION}]. | tee_readme 
 
@@ -92,9 +99,6 @@ function upload {
 
 }
 
-
-sudo apt-get -q update &> /dev/null
-sudo apt-get -q install awscli miller jq -y 
 
 echo_reproduce >> $README
 
