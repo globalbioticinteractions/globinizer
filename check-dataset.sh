@@ -125,7 +125,7 @@ else
   upload_file_io
 fi
 
-cat $README
+echo_reproduce
 
 exit $NUMBER_OF_NOTES
 
