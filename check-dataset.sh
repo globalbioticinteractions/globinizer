@@ -56,6 +56,8 @@ wget --quiet ${URL_PREFIX}/elton.jar -O elton.jar
 java -Xmx4G -jar elton.jar update --registry local
 java -Xmx4G -jar elton.jar review local --type note,summary | gzip > review.tsv.gz
 cat review.tsv.gz | gunzip | head -n501 > review-sample.tsv
+cat review-sample.tsv | tail -n+2 | cut -f15 | jq -c . > review-sample.json
+cat review-sample.json | mlr --ijson --ocsv cat > review-sample.csv
 
 
 echo -e "\nReview of [$REPO_NAME] included:" | tee_readme
@@ -92,7 +94,7 @@ function upload {
 
 
 sudo apt-get -q update &> /dev/null
-sudo apt-get -q install awscli -y &> /dev/null
+sudo apt-get -q install awscli miller jq -y &> /dev/null
 
 echo_reproduce >> $README
 
@@ -108,7 +110,9 @@ then
   fi
  
   upload review.tsv.gz "data review"
-  upload review-sample.tsv "data review sample"
+  upload review-sample.tsv "data review sample tab-separated"
+  upload review-sample.json "data review sample json"
+  upload review-sample.tsv "data review sample csv"
   
   java -Xmx4G -jar elton.jar interactions local | gzip > indexed-interactions.tsv.gz
   upload indexed-interactions.tsv.gz "indexed interactions"
