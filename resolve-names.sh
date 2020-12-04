@@ -12,6 +12,7 @@
 export REPO_NAME=$1
 export ELTON_VERSION=0.10.4
 export ELTON_DATA_REPO_MASTER="https://raw.githubusercontent.com/${REPO_NAME}/master"
+export REVIEW_REPO_ENDPOINT="https://blob.globalbioticinteractions.org"
 export README=$(mktemp)
 
 function echo_logo {
@@ -107,7 +108,7 @@ if [[ -n $(which aws) ]] && [[ -n ${ARTIFACTS_KEY} ]] && [[ -n ${ARTIFACTS_SECRE
 then
   export AWS_ACCESS_KEY_ID=${ARTIFACTS_KEY}
   export AWS_SECRET_ACCESS_KEY=${ARTIFACTS_SECRET}
-  export ENDPOINT_CONFIG=""
+  export ENDPOINT_CONFIG="--endpoint-url=${REVIEW_REPO_ENDPOINT}"
   if [ -n "${ARTIFACTS_ENDPOINT}" ]
   then
     export ENDPOINT_CONFIG="--endpoint-url=${ARTIFACTS_ENDPOINT}"
