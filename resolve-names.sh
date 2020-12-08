@@ -93,7 +93,7 @@ function upload_file_io {
 }
 
 function upload {
-  aws s3 --verbose ${ENDPOINT_CONFIG} cp $1 s3://${ARTIFACTS_BUCKET}/reviews/$TRAVIS_REPO_SLUG/$1 &> /dev/null
+  aws s3 ${ENDPOINT_CONFIG} cp $1 s3://${ARTIFACTS_BUCKET}/reviews/$TRAVIS_REPO_SLUG/$1 &> /dev/null
   if [[ $? -ne 0 ]] ; then
      echo -e "\nfailed to upload $2, please check credentials"
   else
