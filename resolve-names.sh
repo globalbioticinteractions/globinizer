@@ -48,6 +48,7 @@ function tee_readme {
 
 function install_deps {
   sudo apt-get -q update &> /dev/null
+  sudo /usr/bin/python -m pip install --upgrade pip &> /dev/null
   sudo apt-get -q install miller jq -y &> /dev/null
   mlr --version
 
@@ -111,7 +112,7 @@ function upload {
 echo_reproduce >> $README
 
 # atttempt to use travis artifacts tool if available
-if [[ -n $(which aws) ]] && [[ -n ${ARTIFACTS_KEY} ]] && [[ -n ${ARTIFACTS_SECRET} ]] && [[ -n ${ARTIFACTS_BUCKET} ]]
+if [[ -n $(which s3cmd) ]] && [[ -n ${ARTIFACTS_KEY} ]] && [[ -n ${ARTIFACTS_SECRET} ]] && [[ -n ${ARTIFACTS_BUCKET} ]]
 then
   upload review.tsv.gz "data review"
   upload review-sample.tsv "data review sample tab-separated"
