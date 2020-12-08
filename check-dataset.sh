@@ -48,11 +48,10 @@ function tee_readme {
 
 function install_deps {
   sudo apt-get -q update &> /dev/null
-  sudo /usr/bin/python -m pip install --upgrade pip &> /dev/null
   sudo apt-get -q install miller jq -y &> /dev/null
   mlr --version
 
-  sudo pip install s3cmd
+  sudo pip install s3cmd &> /dev/null
   s3cmd --version
 }
 
@@ -97,7 +96,7 @@ function upload_file_io {
 
 function upload {
 
-  s3cmd --access_key "${ARTIFACTS_KEY}" --secret_key "${ARTIFACTS_SECRET}" --host "${REVIEW_REPO_HOST}" --host-bucket "${REVIEW_REPO_HOST}" put "$1" s3://${ARTIFACTS_BUCKET}/reviews/$TRAVIS_REPO_SLUG/$1 &> upload.log
+  s3cmd --access_key "${ARTIFACTS_KEY}" --secret_key "${ARTIFACTS_SECRET}" --host "${REVIEW_REPO_HOST}" --host-bucket "${REVIEW_REPO_HOST}" put "$1" s3://${ARTIFACTS_BUCKET}/reviews/$TRAVIS_REPO_SLUG/$1 | tee upload.log
 
   if [[ $? -ne 0 ]] ; then
      echo -e "\nfailed to upload $2, please check following upload log"
