@@ -51,11 +51,6 @@ function install_deps {
   sudo apt-get -q install awscli miller jq -y &> /dev/null
   aws --version
   mlr --version
-  # set multipart chunking to be friendly to cloudflare and friends
-  aws configure set default.s3.addressing_style path
-  aws configure set default.s3.multipart_chunksize 10MB
-  aws configure set default.s3.multipart_threshold 10MB
-  aws configure list
 }
 
 echo_logo | tee_readme 
