@@ -51,6 +51,9 @@ function install_deps {
   sudo apt-get -q install awscli miller jq -y &> /dev/null
   aws --version
   mlr --version
+  # see https://docs.aws.amazon.com/cli/latest/topic/s3-config.html
+  aws configure set default.s3.multipart_threshold 10MB
+  aws configure set default.s3.multipart_chunksize 10MB
 }
 
 echo_logo | tee_readme 
