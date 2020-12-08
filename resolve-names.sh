@@ -49,6 +49,8 @@ function tee_readme {
 function install_deps {
   sudo apt-get -q update &> /dev/null
   sudo apt-get -q install awscli miller jq -y &> /dev/null
+  aws --version
+  mlr --version
 }
 
 echo_logo | tee_readme 
