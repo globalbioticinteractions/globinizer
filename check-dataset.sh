@@ -96,7 +96,7 @@ function upload_file_io {
 
 function upload {
 
-  s3cmd --access_key "${ARTIFACTS_KEY}" --secret_key "${ARTIFACTS_SECRET}" --host "${REVIEW_REPO_HOST}" --host-bucket "${REVIEW_REPO_HOST}" put "$1" s3://${ARTIFACTS_BUCKET}/reviews/$TRAVIS_REPO_SLUG/$1 | tee upload.log
+  s3cmd --access_key "${ARTIFACTS_KEY}" --secret_key "${ARTIFACTS_SECRET}" --host "${REVIEW_REPO_HOST}" --host-bucket "${REVIEW_REPO_HOST}" put "$1" s3://${ARTIFACTS_BUCKET}/reviews/$TRAVIS_REPO_SLUG/$1 &> upload.log
 
   if [[ $? -ne 0 ]] ; then
      echo -e "\nfailed to upload $2, please check following upload log"
