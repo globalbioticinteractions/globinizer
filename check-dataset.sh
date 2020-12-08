@@ -93,9 +93,10 @@ function upload_file_io {
 }
 
 function upload {
-  aws s3 ${ENDPOINT_CONFIG} cp $1 s3://${ARTIFACTS_BUCKET}/reviews/$TRAVIS_REPO_SLUG/$1 &> /dev/null
+  aws s3 ${ENDPOINT_CONFIG} cp $1 s3://${ARTIFACTS_BUCKET}/reviews/$TRAVIS_REPO_SLUG/$1 &> upload.log
   if [[ $? -ne 0 ]] ; then
-     echo -e "\nfailed to upload $2, please check credentials"
+     echo -e "\nfailed to upload $2, please check following upload log"
+     cat upload.log
   else
      echo -e "\nFor a detailed $2, please download:\nhttps://depot.globalbioticinteractions.org/reviews/$TRAVIS_REPO_SLUG/$1\n"
   fi
