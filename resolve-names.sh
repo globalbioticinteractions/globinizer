@@ -12,7 +12,7 @@
 export REPO_NAME=$1
 export ELTON_VERSION=0.10.4
 export ELTON_DATA_REPO_MASTER="https://raw.githubusercontent.com/${REPO_NAME}/master"
-export REVIEW_REPO_ENDPOINT="https://blob.globalbioticinteractions.org"
+export REVIEW_REPO_HOST="blob.globalbioticinteractions.org"
 export README=$(mktemp)
 
 function echo_logo {
@@ -48,12 +48,11 @@ function tee_readme {
 
 function install_deps {
   sudo apt-get -q update &> /dev/null
-  sudo apt-get -q install awscli miller jq -y &> /dev/null
-  aws --version
+  sudo apt-get -q install miller jq -y &> /dev/null
   mlr --version
-  # see https://docs.aws.amazon.com/cli/latest/topic/s3-config.html
-  aws configure set default.s3.multipart_threshold 10MB
-  aws configure set default.s3.multipart_chunksize 10MB
+
+  sudo pip install s3cmd
+  s3cmd --version
 }
 
 echo_logo | tee_readme 
@@ -96,7 +95,9 @@ function upload_file_io {
 }
 
 function upload {
-  aws s3 ${ENDPOINT_CONFIG} cp $1 s3://${ARTIFACTS_BUCKET}/reviews/$TRAVIS_REPO_SLUG/$1 &> upload.log
+
+  s3cmd --access_key "${ARTIFACTS_KEY}" --secret_key "${ARTIFACTS_SECRET}" --host "${REVIEW_REPO_HOST}" --host-bucket "${REVIEW_REPO_HOST}" put "$1" s3://${ARTIFACTS_BUCKET}/reviews/$TRAVIS_REPO_SLUG/$1 &> upload.log
+
   if [[ $? -ne 0 ]] ; then
      echo -e "\nfailed to upload $2, please check following upload log"
      cat upload.log
@@ -112,14 +113,6 @@ echo_reproduce >> $README
 # atttempt to use travis artifacts tool if available
 if [[ -n $(which aws) ]] && [[ -n ${ARTIFACTS_KEY} ]] && [[ -n ${ARTIFACTS_SECRET} ]] && [[ -n ${ARTIFACTS_BUCKET} ]]
 then
-  export AWS_ACCESS_KEY_ID=${ARTIFACTS_KEY}
-  export AWS_SECRET_ACCESS_KEY=${ARTIFACTS_SECRET}
-  export ENDPOINT_CONFIG="--endpoint-url=${REVIEW_REPO_ENDPOINT}"
-  if [ -n "${ARTIFACTS_ENDPOINT}" ]
-  then
-    export ENDPOINT_CONFIG="--endpoint-url=${ARTIFACTS_ENDPOINT}"
-  fi
- 
   upload review.tsv.gz "data review"
   upload review-sample.tsv "data review sample tab-separated"
   upload review-sample.json "data review sample json"
