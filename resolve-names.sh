@@ -53,6 +53,8 @@ function install_deps {
 
   sudo pip install s3cmd &> /dev/null
   s3cmd --version
+
+  java -version
 }
 
 echo_logo | tee_readme 
