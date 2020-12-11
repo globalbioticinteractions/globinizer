@@ -71,7 +71,6 @@ cat review.tsv.gz | gunzip | head -n501 > review-sample.tsv
 cat review-sample.tsv | tail -n+2 | cut -f15 | jq -c . > review-sample.json
 cat review-sample.json | mlr --ijson --ocsv cat > review-sample.csv
 
-
 echo -e "\nReview of [$REPO_NAME] included:" | tee_readme
 cat review.tsv.gz | gunzip | tail -n3 | cut -f6 | sed s/^/\ \ -\ /g | tee_readme
 
@@ -124,6 +123,12 @@ then
   cat indexed-interactions.tsv.gz | gunzip | head -n501 > indexed-interactions-sample.tsv
   upload indexed-interactions-sample.tsv "indexed interactions sample"
 
+  java -Xmx4G -jar elton.jar nanopubs local | gzip > nanopub.ttl.gz
+  upload nanopub.ttl.gz "interactions nanopubs"
+  
+  cat nanopub.ttl.gz | gunzip | head -n1 > nanopub-sample.ttl
+  upload nanopub-sample.ttl "interactions nanopub sample"
+  
   tar c datasets/* | gzip > datasets.tar.gz
   upload datasets.tar.gz "cached dataset archive"
 
