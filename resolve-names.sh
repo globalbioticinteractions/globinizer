@@ -90,7 +90,7 @@ echo -e "\nreviewing [${ELTON_NAMESPACE}] using Elton version [${ELTON_VERSION}]
 ${ELTON_UPDATE}
 ${ELTON_CMD} review ${ELTON_NAMESPACE} --type note,summary | gzip > review.tsv.gz
 cat review.tsv.gz | gunzip | head -n501 > review-sample.tsv
-cat review-sample.tsv | tail -n+2 | cut -f15 | jq -c . > review-sample.json
+cat review-sample.tsv | tail -n+2 | cut -f15 | grep -v "^$" jq -c . > review-sample.json
 cat review-sample.json | mlr --ijson --ocsv cat > review-sample.csv
 
 ${ELTON_CMD} interactions ${ELTON_NAMESPACE} | gzip > indexed-interactions.tsv.gz
