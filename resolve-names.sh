@@ -10,10 +10,10 @@
 #set -e
 
 export REPO_NAME=$1
-export ELTON_VERSION=0.10.4
-export ELTON_DATA_REPO_MASTER="https://raw.githubusercontent.com/${REPO_NAME}/master"
+export ELTON_DATA_REPO_MAIN="https://raw.githubusercontent.com/${REPO_NAME}/main"
 export REVIEW_REPO_HOST="blob.globalbioticinteractions.org"
 export README=$(mktemp)
+
 
 function echo_logo {
   echo "$(cat <<_EOF_
@@ -47,13 +47,28 @@ function tee_readme {
 }
 
 function install_deps {
-  sudo apt-get -q update &> /dev/null
-  sudo apt-get -q install miller jq -y &> /dev/null
+  if [[ -n ${TRAVIS_REPO_SLUG} ]]
+  then
+    sudo apt-get -q update &> /dev/null
+    sudo apt-get -q install miller jq -y &> /dev/null
+    sudo pip install s3cmd &> /dev/null   
+  fi
+
+  if [[ $(which elton) ]]
+  then 
+    echo using local elton found at [$(which elton)]
+    export ELTON_CMD="elton"
+  else
+    local ELTON_DOWNLOAD_URL="https://github.com/globalbioticinteractions/elton/releases/download/${ELTON_VERSION}/elton.jar"
+    echo elton not found... installing from [${ELTON_DOWNLOAD_URL}]
+    wget --quiet ${ELTON_DOWNLOAD_URL} -O elton.jar
+    export ELTON_CMD="java -Xmx4G -jar elton.jar"
+  fi
+
+  export ELTON_VERSION=$(${ELTON_CMD} version)
+
   mlr --version
-
-  sudo pip install s3cmd &> /dev/null
   s3cmd --version
-
   java -version
 }
 
@@ -61,30 +76,46 @@ echo_logo | tee_readme
 
 install_deps
 
-echo Reviewing [${ELTON_DATA_REPO_MASTER}] using Elton version [${ELTON_VERSION}]. | tee_readme 
+if [[ -n ${TRAVIS_REPO_SLUG} ]]
+then
+  ELTON_UPDATE="${ELTON_CMD} update --registry local"
+  ELTON_NAMESPACE="local"
+else
+  ELTON_UPDATE="${ELTON_CMD} update $REPO_NAME"
+  ELTON_NAMESPACE="$REPO_NAME"
+fi
 
-export URL_PREFIX="https://github.com/globalbioticinteractions/elton/releases/download/${ELTON_VERSION}"
+echo -e "\nreviewing [${ELTON_NAMESPACE}] using Elton version [${ELTON_VERSION}]." | tee_readme 
 
-wget --quiet ${URL_PREFIX}/elton.jar -O elton.jar
-
-java -Xmx4G -jar elton.jar update --registry local
-java -Xmx4G -jar elton.jar review local --type note,summary | gzip > review.tsv.gz
+${ELTON_UPDATE}
+${ELTON_CMD} review ${ELTON_NAMESPACE} --type note,summary | gzip > review.tsv.gz
 cat review.tsv.gz | gunzip | head -n501 > review-sample.tsv
 cat review-sample.tsv | tail -n+2 | cut -f15 | jq -c . > review-sample.json
 cat review-sample.json | mlr --ijson --ocsv cat > review-sample.csv
 
-echo -e "\nReview of [$REPO_NAME] included:" | tee_readme
+${ELTON_CMD} interactions ${ELTON_NAMESPACE} | gzip > indexed-interactions.tsv.gz
+cat indexed-interactions.tsv.gz | gunzip | head -n501 > indexed-interactions-sample.tsv
+
+${ELTON_CMD} nanopubs ${ELTON_NAMESPACE} | gzip > nanopub.ttl.gz
+cat nanopub.ttl.gz | gunzip | head -n1 > nanopub-sample.ttl
+
+echo -e "\nreview of [${REPO_NAME}] included:" | tee_readme
 cat review.tsv.gz | gunzip | tail -n3 | cut -f6 | sed s/^/\ \ -\ /g | tee_readme
 
 NUMBER_OF_NOTES=$(cat review.tsv.gz | gunzip | cut -f5 | grep "^note$" | wc -l)
 
-if [ $NUMBER_OF_NOTES -gt 0 ]
+if [ ${NUMBER_OF_NOTES} -gt 0 ]
 then
-  echo -e "\n[$REPO_NAME] has $NUMBER_OF_NOTES reviewer note(s):" | tee_readme
+  echo -e "\n[${REPO_NAME}] has ${NUMBER_OF_NOTES} reviewer note(s):" | tee_readme
   cat review.tsv.gz | gunzip | tail -n+2 | cut -f6 | tac | tail -n+5 | sort | uniq -c | sort -nr | tee_readme
 else
-  echo -e "\nHurray! [$REPO_NAME] passed the GloBI review." | tee_readme
+  echo -e "\nHurray! [${REPO_NAME}] passed the GloBI review." | tee_readme
 fi
+
+echo_reproduce >> ${README}
+
+cat ${README} > README
+
 
 #
 # publish review artifacts
@@ -97,19 +128,16 @@ function upload_file_io {
 
 function upload {
 
-  s3cmd --access_key "${ARTIFACTS_KEY}" --secret_key "${ARTIFACTS_SECRET}" --host "${REVIEW_REPO_HOST}" --host-bucket "${REVIEW_REPO_HOST}" put "$1" s3://${ARTIFACTS_BUCKET}/reviews/$TRAVIS_REPO_SLUG/$1 &> upload.log
+  s3cmd --access_key "${ARTIFACTS_KEY}" --secret_key "${ARTIFACTS_SECRET}" --host "${REVIEW_REPO_HOST}" --host-bucket "${REVIEW_REPO_HOST}" put "$1" s3://${ARTIFACTS_BUCKET}/reviews/${REPO_NAME}/$1 &> upload.log
 
   if [[ $? -ne 0 ]] ; then
      echo -e "\nfailed to upload $2, please check following upload log"
      cat upload.log
   else
-     echo -e "\nFor a detailed $2, please download:\nhttps://depot.globalbioticinteractions.org/reviews/$TRAVIS_REPO_SLUG/$1\n"
+     echo -e "\nFor a detailed $2, please download:\nhttps://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/$1\n"
   fi
 
 }
-
-
-echo_reproduce >> $README
 
 # atttempt to use travis artifacts tool if available
 if [[ -n $(which s3cmd) ]] && [[ -n ${ARTIFACTS_KEY} ]] && [[ -n ${ARTIFACTS_SECRET} ]] && [[ -n ${ARTIFACTS_BUCKET} ]]
@@ -119,32 +147,30 @@ then
   upload review-sample.json "data review sample json"
   upload review-sample.csv "data review sample csv"
   
-  java -Xmx4G -jar elton.jar interactions local | gzip > indexed-interactions.tsv.gz
   upload indexed-interactions.tsv.gz "indexed interactions"
 
-  cat indexed-interactions.tsv.gz | gunzip | head -n501 > indexed-interactions-sample.tsv
   upload indexed-interactions-sample.tsv "indexed interactions sample"
 
-  java -Xmx4G -jar elton.jar nanopubs local | gzip > nanopub.ttl.gz
   upload nanopub.ttl.gz "interactions nanopubs"
   
-  cat nanopub.ttl.gz | gunzip | head -n1 > nanopub-sample.ttl
   upload nanopub-sample.ttl "interactions nanopub sample"
   
   tar c datasets/* | gzip > datasets.tar.gz
   upload datasets.tar.gz "cached dataset archive"
 
-  cat $README > README
 
   zip -r review.zip README datasets/* indexed-interactions* review* elton.jar
   upload review.zip "review archive"
 
 else
-  upload_file_io
+  if [[ -n ${TRAVIS_REPO_SLUG} ]]
+  then
+    upload_file_io
+  else
+    echo -e "\nFor detailed review results please see files in [$PWD].\n" | tee_readme
+  fi
 fi
 
 echo_reproduce
 
-exit $NUMBER_OF_NOTES
-
-
+exit ${NUMBER_OF_NOTES}
