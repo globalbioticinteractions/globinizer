@@ -12,6 +12,7 @@
 export REPO_NAME=$1
 export ELTON_VERSION=0.10.7
 export ELTON_DATA_REPO_MAIN="https://raw.githubusercontent.com/${REPO_NAME}/main"
+export ELTON_JAR="$PWD/elton.jar"
 export REVIEW_REPO_HOST="blob.globalbioticinteractions.org"
 export README=$(mktemp)
 export REVIEW_DIR="review/${REPO_NAME}"
@@ -80,12 +81,6 @@ function install_deps {
   java -version
 }
 
-use_review_dir
-
-echo_logo | tee_readme 
-
-install_deps
-
 if [[ -n ${TRAVIS_REPO_SLUG} ]]
 then
   ELTON_UPDATE="${ELTON_CMD} update --registry local"
@@ -93,8 +88,13 @@ then
 else
   ELTON_UPDATE="${ELTON_CMD} update $REPO_NAME"
   ELTON_NAMESPACE="$REPO_NAME"
+  # when running outside of travis, use a separate review directory'
+  use_review_dir
 fi
 
+echo_logo | tee_readme 
+
+install_deps
 
 echo -e "\nreviewing [${ELTON_NAMESPACE}] using Elton version [${ELTON_VERSION}]." | tee_readme 
 
