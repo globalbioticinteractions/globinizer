@@ -10,6 +10,7 @@
 #set -e
 
 export REPO_NAME=$1
+export ELTON_VERSION=0.10.7
 export ELTON_DATA_REPO_MAIN="https://raw.githubusercontent.com/${REPO_NAME}/main"
 export REVIEW_REPO_HOST="blob.globalbioticinteractions.org"
 export README=$(mktemp)
