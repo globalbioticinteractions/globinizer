@@ -14,7 +14,7 @@ export ELTON_VERSION=0.10.7
 export ELTON_DATA_REPO_MAIN="https://raw.githubusercontent.com/${REPO_NAME}/main"
 export REVIEW_REPO_HOST="blob.globalbioticinteractions.org"
 export README=$(mktemp)
-export REVIEW_DIR=review/
+export REVIEW_DIR="review/${REPO_NAME}"
 
 
 function echo_logo {
