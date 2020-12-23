@@ -70,7 +70,7 @@ function install_deps {
     local ELTON_DOWNLOAD_URL="https://github.com/globalbioticinteractions/elton/releases/download/${ELTON_VERSION}/elton.jar"
     echo elton not found... installing from [${ELTON_DOWNLOAD_URL}]
     wget --quiet ${ELTON_DOWNLOAD_URL} -O elton.jar
-    export ELTON_CMD="./elton.jar"
+    export ELTON_CMD="java -Xmx4G -jar elton.jar"
   fi
 
   export ELTON_VERSION=$(${ELTON_CMD} version)
