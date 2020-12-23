@@ -44,6 +44,12 @@ function echo_reproduce {
   echo -e "\nPlease email info@globalbioticinteractions.org for questions/ comments."
 }
 
+function use_review_dir {
+  rm -rf ${REVIEW_DIR}
+  mkdir -p ${REVIEW_DIR}
+  cd ${REVIEW_DIR}
+}
+
 function tee_readme {
   tee --append $README
 }
@@ -64,7 +70,7 @@ function install_deps {
     local ELTON_DOWNLOAD_URL="https://github.com/globalbioticinteractions/elton/releases/download/${ELTON_VERSION}/elton.jar"
     echo elton not found... installing from [${ELTON_DOWNLOAD_URL}]
     wget --quiet ${ELTON_DOWNLOAD_URL} -O elton.jar
-    export ELTON_CMD="java -Xmx4G -jar elton.jar"
+    export ELTON_CMD="./elton.jar"
   fi
 
   export ELTON_VERSION=$(${ELTON_CMD} version)
@@ -73,6 +79,8 @@ function install_deps {
   s3cmd --version
   java -version
 }
+
+use_review_dir
 
 echo_logo | tee_readme 
 
@@ -87,9 +95,6 @@ else
   ELTON_NAMESPACE="$REPO_NAME"
 fi
 
-rm -rf ${REVIEW_DIR}
-mkdir -p ${REVIEW_DIR}
-cd ${REVIEW_DIR}
 
 echo -e "\nreviewing [${ELTON_NAMESPACE}] using Elton version [${ELTON_VERSION}]." | tee_readme 
 
