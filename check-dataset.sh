@@ -63,6 +63,13 @@ function install_deps {
     sudo pip install s3cmd &> /dev/null   
   fi
 
+  mlr --version
+  s3cmd --version
+  java -version
+}
+
+function configure_elton {
+
   if [[ $(which elton) ]]
   then 
     echo using local elton found at [$(which elton)]
@@ -76,25 +83,23 @@ function install_deps {
 
   export ELTON_VERSION=$(${ELTON_CMD} version)
 
-  mlr --version
-  s3cmd --version
-  java -version
+  if [[ -n ${TRAVIS_REPO_SLUG} ]]
+    then
+      ELTON_UPDATE="${ELTON_CMD} update --registry local"
+      ELTON_NAMESPACE="local"
+  else
+    ELTON_UPDATE="${ELTON_CMD} update $REPO_NAME"
+    ELTON_NAMESPACE="$REPO_NAME"
+    # when running outside of travis, use a separate review directory'
+    use_review_dir
+  fi
 }
-
-if [[ -n ${TRAVIS_REPO_SLUG} ]]
-then
-  ELTON_UPDATE="${ELTON_CMD} update --registry local"
-  ELTON_NAMESPACE="local"
-else
-  ELTON_UPDATE="${ELTON_CMD} update $REPO_NAME"
-  ELTON_NAMESPACE="$REPO_NAME"
-  # when running outside of travis, use a separate review directory'
-  use_review_dir
-fi
 
 echo_logo | tee_readme 
 
 install_deps
+
+configure_elton
 
 echo -e "\nreviewing [${ELTON_NAMESPACE}] using Elton version [${ELTON_VERSION}]." | tee_readme 
 
