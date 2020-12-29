@@ -1,6 +1,6 @@
 Imports single github [GloBI](https://globalbioticinteractions.org) data repository and check whether it can be read.
 
-Used for automated travis checks for GloBI datasets. Example see https://github.com/globalbioticinteractions/template-dataset/blob/master/.travis.yml and https://github.com/globalbioticinteractions/template-dataset#enable-integration-testing .
+Used for automated travis checks for GloBI datasets. Example see https://github.com/globalbioticinteractions/template-dataset/blob/main/.travis.yml and https://github.com/globalbioticinteractions/template-dataset#enable-integration-testing .
 
 ## Table of Contents
 
@@ -12,7 +12,7 @@ Used for automated travis checks for GloBI datasets. Example see https://github.
 ## Install
 
 ```
-wget "https://raw.githubusercontent.com/globalbioticinteractions/globinizer/master/check-dataset.sh" -O check-dataset.sh
+wget "https://raw.githubusercontent.com/globalbioticinteractions/globinizer/main/check-dataset.sh" -O check-dataset.sh
 chmod +x check-dataset.sh
 ```
 
