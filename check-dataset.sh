@@ -1,18 +1,25 @@
 #!/bin/bash
 #
 #   imports single github globi data repository and check whether it can be read by GloBI.
+#   If optional elton dataset dir is provided, no remote updates will be attempted.
 #
 #   usage:
-#     check-dataset.sh [github repo name] 
+#     check-dataset.sh [github repo name] [(optional) elton datasets dir]
 # 
 #   example:
-#      ./check-dataset.sh globalbioticinteractions/template-dataset
-#set -e
+#     ./check-dataset.sh globalbioticinteractions/template-dataset
+#     ./check-dataset.sh globalbioticinteractions/template-dataset /var/cache/elton/datasets
+#
+
+# set -x
 
 export REPO_NAME=$1
+export ELTON_UPDATE_DISABLED=$2
+export ELTON_DATASETS_DIR=${2:-./datasets}
 export ELTON_VERSION=0.10.7
 export ELTON_DATA_REPO_MAIN="https://raw.githubusercontent.com/${REPO_NAME}/main"
 export ELTON_JAR="$PWD/elton.jar"
+export ELTON_OPTS=""
 export REVIEW_REPO_HOST="blob.globalbioticinteractions.org"
 export README=$(mktemp)
 export REVIEW_DIR="review/${REPO_NAME}"
@@ -69,6 +76,7 @@ function install_deps {
 }
 
 function configure_elton {
+  ELTON_OPTS=" --cache-dir=\"${ELTON_DATASETS_DIR}\""
 
   if [[ $(which elton) ]]
   then 
@@ -85,10 +93,10 @@ function configure_elton {
 
   if [[ -n ${TRAVIS_REPO_SLUG} ]]
     then
-      ELTON_UPDATE="${ELTON_CMD} update --registry local"
+      ELTON_UPDATE="${ELTON_CMD} update ${ELTON_OPTS} --registry local"
       ELTON_NAMESPACE="local"
   else
-    ELTON_UPDATE="${ELTON_CMD} update $REPO_NAME"
+    ELTON_UPDATE="${ELTON_CMD} update ${ELTON_OPTS} $REPO_NAME"
     ELTON_NAMESPACE="$REPO_NAME"
     # when running outside of travis, use a separate review directory'
     use_review_dir
@@ -103,16 +111,22 @@ configure_elton
 
 echo -e "\nreviewing [${ELTON_NAMESPACE}] using Elton version [${ELTON_VERSION}]." | tee_readme 
 
-${ELTON_UPDATE}
-${ELTON_CMD} review ${ELTON_NAMESPACE} --type note,summary | gzip > review.tsv.gz
+if [[ -z ${ELTON_UPDATE_DISABLED} ]]
+then
+  ${ELTON_UPDATE}
+else
+  echo no update: using provided elton datasets dir [${ELTON_DATASETS_DIR}] instead.
+fi
+
+${ELTON_CMD} review ${ELTON_OPTS} ${ELTON_NAMESPACE} --type note,summary | gzip > review.tsv.gz
 cat review.tsv.gz | gunzip | head -n501 > review-sample.tsv
 cat review-sample.tsv | tail -n+2 | cut -f15 | grep -v "^$" | jq -c . > review-sample.json
 cat review-sample.json | mlr --ijson --ocsv cat > review-sample.csv
 
-${ELTON_CMD} interactions ${ELTON_NAMESPACE} | gzip > indexed-interactions.tsv.gz
+${ELTON_CMD} interactions ${ELTON_OPTS} ${ELTON_NAMESPACE} | gzip > indexed-interactions.tsv.gz
 cat indexed-interactions.tsv.gz | gunzip | head -n501 > indexed-interactions-sample.tsv
 
-${ELTON_CMD} nanopubs ${ELTON_NAMESPACE} | gzip > nanopub.ttl.gz
+${ELTON_CMD} nanopubs ${ELTON_OPTS} ${ELTON_NAMESPACE} | gzip > nanopub.ttl.gz
 cat nanopub.ttl.gz | gunzip | head -n1 > nanopub-sample.ttl
 
 echo -e "\nreview of [${REPO_NAME}] included:" | tee_readme
@@ -144,7 +158,7 @@ function upload_file_io {
 
 function upload {
 
-  s3cmd --access_key "${ARTIFACTS_KEY}" --secret_key "${ARTIFACTS_SECRET}" --host "${REVIEW_REPO_HOST}" --host-bucket "${REVIEW_REPO_HOST}" put "$1" s3://${ARTIFACTS_BUCKET}/reviews/${REPO_NAME}/$1 &> upload.log
+  s3cmd --access_key "${ARTIFACTS_KEY}" --secret_key "${ARTIFACTS_SECRET}" --host "${REVIEW_REPO_HOST}" --host-bucket "${REVIEW_REPO_HOST}" put "$1" "s3://${ARTIFACTS_BUCKET}/reviews/${REPO_NAME}/$1" &> upload.log
 
   if [[ $? -ne 0 ]] ; then
      echo -e "\nfailed to upload $2, please check following upload log"
@@ -170,12 +184,14 @@ then
   upload nanopub.ttl.gz "interactions nanopubs"
   
   upload nanopub-sample.ttl "interactions nanopub sample"
-  
-  tar c datasets/* | gzip > datasets.tar.gz
-  upload datasets.tar.gz "cached dataset archive"
 
+  if [[ -z ${ELTON_UPDATE_DISABLED} ]]
+  then
+    tar c datasets/* | gzip > datasets.tar.gz
+    upload datasets.tar.gz "cached dataset archive"
+  fi
 
-  zip -r review.zip README datasets/* indexed-interactions* review* elton.jar
+  zip -r review.zip README datasets/* indexed-interactions* review*
   upload review.zip "review archive"
 
 else
