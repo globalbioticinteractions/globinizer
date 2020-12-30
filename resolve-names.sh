@@ -193,7 +193,7 @@ function upload {
 # atttempt to use travis artifacts tool if available
 if [[ -n $(which s3cmd) ]] && [[ -n ${ARTIFACTS_KEY} ]] && [[ -n ${ARTIFACTS_SECRET} ]] && [[ -n ${ARTIFACTS_BUCKET} ]]
 then
-  echo -e "\nReview files available online:\n\n" | tee_readme
+  echo -e "\nReview files available online:" | tee_readme
   upload review.svg "review badge"
   upload review.tsv.gz "data review"
   upload review-sample.tsv "data review sample tab-separated"
