@@ -113,7 +113,7 @@ install_deps
 
 configure_elton
 
-echo -e "\nreviewing [${ELTON_NAMESPACE}] using Elton version [${ELTON_VERSION}]." | tee_readme 
+echo -e "\nreview of [${ELTON_NAMESPACE}] using Elton version [${ELTON_VERSION}] started at [$(date -Iseconds)]." | tee_readme 
 
 if [[ -z ${ELTON_UPDATE_DISABLED} ]]
 then
