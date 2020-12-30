@@ -62,6 +62,10 @@ function tee_readme {
   tee --append $README
 }
 
+function save_readme {
+  cat ${README} > README.txt
+}
+
 function install_deps {
   if [[ -n ${TRAVIS_REPO_SLUG} ]]
   then
@@ -144,8 +148,7 @@ fi
 
 echo_reproduce >> ${README}
 
-cat ${README} > README.txt
-
+save_readme
 
 #
 # publish review artifacts
@@ -193,7 +196,8 @@ then
 
   zip -r review.zip README.txt datasets/* indexed-interactions* review*
   upload review.zip "review archive"
-
+  
+  save_readme
   upload README.txt "review summary"
 else
   if [[ -n ${TRAVIS_REPO_SLUG} ]]
