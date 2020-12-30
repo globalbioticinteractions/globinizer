@@ -164,7 +164,7 @@ function upload {
      echo -e "\nfailed to upload $2, please check following upload log"
      cat upload.log
   else
-     echo -e "\nFor a detailed $2, please download:\nhttps://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/$1\n"
+     echo -e "\nFor a detailed $2, please download:\nhttps://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/$1\n" | tee_readme
   fi
 
 }
@@ -172,7 +172,6 @@ function upload {
 # atttempt to use travis artifacts tool if available
 if [[ -n $(which s3cmd) ]] && [[ -n ${ARTIFACTS_KEY} ]] && [[ -n ${ARTIFACTS_SECRET} ]] && [[ -n ${ARTIFACTS_BUCKET} ]]
 then
-  upload README.txt "review summary"
   upload review.tsv.gz "data review"
   upload review-sample.tsv "data review sample tab-separated"
   upload review-sample.json "data review sample json"
@@ -195,6 +194,7 @@ then
   zip -r review.zip README.txt datasets/* indexed-interactions* review*
   upload review.zip "review archive"
 
+  upload README.txt "review summary"
 else
   if [[ -n ${TRAVIS_REPO_SLUG} ]]
   then
