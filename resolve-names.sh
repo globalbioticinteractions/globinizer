@@ -44,6 +44,22 @@ _EOF_
 )"
 }
 
+function echo_review_badge {
+  local number_of_review_notes=$1
+  if [ ${number_of_review_notes} -gt 0 ] 
+  then
+    echo "$(cat <<_EOF_
+<svg xmlns="http://www.w3.org/2000/svg" width="62" height="20">   <linearGradient id="b" x2="0" y2="100%">     <stop offset="0" stop-color="#bbb" stop-opacity=".1"/>     <stop offset="1" stop-opacity=".1"/>   </linearGradient>   <mask id="a">     <rect width="62" height="20" rx="3" fill="#fff"/>   </mask>   <g mask="url(#a)">     <path fill="#555" d="M0 0h43v20H0z"/>     <path fill="#dfb317" d="M43 0h65v20H43z"/>     <path fill="url(#b)" d="M0 0h82v20H0z"/>   </g>   <g fill="#fff" text-anchor="middle"      font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11">     <text x="21.5" y="15" fill="#010101" fill-opacity=".3">       review     </text>     <text x="21.5" y="14">       review     </text>     <text x="55" y="15" fill="#010101" fill-opacity=".3">       &#x1F4AC;     </text>     <text x="55" y="14">       &#x1F4AC;     </text>   </g> </svg>
+_EOF_
+)"
+  else
+    echo "$(cat <<_EOF_
+<svg xmlns="http://www.w3.org/2000/svg" width="62" height="20">   <linearGradient id="b" x2="0" y2="100%">     <stop offset="0" stop-color="#bbb" stop-opacity=".1"/>     <stop offset="1" stop-opacity=".1"/>   </linearGradient>   <mask id="a">     <rect width="62" height="20" rx="3" fill="#fff"/>   </mask>   <g mask="url(#a)">     <path fill="#555" d="M0 0h43v20H0z"/>     <path fill="#4c1" d="M43 0h65v20H43z"/>     <path fill="url(#b)" d="M0 0h82v20H0z"/>   </g>   <g fill="#fff" text-anchor="middle"      font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11">     <text x="21.5" y="15" fill="#010101" fill-opacity=".3">       review     </text>     <text x="21.5" y="14">       review     </text>     <text x="51.5" y="15" fill="#010101" fill-opacity=".3">       &#x2713;     </text>     <text x="51.5" y="14">       &#x2713;     </text>   </g> </svg> 
+_EOF_
+)"
+  fi
+}
+
 function echo_reproduce {
   echo -e "\n\nIf you'd like, you can generate your own review notes by:"
   echo "  - installing GloBI's Elton via https://github.com/globalbioticinteractions/elton"
@@ -137,6 +153,8 @@ echo -e "\nreview of [${REPO_NAME}] included:" | tee_readme
 cat review.tsv.gz | gunzip | tail -n3 | cut -f6 | sed s/^/\ \ -\ /g | tee_readme
 
 NUMBER_OF_NOTES=$(cat review.tsv.gz | gunzip | cut -f5 | grep "^note$" | wc -l)
+
+echo_review_badge $NUMBER_OF_NOTES > review.svg
 
 if [ ${NUMBER_OF_NOTES} -gt 0 ]
 then
