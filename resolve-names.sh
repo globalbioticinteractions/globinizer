@@ -144,7 +144,7 @@ fi
 
 echo_reproduce >> ${README}
 
-cat ${README} > README
+cat ${README} > README.txt
 
 
 #
@@ -172,7 +172,7 @@ function upload {
 # atttempt to use travis artifacts tool if available
 if [[ -n $(which s3cmd) ]] && [[ -n ${ARTIFACTS_KEY} ]] && [[ -n ${ARTIFACTS_SECRET} ]] && [[ -n ${ARTIFACTS_BUCKET} ]]
 then
-  upload README "review summary"
+  upload README.txt "review summary"
   upload review.tsv.gz "data review"
   upload review-sample.tsv "data review sample tab-separated"
   upload review-sample.json "data review sample json"
@@ -192,7 +192,7 @@ then
     upload datasets.tar.gz "cached dataset archive"
   fi
 
-  zip -r review.zip README datasets/* indexed-interactions* review*
+  zip -r review.zip README.txt datasets/* indexed-interactions* review*
   upload review.zip "review archive"
 
 else
