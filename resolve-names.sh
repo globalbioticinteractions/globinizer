@@ -172,6 +172,7 @@ function upload {
 # atttempt to use travis artifacts tool if available
 if [[ -n $(which s3cmd) ]] && [[ -n ${ARTIFACTS_KEY} ]] && [[ -n ${ARTIFACTS_SECRET} ]] && [[ -n ${ARTIFACTS_BUCKET} ]]
 then
+  upload README "review summary"
   upload review.tsv.gz "data review"
   upload review-sample.tsv "data review sample tab-separated"
   upload review-sample.json "data review sample json"
