@@ -185,7 +185,7 @@ function upload {
      echo -e "\nfailed to upload $2, please check following upload log"
      cat upload.log
   else
-     echo -e "\nFor [$2], see [https://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/$1]\n" | tee_readme
+     echo "- $1 ([$2]) https://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/$1" | tee_readme
   fi
 
 }
@@ -193,6 +193,7 @@ function upload {
 # atttempt to use travis artifacts tool if available
 if [[ -n $(which s3cmd) ]] && [[ -n ${ARTIFACTS_KEY} ]] && [[ -n ${ARTIFACTS_SECRET} ]] && [[ -n ${ARTIFACTS_BUCKET} ]]
 then
+  echo -e "\nReview files available online:\n\n"
   upload review.svg "review badge"
   upload review.tsv.gz "data review"
   upload review-sample.tsv "data review sample tab-separated"
