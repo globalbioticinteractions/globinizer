@@ -129,7 +129,7 @@ install_deps
 
 configure_elton
 
-echo -e "\nreview of [${ELTON_NAMESPACE}] using Elton version [${ELTON_VERSION}] started at [$(date -Iseconds)]." | tee_readme 
+echo -e "\nReview of [${ELTON_NAMESPACE}] using Elton version [${ELTON_VERSION}] started at [$(date -Iseconds)]." | tee_readme 
 
 if [[ -z ${ELTON_UPDATE_DISABLED} ]]
 then
@@ -149,7 +149,7 @@ cat indexed-interactions.tsv.gz | gunzip | head -n501 > indexed-interactions-sam
 ${ELTON_CMD} nanopubs ${ELTON_OPTS} ${ELTON_NAMESPACE} | gzip > nanopub.ttl.gz
 cat nanopub.ttl.gz | gunzip | head -n1 > nanopub-sample.ttl
 
-echo -e "\nreview of [${REPO_NAME}] included:" | tee_readme
+echo -e "\nReview of [${REPO_NAME}] included:" | tee_readme
 cat review.tsv.gz | gunzip | tail -n3 | cut -f6 | sed s/^/\ \ -\ /g | tee_readme
 
 NUMBER_OF_NOTES=$(cat review.tsv.gz | gunzip | cut -f5 | grep "^note$" | wc -l)
@@ -185,7 +185,7 @@ function upload {
      echo -e "\nfailed to upload $2, please check following upload log"
      cat upload.log
   else
-     echo "- $1 ($2) https://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/$1" | tee_readme
+     echo "  - $1 ($2) https://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/$1" | tee_readme
   fi
 
 }
@@ -193,7 +193,7 @@ function upload {
 # atttempt to use travis artifacts tool if available
 if [[ -n $(which s3cmd) ]] && [[ -n ${ARTIFACTS_KEY} ]] && [[ -n ${ARTIFACTS_SECRET} ]] && [[ -n ${ARTIFACTS_BUCKET} ]]
 then
-  echo -e "\nReview files available online:" | tee_readme
+  echo -e "\nThis review includes:" | tee_readme
   upload review.svg "review badge"
   upload review.tsv.gz "data review"
   upload review-sample.tsv "data review sample tab-separated"
