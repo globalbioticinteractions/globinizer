@@ -11,7 +11,7 @@
 #     ./check-dataset.sh globalbioticinteractions/template-dataset /var/cache/elton/datasets
 #
 
-set -x
+#set -x
 
 export REPO_NAME=$1
 export ELTON_UPDATE_DISABLED=$2
