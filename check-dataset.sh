@@ -11,7 +11,7 @@
 #     ./check-dataset.sh globalbioticinteractions/template-dataset /var/cache/elton/datasets
 #
 
-# set -x
+set -x
 
 export REPO_NAME=$1
 export ELTON_UPDATE_DISABLED=$2
@@ -105,7 +105,7 @@ function configure_elton {
   else
     local ELTON_DOWNLOAD_URL="https://github.com/globalbioticinteractions/elton/releases/download/${ELTON_VERSION}/elton.jar"
     echo elton not found... installing from [${ELTON_DOWNLOAD_URL}]
-    wget --quiet ${ELTON_DOWNLOAD_URL} -O elton.jar
+    curl --silent -L "${ELTON_DOWNLOAD_URL}" > elton.jar
     export ELTON_CMD="java -Xmx4G -jar elton.jar"
   fi
 
