@@ -111,7 +111,7 @@ function configure_elton {
 
   export ELTON_VERSION=$(${ELTON_CMD} version)
 
-  if [[ -n ${TRAVIS_REPO_SLUG} ]]
+  if [[ -n ${TRAVIS_REPO_SLUG} || -n ${GITHUB_REPOSITORY} ]]
     then
       ELTON_UPDATE="${ELTON_CMD} update ${ELTON_OPTS} --registry local"
       ELTON_NAMESPACE="local"
@@ -220,7 +220,7 @@ then
   save_readme
   upload README.txt "review summary"
 else
-  if [[ -n ${TRAVIS_REPO_SLUG} ]]
+  if [[ -n ${TRAVIS_REPO_SLUG} || -n ${GITHUB_REPOSITORY} ]]
   then
     upload_file_io
   else

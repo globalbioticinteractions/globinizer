@@ -11,7 +11,7 @@
 #     ./check-dataset.sh globalbioticinteractions/template-dataset /var/cache/elton/datasets
 #
 
-# set -x
+#set -x
 
 export REPO_NAME=$1
 export ELTON_UPDATE_DISABLED=$2
@@ -83,7 +83,7 @@ function save_readme {
 }
 
 function install_deps {
-  if [[ -n ${TRAVIS_REPO_SLUG} ]]
+  if [[ -n ${TRAVIS_REPO_SLUG} || -n ${GITHUB_REPOSITORY} ]]
   then
     sudo apt-get -q update &> /dev/null
     sudo apt-get -q install miller jq -y &> /dev/null
@@ -105,13 +105,13 @@ function configure_elton {
   else
     local ELTON_DOWNLOAD_URL="https://github.com/globalbioticinteractions/elton/releases/download/${ELTON_VERSION}/elton.jar"
     echo elton not found... installing from [${ELTON_DOWNLOAD_URL}]
-    wget --quiet ${ELTON_DOWNLOAD_URL} -O elton.jar
-    export ELTON_CMD="java -Xmx4G -jar elton.jar"
+    curl --silent -L "${ELTON_DOWNLOAD_URL}" > "${ELTON_JAR}"
+    export ELTON_CMD="java -Xmx4G -jar ${ELTON_JAR}"
   fi
 
   export ELTON_VERSION=$(${ELTON_CMD} version)
 
-  if [[ -n ${TRAVIS_REPO_SLUG} ]]
+  if [[ -n ${TRAVIS_REPO_SLUG} || -n ${GITHUB_REPOSITORY} ]]
     then
       ELTON_UPDATE="${ELTON_CMD} update ${ELTON_OPTS} --registry local"
       ELTON_NAMESPACE="local"
@@ -220,7 +220,7 @@ then
   save_readme
   upload README.txt "review summary"
 else
-  if [[ -n ${TRAVIS_REPO_SLUG} ]]
+  if [[ -n ${TRAVIS_REPO_SLUG} || -n ${GITHUB_REPOSITORY} ]]
   then
     upload_file_io
   else
