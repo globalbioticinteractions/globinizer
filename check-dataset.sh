@@ -83,7 +83,7 @@ function save_readme {
 }
 
 function install_deps {
-  if [[ -n ${TRAVIS_REPO_SLUG} ]]
+  if [[ -n ${TRAVIS_REPO_SLUG} || -n ${GITHUB_REPOSITORY} ]]
   then
     sudo apt-get -q update &> /dev/null
     sudo apt-get -q install miller jq -y &> /dev/null
