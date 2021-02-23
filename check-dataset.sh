@@ -106,7 +106,7 @@ function configure_elton {
     local ELTON_DOWNLOAD_URL="https://github.com/globalbioticinteractions/elton/releases/download/${ELTON_VERSION}/elton.jar"
     echo elton not found... installing from [${ELTON_DOWNLOAD_URL}]
     curl --silent -L "${ELTON_DOWNLOAD_URL}" > "${ELTON_JAR}"
-    export ELTON_CMD="java -Xmx4G -jar elton.jar"
+    export ELTON_CMD="java -Xmx4G -jar ${ELTON_JAR}"
   fi
 
   export ELTON_VERSION=$(${ELTON_CMD} version)
