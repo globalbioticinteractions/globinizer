@@ -245,7 +245,7 @@ then
     upload datasets.tar.gz "cached dataset archive"
   fi
 
-  zip -r review.zip README.txt datasets/* indexed-interactions* review*
+  zip -r review.zip README.txt datasets/* indexed-* review*
   upload review.zip "review archive"
   
   save_readme
