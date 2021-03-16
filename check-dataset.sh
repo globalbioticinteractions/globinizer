@@ -123,6 +123,10 @@ function configure_elton {
   fi
 }
 
+function tsv2csv {
+  mlr --itsv --ocsv cat
+}
+
 echo_logo | tee_readme 
 
 install_deps
@@ -144,7 +148,25 @@ cat review-sample.tsv | tail -n+2 | cut -f15 | grep -v "^$" | jq -c . > review-s
 cat review-sample.json | mlr --ijson --ocsv cat > review-sample.csv
 
 ${ELTON_CMD} interactions ${ELTON_OPTS} ${ELTON_NAMESPACE} | gzip > indexed-interactions.tsv.gz
+cat indexed-interactions.tsv.gz | tsv2csv | gzip > indexed-interactions.csv.gz
+
+cat indexed-interactions.tsv.gz\
+| mlr --tsv cut -f referenceDoi,referenceUrl,referenceCitation,namespace,citation,archiveURI\
+| mlr --tsv sort -f referenceDoi,referenceUrl,referenceCitation,namespace,citation,archiveURI\
+| uniq\
+| gzip > indexed-citations.tsv.gz 
+
+cat indexed-citations.tsv.gz | gunzip | tsv2csv | gzip > indexed-citations.tsv.gz 
+
+${ELTON_CMD} names ${ELTON_OPTS} ${ELTON_NAMESPACE}\
+| mlr --tsv sort -f taxonName\
+| uniq\
+| gzip > indexed-names.tsv.gz
+
+cat indexed-names.tsv.gz | tsv2csv | gzip > indexed-names.csv.gz
+
 cat indexed-interactions.tsv.gz | gunzip | head -n501 > indexed-interactions-sample.tsv
+cat indexed-interactions-sample.tsv | tsv2csv > indexed-interactions-sample.csv
 
 ${ELTON_CMD} nanopubs ${ELTON_OPTS} ${ELTON_NAMESPACE} | gzip > nanopub.ttl.gz
 cat nanopub.ttl.gz | gunzip | head -n1 > nanopub-sample.ttl
