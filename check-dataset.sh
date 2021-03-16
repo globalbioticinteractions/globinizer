@@ -11,7 +11,7 @@
 #     ./check-dataset.sh globalbioticinteractions/template-dataset /var/cache/elton/datasets
 #
 
-#set -x
+set -x
 
 export REPO_NAME=$1
 export ELTON_UPDATE_DISABLED=$2
@@ -148,22 +148,23 @@ cat review-sample.tsv | tail -n+2 | cut -f15 | grep -v "^$" | jq -c . > review-s
 cat review-sample.json | mlr --ijson --ocsv cat > review-sample.csv
 
 ${ELTON_CMD} interactions ${ELTON_OPTS} ${ELTON_NAMESPACE} | gzip > indexed-interactions.tsv.gz
-cat indexed-interactions.tsv.gz | tsv2csv | gzip > indexed-interactions.csv.gz
+cat indexed-interactions.tsv.gz | gunzip | tsv2csv | gzip > indexed-interactions.csv.gz
 
 cat indexed-interactions.tsv.gz\
+| gunzip\
 | mlr --tsv cut -f referenceDoi,referenceUrl,referenceCitation,namespace,citation,archiveURI\
 | mlr --tsv sort -f referenceDoi,referenceUrl,referenceCitation,namespace,citation,archiveURI\
 | uniq\
 | gzip > indexed-citations.tsv.gz 
 
-cat indexed-citations.tsv.gz | gunzip | tsv2csv | gzip > indexed-citations.tsv.gz 
+cat indexed-citations.tsv.gz | gunzip | tsv2csv | gzip > indexed-citations.csv.gz 
 
 ${ELTON_CMD} names ${ELTON_OPTS} ${ELTON_NAMESPACE}\
 | mlr --tsv sort -f taxonName\
 | uniq\
 | gzip > indexed-names.tsv.gz
 
-cat indexed-names.tsv.gz | tsv2csv | gzip > indexed-names.csv.gz
+cat indexed-names.tsv.gz | gunzip | tsv2csv | gzip > indexed-names.csv.gz
 
 cat indexed-interactions.tsv.gz | gunzip | head -n501 > indexed-interactions-sample.tsv
 cat indexed-interactions-sample.tsv | tsv2csv > indexed-interactions-sample.csv
@@ -218,11 +219,19 @@ then
   echo -e "\nThis review generated the following resources:" | tee_readme
   upload review.svg "review badge"
   upload review.tsv.gz "data review"
+  
   upload review-sample.tsv "data review sample tab-separated"
   upload review-sample.json "data review sample json"
   upload review-sample.csv "data review sample csv"
   
   upload indexed-interactions.tsv.gz "indexed interactions"
+  upload indexed-interactions.csv.gz "indexed interactions"
+  
+  upload indexed-names.tsv.gz "indexed names"
+  upload indexed-names.csv.gz "indexed names"
+ 
+  upload indexed-citations.tsv.gz "indexed citations"
+  upload indexed-citations.csv.gz "indexed citations"
 
   upload indexed-interactions-sample.tsv "indexed interactions sample"
 
