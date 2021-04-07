@@ -24,7 +24,6 @@ export REVIEW_REPO_HOST="blob.globalbioticinteractions.org"
 export README=$(mktemp)
 export REVIEW_DIR="review/${REPO_NAME}"
 
-
 function echo_logo {
   echo "$(cat <<_EOF_
    _____ _       ____ _____   _____            _                
@@ -155,15 +154,15 @@ cat indexed-interactions.tsv.gz | gunzip | tsv2csv | gzip > indexed-interactions
 
 cat indexed-interactions.tsv.gz\
 | gunzip\
-| mlr --tsv cut -f referenceDoi,referenceUrl,referenceCitation,namespace,citation,archiveURI\
-| mlr --tsv sort -f referenceDoi,referenceUrl,referenceCitation,namespace,citation,archiveURI\
+| mlr --icsv --ifs tab cut -f referenceDoi,referenceUrl,referenceCitation,namespace,citation,archiveURI\
+| mlr --icsv --ifs tab sort -f referenceDoi,referenceUrl,referenceCitation,namespace,citation,archiveURI\
 | uniq\
 | gzip > indexed-citations.tsv.gz 
 
 cat indexed-citations.tsv.gz | gunzip | tsv2csv | gzip > indexed-citations.csv.gz 
 
 ${ELTON_CMD} names ${ELTON_OPTS} ${ELTON_NAMESPACE}\
-| mlr --tsv sort -f taxonName\
+| mlr --icsv --ifs tab sort -f taxonName\
 | uniq\
 | gzip > indexed-names.tsv.gz
 
