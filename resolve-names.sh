@@ -124,7 +124,10 @@ function configure_elton {
 }
 
 function tsv2csv {
-  mlr --itsv --ocsv cat
+  # for backward compatibility do not use
+  #   mlr --itsv --ocsv cat
+  # but use:
+  mlr --icsv --ifs tab --ocsv cat
 }
 
 echo_logo | tee_readme 
