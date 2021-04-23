@@ -24,6 +24,8 @@ export REVIEW_REPO_HOST="blob.globalbioticinteractions.org"
 export README=$(mktemp)
 export REVIEW_DIR="review/${REPO_NAME}"
 
+export MLR_TSV_INPUT_OPTS="${MLR_TSV_INPUT_OPTS}"
+
 function echo_logo {
   echo "$(cat <<_EOF_
    _____ _       ____ _____   _____            _                
@@ -124,11 +126,13 @@ function configure_elton {
   fi
 }
 
+
+
 function tsv2csv {
   # for backward compatibility do not use
   #   mlr --itsv --ocsv cat
   # but use:
-  mlr --icsv --ifs tab --ocsv cat
+  mlr ${MLR_TSV_INPUT_OPTS} --ocsv cat
 }
 
 echo_logo | tee_readme 
@@ -156,15 +160,15 @@ cat indexed-interactions.tsv.gz | gunzip | tsv2csv | gzip > indexed-interactions
 
 cat indexed-interactions.tsv.gz\
 | gunzip\
-| mlr --icsv --ifs tab cut -f referenceDoi,referenceUrl,referenceCitation,namespace,citation,archiveURI\
-| mlr --icsv --ifs tab sort -f referenceDoi,referenceUrl,referenceCitation,namespace,citation,archiveURI\
+| mlr ${MLR_TSV_INPUT_OPTS} cut -f referenceDoi,referenceUrl,referenceCitation,namespace,citation,archiveURI\
+| mlr ${MLR_TSV_INPUT_OPTS} sort -f referenceDoi,referenceUrl,referenceCitation,namespace,citation,archiveURI\
 | uniq\
 | gzip > indexed-citations.tsv.gz 
 
 cat indexed-citations.tsv.gz | gunzip | tsv2csv | gzip > indexed-citations.csv.gz 
 
 ${ELTON_CMD} names ${ELTON_OPTS} ${ELTON_NAMESPACE}\
-| mlr --icsv --ifs tab sort -f taxonName\
+| mlr ${MLR_TSV_INPUT_OPTS} sort -f taxonName\
 | uniq\
 | gzip > indexed-names.tsv.gz
 
