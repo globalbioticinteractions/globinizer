@@ -175,6 +175,8 @@ ${ELTON_CMD} names ${ELTON_OPTS} ${ELTON_NAMESPACE}\
 | gzip > indexed-names.tsv.gz
 
 cat indexed-names.tsv.gz | gunzip | tsv2csv | gzip > indexed-names.csv.gz
+cat indexed-names.tsv.gz | gunzip | head -n501 > indexed-names-sample.tsv
+cat indexed-names-sample.tsv | tsv2csv > indexed-names-sample.csv
 
 cat indexed-interactions.tsv.gz | gunzip | head -n501 > indexed-interactions-sample.tsv
 cat indexed-interactions-sample.tsv | tsv2csv > indexed-interactions-sample.csv
@@ -237,13 +239,18 @@ then
   upload indexed-interactions.tsv.gz "indexed interactions"
   upload indexed-interactions.csv.gz "indexed interactions"
   
+  upload indexed-interactions-sample.tsv "indexed interactions sample"
+  upload indexed-interactions-sample.csv "indexed interactions sample"
+  
   upload indexed-names.tsv.gz "indexed names"
   upload indexed-names.csv.gz "indexed names"
+  
+  upload indexed-names-sample.tsv "indexed names sample"
+  upload indexed-names-sample.csv "indexed names sample"
  
   upload indexed-citations.tsv.gz "indexed citations"
   upload indexed-citations.csv.gz "indexed citations"
 
-  upload indexed-interactions-sample.tsv "indexed interactions sample"
 
   upload nanopub.ttl.gz "interactions nanopubs"
   
