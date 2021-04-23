@@ -25,6 +25,8 @@ export README=$(mktemp)
 export REVIEW_DIR="review/${REPO_NAME}"
 
 export MLR_TSV_INPUT_OPTS="--icsvlite --ifs tab"
+export MLR_TSV_OUTPUT_OPTS="--ocsvlite --ofs tab"
+export MLR_TSV_OPTS="${MLR_TSV_INPUT_OPTS} ${MLR_TSV_OUTPUT_OPTS}"
 
 function echo_logo {
   echo "$(cat <<_EOF_
@@ -160,15 +162,15 @@ cat indexed-interactions.tsv.gz | gunzip | tsv2csv | gzip > indexed-interactions
 
 cat indexed-interactions.tsv.gz\
 | gunzip\
-| mlr ${MLR_TSV_INPUT_OPTS} cut -f referenceDoi,referenceUrl,referenceCitation,namespace,citation,archiveURI\
-| mlr ${MLR_TSV_INPUT_OPTS} sort -f referenceDoi,referenceUrl,referenceCitation,namespace,citation,archiveURI\
+| mlr ${MLR_TSV_OPTS} cut -f referenceDoi,referenceUrl,referenceCitation,namespace,citation,archiveURI\
+| mlr ${MLR_TSV_OPTS} sort -f referenceDoi,referenceUrl,referenceCitation,namespace,citation,archiveURI\
 | uniq\
 | gzip > indexed-citations.tsv.gz 
 
 cat indexed-citations.tsv.gz | gunzip | tsv2csv | gzip > indexed-citations.csv.gz 
 
 ${ELTON_CMD} names ${ELTON_OPTS} ${ELTON_NAMESPACE}\
-| mlr ${MLR_TSV_INPUT_OPTS} sort -f taxonName\
+| mlr ${MLR_TSV_OPTS} sort -f taxonName\
 | uniq\
 | gzip > indexed-names.tsv.gz
 
