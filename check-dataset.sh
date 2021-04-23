@@ -170,7 +170,7 @@ cat indexed-interactions.tsv.gz\
 cat indexed-citations.tsv.gz | gunzip | tsv2csv | gzip > indexed-citations.csv.gz 
 
 ${ELTON_CMD} names ${ELTON_OPTS} ${ELTON_NAMESPACE}\
-| mlr ${MLR_TSV_OPTS} sort -f taxonName\
+| mlr ${MLR_TSV_OPTS} sort -ftaxonName,taxonPath,taxonId,taxonPathIds,taxonRank,taxonPathNames\
 | uniq\
 | gzip > indexed-names.tsv.gz
 
