@@ -1,4 +1,4 @@
-#!/bin/bash
+e!/bin/bash
 #
 #   imports single github globi data repository and check whether it can be read by GloBI.
 #   If optional elton dataset dir is provided, no remote updates will be attempted.
@@ -110,6 +110,8 @@ function configure_elton {
 
   export ELTON_VERSION=$(${ELTON_CMD} version)
 
+  echo elton version "${ELTON_VERSION}"
+
   if [[ -n ${TRAVIS_REPO_SLUG} || -n ${GITHUB_REPOSITORY} ]]
     then
       ELTON_UPDATE="${ELTON_CMD} update ${ELTON_OPTS} --registry local"
@@ -135,7 +137,7 @@ install_deps
 
 configure_elton
 
-echo -e "\nReview of [${ELTON_NAMESPACE}] using Elton version [${ELTON_VERSION}] started at [$(date -Iseconds)]." | tee_readme 
+echo -e "\nReview of [${ELTON_NAMESPACE}] started at [$(date -Iseconds)]." | tee_readme 
 
 if [[ -z ${ELTON_UPDATE_DISABLED} ]]
 then
@@ -199,7 +201,7 @@ save_readme
 
 function upload_file_io {
   echo -e "\nDownload the full review report with the single-use, and expiring, file.io link at:"
-  curl -F "file=@review.tsv.gz" https://file.io 
+  curl --silent -F "file=@review.tsv.gz" https://file.io 
 }
 
 function upload {
