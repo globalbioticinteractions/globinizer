@@ -1,4 +1,4 @@
-e!/bin/bash
+#!/bin/bash
 #
 #   imports single github globi data repository and check whether it can be read by GloBI.
 #   If optional elton dataset dir is provided, no remote updates will be attempted.
