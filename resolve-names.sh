@@ -24,7 +24,7 @@ export REVIEW_REPO_HOST="blob.globalbioticinteractions.org"
 export README=$(mktemp)
 export REVIEW_DIR="review/${REPO_NAME}"
 
-export MLR_TSV_INPUT_OPTS="${MLR_TSV_INPUT_OPTS}"
+export MLR_TSV_INPUT_OPTS="--icsvlite --ifs tab"
 
 function echo_logo {
   echo "$(cat <<_EOF_
