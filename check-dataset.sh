@@ -154,8 +154,7 @@ fi
 
 ${ELTON_CMD} review ${ELTON_OPTS} ${ELTON_NAMESPACE} --type note,summary | gzip > review.tsv.gz
 cat review.tsv.gz | gunzip | head -n501 > review-sample.tsv
-cat review-sample.tsv | tail -n+2 | cut -f15 | grep -v "^$" | jq -c . > review-sample.json
-cat review-sample.json | mlr --ijson --ocsv cat > review-sample.csv
+cat review-sample.tsv | tsv2csv > review-sample.csv
 
 ${ELTON_CMD} interactions ${ELTON_OPTS} ${ELTON_NAMESPACE} | gzip > indexed-interactions.tsv.gz
 cat indexed-interactions.tsv.gz | gunzip | tsv2csv | gzip > indexed-interactions.csv.gz
@@ -233,7 +232,6 @@ then
   upload review.tsv.gz "data review"
   
   upload review-sample.tsv "data review sample tab-separated"
-  upload review-sample.json "data review sample json"
   upload review-sample.csv "data review sample csv"
   
   upload indexed-interactions.tsv.gz "indexed interactions"
