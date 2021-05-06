@@ -219,7 +219,7 @@ function upload {
      echo -e "\nfailed to upload $2, please check following upload log"
      cat upload.log
   else
-     echo "  - https://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/$1" | tee_readme
+     echo "https://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/$1" | tee_readme
   fi
 
 }
