@@ -180,8 +180,8 @@ cat indexed-names-sample.tsv | tsv2csv > indexed-names-sample.csv
 cat indexed-interactions.tsv.gz | gunzip | head -n501 > indexed-interactions-sample.tsv
 cat indexed-interactions-sample.tsv | tsv2csv > indexed-interactions-sample.csv
 
-${ELTON_CMD} nanopubs ${ELTON_OPTS} ${ELTON_NAMESPACE} | gzip > nanopub.ttl.gz
-cat nanopub.ttl.gz | gunzip | head -n1 > nanopub-sample.ttl
+${ELTON_CMD} nanopubs ${ELTON_OPTS} ${ELTON_NAMESPACE} | gzip > nanopub.trig.gz
+cat nanopub.trig.gz | gunzip | head -n1 > nanopub-sample.trig
 
 echo -e "\nReview of [${REPO_NAME}] included:" | tee_readme
 cat review.tsv.gz | gunzip | tail -n3 | cut -f6 | sed s/^/\ \ -\ /g | tee_readme
@@ -250,9 +250,9 @@ then
   upload indexed-citations.csv.gz "indexed citations"
 
 
-  upload nanopub.ttl.gz "interactions nanopubs"
+  upload nanopub.trig.gz "interactions nanopubs"
   
-  upload nanopub-sample.ttl "interactions nanopub sample"
+  upload nanopub-sample.trig "interactions nanopub sample"
 
   if [[ -z ${ELTON_UPDATE_DISABLED} ]]
   then
