@@ -151,10 +151,10 @@ function configure_nomer {
     
     mkdir -p .nomer
     curl --silent -L "${NOMER_COL_DOWNLOAD_URL}" > ".nomer/catalogue_of_life_mapdb.zip"    
-    cd .nomer && unzip catalogue_of_life_mapdb.zip
+    unzip .nomer/catalogue_of_life_mapdb.zip -d .nomer
     
     curl --silent -L "${NOMER_NCBI_DOWNLOAD_URL}" > ".nomer/ncbi_mapdb.zip"    
-    cd .nomer && unzip ncbi_mapdb.zip
+    unzip .nomer/ncbi_mapdb.zip -d .nomer
     
   fi
 
