@@ -160,6 +160,8 @@ function configure_nomer {
     configure_taxonomy catalogue_of_life 
     configure_taxonomy ncbi
     configure_taxonomy discoverlife
+    configure_taxonomy gbif
+    configure_taxonomy itis
         
   fi
 
@@ -232,6 +234,8 @@ cat indexed-names-sample.tsv | tsv2csv > indexed-names-sample.csv
 resolve_names indexed-names.tsv.gz col
 resolve_names indexed-names.tsv.gz ncbi
 resolve_names indexed-names.tsv.gz discoverlife
+resolve_names indexed-names.tsv.gz gbif
+resolve_names indexed-names.tsv.gz itis
 
 cat indexed-interactions.tsv.gz | gunzip | head -n501 > indexed-interactions-sample.tsv
 cat indexed-interactions-sample.tsv | tsv2csv > indexed-interactions-sample.csv
@@ -298,7 +302,13 @@ then
   
   upload indexed-names.tsv.gz "indexed names"
   upload indexed-names.csv.gz "indexed names"
-  
+
+  upload indexed-names-resolved-col.tsv.gz "indexed names resolved against Catalogue of Life"  
+  upload indexed-names-resolved-ncbi.tsv.gz "indexed names resolved against NCBI Taxonomy"  
+  upload indexed-names-resolved-discoverlife.tsv.gz "indexed names resolved against DiscoverLife Bee Checklist"  
+  upload indexed-names-resolved-gbif.tsv.gz "indexed names resolved against GBIF backbone taxonomy"  
+  upload indexed-names-resolved-itis.tsv.gz "indexed names resolved against Integrated Taxonomic Information System"  
+
   upload indexed-names-sample.tsv "indexed names sample"
   upload indexed-names-sample.csv "indexed names sample"
  
