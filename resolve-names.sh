@@ -134,7 +134,7 @@ function configure_elton {
 
 function configure_taxonomy {
     mkdir -p .nomer
-		local DOWNLOAD_URL="https://github.com/globalbioticinteractions/nomer/releases/download/${NOMER_VERSION}/$1_mapdb.zip"
+    local DOWNLOAD_URL="https://github.com/globalbioticinteractions/nomer/releases/download/${NOMER_VERSION}/$1_mapdb.zip"
     curl --silent -L "${DOWNLOAD_URL}" > ".nomer/$1_mapdb.zip"    
     unzip .nomer/$1_mapdb.zip -d .nomer
 }
@@ -187,12 +187,12 @@ configure_nomer
 
 function resolve_names {
   local RESOLVED=indexed-names-resolved-$2.tsv.gz
+  echo -e "\n--- [$2] start ---\n"
   time cat $1 | gunzip | tail -n+2 | sort | uniq\
     | ${NOMER_CMD} append $2 --include-header\
     | gzip > $RESOLVED
-  echo -e "\n--- [$2] start ---\n"
-  echo $2 resolved $(cat $RESOLVED | gunzip | tail -n+2 | grep -v NONE | wc -l) out of $(cat $RESOLVED | gunzip | tail -n+2 | wc -l) names
-  echo $2 first 10 unresolved names include:
+  echo [$2] resolved $(cat $RESOLVED | gunzip | tail -n+2 | grep -v NONE | wc -l) out of $(cat $RESOLVED | gunzip | tail -n+2 | wc -l) names.
+  echo [$2] first 10 unresolved names (if any) include:
   cat $RESOLVED | gunzip | tail -n+2 | grep NONE | cut -f1,2 | head -n11 
   echo -e "\n--- [$2] end ---\n"
 }
