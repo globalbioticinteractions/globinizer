@@ -20,6 +20,10 @@ export ELTON_VERSION=0.12.3
 export ELTON_DATA_REPO_MAIN="https://raw.githubusercontent.com/${REPO_NAME}/main"
 export ELTON_JAR="$PWD/elton.jar"
 export ELTON_OPTS=""
+
+export NOMER_VERSION=0.2.11
+export NOMER_JAR="$PWD/nomer.jar"
+
 export REVIEW_REPO_HOST="blob.globalbioticinteractions.org"
 export README=$(mktemp)
 export REVIEW_DIR="review/${REPO_NAME}"
@@ -128,6 +132,36 @@ function configure_elton {
   fi
 }
 
+function configure_nomer {
+  #NOMER_OPTS=" --cache-dir=\"${ELTON_DATASETS_DIR}\""
+
+  if [[ $(which nomer) ]]
+  then 
+    echo using local nomer found at [$(which nomer)]
+    export NOMER_CMD="nomer"
+  else
+    local NOMER_DOWNLOAD_URL="https://github.com/globalbioticinteractions/nomer/releases/download/${NOMER_VERSION}/nomer.jar"
+    echo nomer not found... installing from [${NOMER_DOWNLOAD_URL}]
+    curl --silent -L "${NOMER_DOWNLOAD_URL}" > "${NOMER_JAR}"
+    export NOMER_CMD="java -Xmx4G -jar ${NOMER_JAR}"
+    
+    local NOMER_COL_DOWNLOAD_URL="https://github.com/globalbioticinteractions/nomer/releases/download/${NOMER_VERSION}/catalogue_of_life_mapdb.zip"
+    
+    local NOMER_NCBI_DOWNLOAD_URL="https://github.com/globalbioticinteractions/nomer/releases/download/${NOMER_VERSION}/ncbi_mapdb.zip"
+    
+    mkdir -p .nomer
+    curl --silent -L "${NOMER_COL_DOWNLOAD_URL}" > ".nomer/catalogue_of_life_mapdb.zip"    
+    cd .nomer && unzip catalogue_of_life_mapdb.zip
+    
+    curl --silent -L "${NOMER_NCBI_DOWNLOAD_URL}" > ".nomer/ncbi_mapdb.zip"    
+    cd .nomer && unzip ncbi_mapdb.zip
+    
+  fi
+
+  export NOMER_VERSION=$(${NOMER_CMD} version)
+
+  echo nomer version "${NOMER_VERSION}"
+}
 
 
 function tsv2csv {
@@ -142,6 +176,8 @@ echo_logo | tee_readme
 install_deps
 
 configure_elton
+configure_nomer
+
 
 echo -e "\nReview of [${ELTON_NAMESPACE}] started at [$(date -Iseconds)]." | tee_readme 
 
@@ -176,6 +212,10 @@ ${ELTON_CMD} names ${ELTON_OPTS} ${ELTON_NAMESPACE}\
 cat indexed-names.tsv.gz | gunzip | tsv2csv | gzip > indexed-names.csv.gz
 cat indexed-names.tsv.gz | gunzip | head -n501 > indexed-names-sample.tsv
 cat indexed-names-sample.tsv | tsv2csv > indexed-names-sample.csv
+
+# name resolving 
+cat indexed-names.tsv.gz | gunzip | head -n101 | tail -n+2 | ${NOMER_CMD} append col | tee indexed-names-resolved-col.tsv
+cat indexed-names.tsv.gz | gunzip | head -n101 | tail -n+2 | ${NOMER_CMD} append ncbi| tee indexed-names-resolved-ncbi.tsv
 
 cat indexed-interactions.tsv.gz | gunzip | head -n501 > indexed-interactions-sample.tsv
 cat indexed-interactions-sample.tsv | tsv2csv > indexed-interactions-sample.csv
