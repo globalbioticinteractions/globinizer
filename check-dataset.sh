@@ -192,7 +192,7 @@ function resolve_names {
     | ${NOMER_CMD} append $2 --include-header\
     | gzip > $RESOLVED
   echo [$2] resolved $(cat $RESOLVED | gunzip | tail -n+2 | grep -v NONE | wc -l) out of $(cat $RESOLVED | gunzip | tail -n+2 | wc -l) names.
-  echo [$2] first 10 unresolved names (if any) include:
+  echo [$2] first 10 unresolved names include:
   cat $RESOLVED | gunzip | tail -n+2 | grep NONE | cut -f1,2 | head -n11 
   echo -e "\n--- [$2] end ---\n"
 }
