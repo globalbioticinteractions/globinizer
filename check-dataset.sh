@@ -132,6 +132,13 @@ function configure_elton {
   fi
 }
 
+function configure_taxonomy {
+    mkdir -p .nomer
+		local DOWNLOAD_URL="https://github.com/globalbioticinteractions/nomer/releases/download/${NOMER_VERSION}/$1_mapdb.zip"
+    curl --silent -L "${DOWNLOAD_URL}" > ".nomer/$1_mapdb.zip"    
+    unzip .nomer/$1_mapdb.zip -d .nomer
+}
+
 function configure_nomer {
   #NOMER_OPTS=" --cache-dir=\"${ELTON_DATASETS_DIR}\""
 
@@ -149,13 +156,11 @@ function configure_nomer {
     
     local NOMER_NCBI_DOWNLOAD_URL="https://github.com/globalbioticinteractions/nomer/releases/download/${NOMER_VERSION}/ncbi_mapdb.zip"
     
-    mkdir -p .nomer
-    curl --silent -L "${NOMER_COL_DOWNLOAD_URL}" > ".nomer/catalogue_of_life_mapdb.zip"    
-    unzip .nomer/catalogue_of_life_mapdb.zip -d .nomer
     
-    curl --silent -L "${NOMER_NCBI_DOWNLOAD_URL}" > ".nomer/ncbi_mapdb.zip"    
-    unzip .nomer/ncbi_mapdb.zip -d .nomer
-    
+    configure_taxonomy catalogue_of_life 
+    configure_taxonomy ncbi
+    configure_taxonomy discoverlife
+        
   fi
 
   export NOMER_VERSION=$(${NOMER_CMD} version)
@@ -177,6 +182,16 @@ install_deps
 
 configure_elton
 configure_nomer
+
+function resolve_names {
+  local RESOLVED=indexed-names-resolved-$2.tsv.gz
+  time cat $1 | gunzip | tail -n+2 | sort | uniq\
+    | ${NOMER_CMD} append $2 --include-header\
+    | gzip > $RESOLVED
+  echo $2 resolved $(cat $RESOLVED | gunzip | tail -n+2 | grep -v NONE | wc -l) out of $(cat $RESOLVED | gunzip | tail -n+2 | wc -l) names
+  echo $2 first 10 unresolved names include:
+  cat $RESOLVED | gunzip | tail -n+2 | grep NONE | cut -f1,2 | head -n11 
+}
 
 
 echo -e "\nReview of [${ELTON_NAMESPACE}] started at [$(date -Iseconds)]." | tee_readme 
@@ -214,8 +229,9 @@ cat indexed-names.tsv.gz | gunzip | head -n501 > indexed-names-sample.tsv
 cat indexed-names-sample.tsv | tsv2csv > indexed-names-sample.csv
 
 # name resolving 
-cat indexed-names.tsv.gz | gunzip | head -n101 | tail -n+2 | ${NOMER_CMD} append col | tee indexed-names-resolved-col.tsv
-cat indexed-names.tsv.gz | gunzip | head -n101 | tail -n+2 | ${NOMER_CMD} append ncbi| tee indexed-names-resolved-ncbi.tsv
+resolve_names indexed-names.tsv.gz col
+resolve_names indexed-names.tsv.gz ncbi
+resolve_names indexed-names.tsv.gz discoverlife
 
 cat indexed-interactions.tsv.gz | gunzip | head -n501 > indexed-interactions-sample.tsv
 cat indexed-interactions-sample.tsv | tsv2csv > indexed-interactions-sample.csv
