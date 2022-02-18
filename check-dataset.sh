@@ -238,6 +238,7 @@ resolve_names indexed-names.tsv.gz ncbi
 resolve_names indexed-names.tsv.gz discoverlife
 resolve_names indexed-names.tsv.gz gbif
 resolve_names indexed-names.tsv.gz itis
+${NOMER_CMD} clean
 
 cat indexed-interactions.tsv.gz | gunzip | head -n501 > indexed-interactions-sample.tsv
 cat indexed-interactions-sample.tsv | tsv2csv > indexed-interactions-sample.csv

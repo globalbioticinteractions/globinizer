@@ -136,7 +136,7 @@ function configure_taxonomy {
     mkdir -p .nomer
     local DOWNLOAD_URL="https://github.com/globalbioticinteractions/nomer/releases/download/${NOMER_VERSION}/$1_mapdb.zip"
     curl --silent -L "${DOWNLOAD_URL}" > ".nomer/$1_mapdb.zip"    
-    unzip .nomer/$1_mapdb.zip -d .nomer
+    unzip -qq  .nomer/$1_mapdb.zip -d .nomer
 }
 
 function configure_nomer {
@@ -238,6 +238,7 @@ resolve_names indexed-names.tsv.gz ncbi
 resolve_names indexed-names.tsv.gz discoverlife
 resolve_names indexed-names.tsv.gz gbif
 resolve_names indexed-names.tsv.gz itis
+${NOMER_CMD} clean
 
 cat indexed-interactions.tsv.gz | gunzip | head -n501 > indexed-interactions-sample.tsv
 cat indexed-interactions-sample.tsv | tsv2csv > indexed-interactions-sample.csv
