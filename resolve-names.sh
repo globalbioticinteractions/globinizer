@@ -152,11 +152,6 @@ function configure_nomer {
     curl --silent -L "${NOMER_DOWNLOAD_URL}" > "${NOMER_JAR}"
     export NOMER_CMD="java -Xmx4G -jar ${NOMER_JAR}"
     
-    local NOMER_COL_DOWNLOAD_URL="https://github.com/globalbioticinteractions/nomer/releases/download/${NOMER_VERSION}/catalogue_of_life_mapdb.zip"
-    
-    local NOMER_NCBI_DOWNLOAD_URL="https://github.com/globalbioticinteractions/nomer/releases/download/${NOMER_VERSION}/ncbi_mapdb.zip"
-    
-    
     configure_taxonomy catalogue_of_life 
     configure_taxonomy ncbi
     configure_taxonomy discoverlife
@@ -238,7 +233,7 @@ resolve_names indexed-names.tsv.gz ncbi
 resolve_names indexed-names.tsv.gz discoverlife
 resolve_names indexed-names.tsv.gz gbif
 resolve_names indexed-names.tsv.gz itis
-${NOMER_CMD} clean
+${NOMER_CMD} clean 
 
 cat indexed-interactions.tsv.gz | gunzip | head -n501 > indexed-interactions-sample.tsv
 cat indexed-interactions-sample.tsv | tsv2csv > indexed-interactions-sample.csv
