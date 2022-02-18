@@ -136,7 +136,7 @@ function configure_taxonomy {
     mkdir -p .nomer
     local DOWNLOAD_URL="https://github.com/globalbioticinteractions/nomer/releases/download/${NOMER_VERSION}/$1_mapdb.zip"
     curl --silent -L "${DOWNLOAD_URL}" > ".nomer/$1_mapdb.zip"    
-    unzip .nomer/$1_mapdb.zip -d .nomer
+    unzip -qq  .nomer/$1_mapdb.zip -d .nomer
 }
 
 function configure_nomer {
