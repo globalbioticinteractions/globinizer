@@ -157,6 +157,7 @@ function configure_nomer {
     configure_taxonomy discoverlife
     configure_taxonomy gbif
     configure_taxonomy itis
+    configure_taxonomy globi
         
   fi
 
@@ -306,6 +307,7 @@ then
   upload indexed-names-resolved-discoverlife.tsv.gz "indexed names resolved against DiscoverLife Bee Checklist"  
   upload indexed-names-resolved-gbif.tsv.gz "indexed names resolved against GBIF backbone taxonomy"  
   upload indexed-names-resolved-itis.tsv.gz "indexed names resolved against Integrated Taxonomic Information System"  
+  upload indexed-names-resolved-globi.tsv.gz "indexed names resolved against GloBI Taxon Graph"  
 
   upload indexed-names-sample.tsv "indexed names sample"
   upload indexed-names-sample.csv "indexed names sample"
