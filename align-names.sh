@@ -1,14 +1,13 @@
 #!/bin/bash
 #
-#   imports single github globi data repository and check whether it can be read by GloBI.
-#   If optional elton dataset dir is provided, no remote updates will be attempted.
+#   attempt to align names found in .txt files with various taxonomies using
+#   GloBI's nomer. 
 #
 #   usage:
-#     check-dataset.sh [github repo name] [(optional) elton datasets dir]
+#     align-names.sh 
 # 
 #   example:
-#     ./check-dataset.sh globalbioticinteractions/template-dataset
-#     ./check-dataset.sh globalbioticinteractions/template-dataset /var/cache/elton/datasets
+#     ./align-names.sh 
 #
 
 #set -x
@@ -68,10 +67,10 @@ _EOF_
 }
 
 function echo_reproduce {
-  echo -e "\n\nIf you'd like, you can generate your own review notes by:"
-  echo "  - installing GloBI's Elton via https://github.com/globalbioticinteractions/elton"
-  echo "  - running \"elton update $REPO_NAME && elton review --type note,summary $REPO_NAME > review.tsv\""
-  echo "  - inspecting review.tsv"
+  echo -e "\n\nIf you'd like, you can generate your own name alignment by:"
+  echo "  - installing GloBI's Nomer via https://github.com/globalbioticinteractions/nomer"
+  echo "  - inspecting the align-names.sh script at https://github.com/globalbioticinteractions/globinizer/blob/master/align-names.sh\"\""
+  echo "  - write your own script for name alignment"
   echo -e "\nPlease email info@globalbioticinteractions.org for questions/ comments."
 }
 
@@ -176,17 +175,13 @@ resolve_names names.tsv.gz gbif
 resolve_names names.tsv.gz itis
 ${NOMER_CMD} clean 
 
-echo -e "\nReview of [${REPO_NAME}] included:" | tee_readme
-cat review.tsv.gz | gunzip | tail -n3 | cut -f6 | sed s/^/\ \ -\ /g | tee_readme
-
 NUMBER_OF_NOTES=$(cat *.tsv.gz | gunzip | cut -f5 | grep "^NONE$" | wc -l)
 
 echo_review_badge $NUMBER_OF_NOTES > review.svg
 
 if [ ${NUMBER_OF_NOTES} -gt 0 ]
 then
-  echo -e "\n[${REPO_NAME}] has ${NUMBER_OF_NOTES} reviewer note(s):" | tee_readme
-  cat review.tsv.gz | gunzip | tail -n+2 | cut -f6 | tac | tail -n+5 | sort | uniq -c | sort -nr | tee_readme
+  echo -e "\n[${REPO_NAME}] has ${NUMBER_OF_NOTES} names alignment note(s)" | tee_readme
 else
   echo -e "\nHurray! [${REPO_NAME}] passed the GloBI review." | tee_readme
 fi
@@ -204,6 +199,9 @@ function upload_file_io {
   curl --silent -F "file=@aligned-names.tsv.gz" https://file.io 
 }
 
+
 echo_reproduce
+
+
 
 exit ${NUMBER_OF_NOTES}
