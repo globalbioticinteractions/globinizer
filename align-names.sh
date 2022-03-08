@@ -168,12 +168,14 @@ cat *.txt | sed 's/^/\t/g' | gzip > names.tsv.gz
 # name resolving 
 resolve_names names.tsv.gz col
 resolve_names names.tsv.gz ncbi
-resolve_names names.tsv.gz discoverlife
 resolve_names names.tsv.gz gbif
 resolve_names names.tsv.gz itis
+cat names-aligned-*.tsv.gz > names-aligned.tsv.gz
+
+
 ${NOMER_CMD} clean 
 
-NUMBER_OF_NOTES=$(cat *.tsv.gz | gunzip | cut -f5 | grep "^NONE$" | wc -l)
+NUMBER_OF_NOTES=$(cat *.tsv.gz | gunzip | grep "NONE" | wc -l)
 
 echo_review_badge $NUMBER_OF_NOTES > review.svg
 
@@ -181,7 +183,7 @@ if [ ${NUMBER_OF_NOTES} -gt 0 ]
 then
   echo -e "\n[${REPO_NAME}] has ${NUMBER_OF_NOTES} names alignment note(s)" | tee_readme
 else
-  echo -e "\nHurray! [${REPO_NAME}] passed the GloBI review." | tee_readme
+  echo -e "\nHurray! [${REPO_NAME}] was able to link all names against various taxonomies." | tee_readme
 fi
 
 echo_reproduce >> ${README}
@@ -193,13 +195,14 @@ save_readme
 #
 
 function upload_file_io {
-  echo -e "\nDownload the name alignment report with the single-use, and expiring, file.io link at:"
-  curl --silent -F "file=@aligned-names.tsv.gz" https://file.io 
+  echo -e "\nDownload the name alignment results with the single-use, and expiring, file.io link at:"
+  curl --silent -F "file=@names-aligned.tsv.gz" https://file.io 
 }
 
 
 echo_reproduce
 
+upload_file_io
 
 
 exit ${NUMBER_OF_NOTES}
