@@ -67,7 +67,7 @@ _EOF_
 function echo_reproduce {
   echo -e "\n\nIf you'd like, you can generate your own name alignment by:"
   echo "  - installing GloBI's Nomer via https://github.com/globalbioticinteractions/nomer"
-  echo "  - inspecting the align-names.sh script at https://github.com/globalbioticinteractions/globinizer/blob/master/align-names.sh\"\""
+  echo "  - inspecting the align-names.sh script at https://github.com/globalbioticinteractions/globinizer/blob/master/align-names.sh"
   echo "  - write your own script for name alignment"
   echo -e "\nPlease email info@globalbioticinteractions.org for questions/ comments."
 }
@@ -196,7 +196,7 @@ save_readme
 
 function upload_file_io {
   echo -e "\nDownload the name alignment results with the single-use, and expiring, file.io link at:"
-  curl --silent -F "file=@names-aligned.tsv.gz" https://file.io 
+  curl --silent -F "file=@names-aligned.tsv.gz" https://file.io | jq --raw-output .link  
 }
 
 
