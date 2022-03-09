@@ -149,8 +149,11 @@ configure_nomer
 
 function resolve_names {
   local RESOLVED=names-aligned-$2.tsv.gz
+
+
   echo -e "\n--- [$2] start ---\n"
   time cat $1 | gunzip | tail -n+2 | sort | uniq\
+    | ${NOMER_CMD} gbif-parse\
     | ${NOMER_CMD} append $2 --include-header\
     | gzip > $RESOLVED
   echo [$2] resolved $(cat $RESOLVED | gunzip | tail -n+2 | grep -v NONE | wc -l) out of $(cat $RESOLVED | gunzip | tail -n+2 | wc -l) names.
@@ -163,15 +166,21 @@ function resolve_names {
 echo -e "\nReview of [${ELTON_NAMESPACE}] started at [$(date -Iseconds)]." | tee_readme 
 
 
-cat *.txt | sed 's/^/\t/g' | gzip > names.tsv.gz
+cat *.txt | mlr --tsvlite cut -f scientificName | sed 's/^/\t/g' | gzip >> names.tsv.gz
+cat *.csv | mlr --icsv --otsv --ifs ';' cut -f scientificName | sed 's/^/\t/g' | gzip >> names.tsv.gz
 
-# name resolving 
+# name resolving
 resolve_names names.tsv.gz col
 resolve_names names.tsv.gz ncbi
 resolve_names names.tsv.gz gbif
 resolve_names names.tsv.gz itis
 cat names-aligned-*.tsv.gz > names-aligned.tsv.gz
 
+cat names-aligned.tsv.gz | gunzip | mlr --itsvlite --ocsv --ofs ';' cat > names-aligned.csv
+cat names-aligned.tsv.gz | gunzip > names-aligned.tsv
+cat names-aligned.tsv.gz | gunzip > names-aligned.txt
+
+zip names-aligned.zip names-aligned.csv names-aligned.tsv names-aligned.txt
 
 ${NOMER_CMD} clean 
 
@@ -196,7 +205,7 @@ save_readme
 
 function upload_file_io {
   echo -e "\nDownload the name alignment results with the single-use, and expiring, file.io link at:"
-  curl --silent -F "file=@names-aligned.tsv.gz" https://file.io | jq --raw-output .link  
+  curl --silent -F "file=@names-aligned.zip" https://file.io | jq --raw-output .link  
 }
 
 
