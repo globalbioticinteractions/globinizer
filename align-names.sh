@@ -164,11 +164,11 @@ function resolve_names {
 }
 
 
-echo -e "\nReview of [${ELTON_NAMESPACE}] started at [$(date -Iseconds)]." | tee_readme 
+echo -e "\nReview of [${REPO_NAME}] started at [$(date -Iseconds)]." | tee_readme 
 
 
-cat *.txt | mlr --tsvlite cut -f scientificName | sed 's/^/\t/g' | gzip >> names.tsv.gz
-cat *.csv | mlr --icsv --otsv --ifs ';' cut -f scientificName | sed 's/^/\t/g' | gzip >> names.tsv.gz
+cat *.txt *.tsv | mlr --tsvlite cut -f scientificName | sed 's/^/\t/g' | gzip >> names.tsv.gz
+cat *.csv | mlr --icsv --otsv --ifs ';' cut -f scientificName | sed 's/^/\t/g' | tail -n+2 | gzip >> names.tsv.gz
 
 if [ $(cat names.tsv.gz | gunzip | wc -l) -lt 2 ]
 then
@@ -199,7 +199,7 @@ if [ ${NUMBER_OF_NOTES} -gt 0 ]
 then
   echo -e "\n[${REPO_NAME}] has ${NUMBER_OF_NOTES} names alignment note(s)" | tee_readme
 else
-  echo -e "\nHurray! [${REPO_NAME}] was able to link all names against various taxonomies." | tee_readme
+  echo -e "\nHurray! [${REPO_NAME}] was able to align all names against various taxonomies." | tee_readme
 fi
 
 echo_reproduce >> ${README}
