@@ -121,7 +121,6 @@ function configure_nomer {
     
     configure_taxonomy catalogue_of_life 
     configure_taxonomy ncbi
-    configure_taxonomy discoverlife
     configure_taxonomy gbif
     configure_taxonomy itis
     configure_taxonomy globi
