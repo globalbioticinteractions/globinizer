@@ -153,10 +153,12 @@ function resolve_names {
 
   echo -e "\n--- [$2] start ---\n"
   time cat $1 | gunzip | tail -n+2 | sort | uniq\
-    | ${NOMER_CMD} append gbif-parse\
+    | ${NOMER_CMD} append --include-header gbif-parse\
     | ${NOMER_CMD} append --properties resolve.properties --include-header $2\
     | gzip > $RESOLVED
-  echo [$2] resolved $(cat $RESOLVED | gunzip | tail -n+2 | grep -v NONE | wc -l) out of $(cat $RESOLVED | gunzip | tail -n+2 | wc -l) names.
+  NUMBER_OF_PROVIDED_NAMES=$(cat $RESOLVED | gunzip | tail -n+2 | wc -l)
+  NUMBER_OF_UNRESOLVED_NAMES=$(cat $RESOLVED | gunzip | tail -n+2 | grep -v NONE | wc -l)
+  echo [$2] resolved $NUMBER_OF_UNRESOLVED_NAMES out of $NUMBER_OF_PROVIDED_NAMES names.
   echo [$2] first 10 unresolved names include:
   cat $RESOLVED | gunzip | tail -n+2 | grep NONE | cut -f1,2 | head -n11 
   echo -e "\n--- [$2] end ---\n"
@@ -168,6 +170,12 @@ echo -e "\nReview of [${ELTON_NAMESPACE}] started at [$(date -Iseconds)]." | tee
 
 cat *.txt | mlr --tsvlite cut -f scientificName | sed 's/^/\t/g' | gzip >> names.tsv.gz
 cat *.csv | mlr --icsv --otsv --ifs ';' cut -f scientificName | sed 's/^/\t/g' | gzip >> names.tsv.gz
+
+if [ $(cat names.tsv.gz | gunzip | wc -l) -lt 2 ]
+then
+  echo "no names found: please check your configuration"
+  exit 1
+fi
 
 # name resolving
 resolve_names names.tsv.gz col
