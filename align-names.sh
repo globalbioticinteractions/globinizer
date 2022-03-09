@@ -149,7 +149,7 @@ configure_nomer
 
 function resolve_names {
   local RESOLVED=names-aligned-$2.tsv.gz
-  echo  'nomer.schema.input=[{"column":0,"type":"externalId"},{"column": 1,"type":"name"}]' > resolve.properties
+  echo  'nomer.schema.input=[{"column":3,"type":"externalId"},{"column": 4,"type":"name"}]' > resolve.properties
 
   echo -e "\n--- [$2] start ---\n"
   time cat $1 | gunzip | tail -n+2 | sort | uniq\
