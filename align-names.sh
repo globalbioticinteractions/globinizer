@@ -149,12 +149,12 @@ configure_nomer
 
 function resolve_names {
   local RESOLVED=names-aligned-$2.tsv.gz
-
+  echo  'nomer.schema.input=[{"column":0,"type":"externalId"},{"column": 1,"type":"name"}]' > resolve.properties
 
   echo -e "\n--- [$2] start ---\n"
   time cat $1 | gunzip | tail -n+2 | sort | uniq\
-    | ${NOMER_CMD} gbif-parse\
-    | ${NOMER_CMD} append $2 --include-header\
+    | ${NOMER_CMD} append gbif-parse\
+    | ${NOMER_CMD} append --properties resolve.properties --include-header $2\
     | gzip > $RESOLVED
   echo [$2] resolved $(cat $RESOLVED | gunzip | tail -n+2 | grep -v NONE | wc -l) out of $(cat $RESOLVED | gunzip | tail -n+2 | wc -l) names.
   echo [$2] first 10 unresolved names include:
