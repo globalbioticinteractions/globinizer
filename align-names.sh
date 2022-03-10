@@ -164,7 +164,7 @@ function resolve_names {
   NUMBER_OF_UNRESOLVED_NAMES=$(cat $RESOLVED | gunzip | tail -n+2 | grep -v NONE | sort | uniq | wc -l)
   echo [$2] resolved $NUMBER_OF_UNRESOLVED_NAMES out of $NUMBER_OF_PROVIDED_NAMES names.
   echo [$2] first 10 unresolved names include:
-  cat $RESOLVED | gunzip | tail -n+2 | grep NONE | cut -f1,2 | head -n11 
+  cat $RESOLVED | gunzip | tail -n+2 | grep NONE | cut -f1,2 | head -n11 | mlr --itsvlite -opprint cat 
   echo -e "\n--- [$2] end ---\n"
 }
 
@@ -187,6 +187,11 @@ resolve_names names.tsv.gz ncbi
 resolve_names names.tsv.gz gbif
 resolve_names names.tsv.gz itis
 cat names-aligned-*.tsv.gz > names-aligned.tsv.gz
+
+echo "top 10 names unresolved names sorted by decreasing number of mismatches across taxonomies"
+echo 'number of mismatches vs. id/name'
+echo '---'
+cat names-aligned.tsv.gz | gunzip | grep NONE | cut -f1,2 | sort | uniq -c | sort -nr | head 
 
 cat names-aligned.tsv.gz | gunzip | mlr --itsvlite --ocsv --ofs ';' cat > names-aligned.csv
 cat names-aligned.tsv.gz | gunzip > names-aligned.tsv
