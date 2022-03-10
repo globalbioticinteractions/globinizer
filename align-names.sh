@@ -45,13 +45,12 @@ function echo_logo {
 ██   ██    ██        ██  ██ ██ ██    ██ ██  ██  ██ ██      ██   ██          
 ██████     ██        ██   ████  ██████  ██      ██ ███████ ██   ██          
 
-⚠️ Disclaimer ⚠️:  
-
-The name alignment results in this review should be considered
+⚠️ Disclaimer: The name alignment results in this review should be considered
 friendly, yet naive, notes from an unsophisticated taxonomic robot. 
 Please carefully review the results listed below and share issues/ideas
 by email info at globalbioticinteractions.org or by opening an issue at 
 https://github.com/globalbioticinteractions/globalbioticinteractions/issues .
+
 
 _EOF_
 )"
@@ -168,7 +167,7 @@ function resolve_names {
   NUMBER_OF_UNRESOLVED_NAMES=$(cat $RESOLVED | gunzip | tail -n+2 | grep -v NONE | sort | uniq | wc -l)
   echo [$2] resolved $NUMBER_OF_UNRESOLVED_NAMES out of $NUMBER_OF_PROVIDED_NAMES names.
   echo [$2] first 10 unresolved names include:
-  cat $RESOLVED | gunzip | tail -n+2 | grep NONE | cut -f1,2 | head -n11 | mlr --itsvlite --opprint cat 
+  cat $RESOLVED | gunzip | tail -n+2 | grep NONE | cut -f1,2 | head -n11 | mlr --itsvlite --omd cat 
   echo -e "\n--- [$2] end ---\n"
 }
 
@@ -190,7 +189,7 @@ resolve_names names.tsv.gz col
 resolve_names names.tsv.gz ncbi
 resolve_names names.tsv.gz gbif
 resolve_names names.tsv.gz itis
-ls names-aligned-*.tsv.gz | xargs -L1 tail -n+2 | gzip > names-aligned.tsv.gz
+ls names-aligned-*.tsv.gz | gunzip | xargs -L1 tail -n+2 | gzip > names-aligned.tsv.gz
 
 echo "top 10 unresolved names sorted by decreasing number of mismatches across taxonomies"
 echo '---'
