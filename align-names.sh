@@ -189,7 +189,7 @@ resolve_names names.tsv.gz col
 resolve_names names.tsv.gz ncbi
 resolve_names names.tsv.gz gbif
 resolve_names names.tsv.gz itis
-ls names-aligned-*.tsv.gz | gunzip | xargs -L1 tail -n+2 | gzip > names-aligned.tsv.gz
+ls names-aligned-*.tsv.gz | xargs -I '{}' sh -c "cat '{}' | gunzip | tail -n+2" | gzip > names-aligned.tsv.gz
 
 echo "top 10 unresolved names sorted by decreasing number of mismatches across taxonomies"
 echo '---'
