@@ -167,6 +167,7 @@ function resolve_names {
   NUMBER_OF_UNRESOLVED_NAMES=$(cat $RESOLVED | gunzip | tail -n+2 | grep -v NONE | sort | uniq | wc -l)
   echo [$2] resolved $NUMBER_OF_UNRESOLVED_NAMES out of $NUMBER_OF_PROVIDED_NAMES names.
   echo [$2] first 10 unresolved names include:
+  echo 
   cat $RESOLVED | gunzip | tail -n+2 | grep NONE | cut -f1,2 | head -n11 | mlr --itsvlite --omd cat 
   echo -e "\n--- [$2] end ---\n"
 }
