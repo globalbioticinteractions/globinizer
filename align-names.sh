@@ -44,6 +44,11 @@ function echo_logo {
 ██████    ████       ██ ██  ██ ██    ██ ██ ████ ██ █████   ██████           
 ██   ██    ██        ██  ██ ██ ██    ██ ██  ██  ██ ██      ██   ██          
 ██████     ██        ██   ████  ██████  ██      ██ ███████ ██   ██          
+Disclaimer: the name alignment results in this review should be considered
+friendly, yet naive, notes from an unsophisticated taxonomic robot. 
+Please carefully review the results listed below and share any issues by have 
+by email mailto:info@globalbioticinteractions.org or by opening an issue at 
+https://github.com/globalbioticinteractions/globalbioticinteractions/issues .
 _EOF_
 )"
 }
