@@ -164,8 +164,8 @@ function resolve_names {
     | ${NOMER_CMD} append --properties resolve.properties --include-header $2\
     | gzip > $RESOLVED
   NUMBER_OF_PROVIDED_NAMES=$(cat $1 | gunzip | tail -n+2 | cut -f1,2 | sort | uniq | wc -l)
-  NUMBER_OF_UNRESOLVED_NAMES=$(cat $RESOLVED | gunzip | tail -n+2 | grep -v NONE | sort | uniq | wc -l)
-  echo [$2] resolved $NUMBER_OF_UNRESOLVED_NAMES out of $NUMBER_OF_PROVIDED_NAMES names.
+  NUMBER_RESOLVED_NAMES=$(cat $RESOLVED | gunzip | tail -n+2 | grep -v NONE | sort | uniq | wc -l)
+  echo [$2] aligned $NUMBER_RESOLVED_NAMES resolved names to $NUMBER_OF_PROVIDED_NAMES provided names.
   echo [$2] first 10 unresolved names include:
   echo 
   cat $RESOLVED | gunzip | tail -n+2 | grep NONE | cut -f1,2 | head -n11 | mlr --itsvlite --omd cat 
