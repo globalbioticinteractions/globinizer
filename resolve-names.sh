@@ -47,6 +47,11 @@ function echo_logo {
  |_.__/ \__, | |______|_|\__\___/|_| |_|                        
          __/ |                                                  
         |___/                                                   
+⚠️ Disclaimer: The results in this review should be considered
+friendly, yet naive, notes from an unsophisticated robot. 
+Please carefully review the results listed below and share issues/ideas
+by email info at globalbioticinteractions.org or by opening an issue at 
+https://github.com/globalbioticinteractions/globalbioticinteractions/issues .
 _EOF_
 )"
 }
