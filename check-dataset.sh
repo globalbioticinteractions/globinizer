@@ -185,6 +185,7 @@ function resolve_names {
   local RESOLVED=indexed-names-resolved-$2.tsv.gz
   echo -e "\n--- [$2] start ---\n"
   time cat $1 | gunzip | tail -n+2 | sort | uniq\
+    | ${NOMER_CMD} replace gn-parse\
     | ${NOMER_CMD} append $2 --include-header\
     | gzip > $RESOLVED
   echo [$2] resolved $(cat $RESOLVED | gunzip | tail -n+2 | grep -v NONE | wc -l) out of $(cat $RESOLVED | gunzip | tail -n+2 | wc -l) names.
