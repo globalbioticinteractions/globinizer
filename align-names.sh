@@ -14,7 +14,7 @@
 
 export REPO_NAME=$1
 
-export NOMER_VERSION=0.2.12
+export NOMER_VERSION=0.2.13
 export NOMER_JAR="$PWD/nomer.jar"
 
 export REVIEW_REPO_HOST="blob.globalbioticinteractions.org"
