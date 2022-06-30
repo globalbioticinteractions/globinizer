@@ -200,17 +200,27 @@ if [ $(cat README.md | yq --front-matter=extract --header-preprocess '.datasets[
 then
   export TSV_LOCAL=$(cat README.md | yq --front-matter=extract --header-preprocess '.datasets[] | select(.type == "text/tab-separated-values") | .url' | grep -v "^http[s]{0,1}://") 
   export CSV_LOCAL=$(cat README.md | yq --front-matter=extract --header-preprocess '.datasets[] | select(.type == "text/csv") | .url' | grep -v "^http[s]{0,1}://") 
+  export DWCA_REMOTE=$(cat README.md | yq --front-matter=extract --header-preprocess '.datasets[] | select(.type == "application/dwca") | .url' | grep "^http[s]{0,1}://") 
 else 
   export TSV_LOCAL=$(ls -1 *.txt *.tsv)
   export CSV_LOCAL=$(ls -1 *.csv)
+  export DWCA_REMOTE=
 fi
 
+
+
+function preston_track_uri {
+  if [ $(echo "$1" | wc -c) -gt 1  ]
+  then
+    echo -e "$1" | xargs ${PRESTON_CMD} track
+  fi
+}
 
 function preston_track_local {
   # exclude empty lists
   if [ $(echo "$1" | wc -c) -gt 1  ]
   then
-    echo -e "$1" | sed "s+^+file://$PWD/+g" | xargs ${PRESTON_CMD} track
+    preston_track_uri $(echo -e "$1" | sed "s+^+file://$PWD/+g")
   fi
 }
 
@@ -228,6 +238,10 @@ ${PRESTON_CMD} cat $(preston_head) | mlr --tsvlite cut -f scientificName | sed '
 preston_track_local "$CSV_LOCAL"
 
 ${PRESTON_CMD} cat $(preston_head) | mlr --icsv --otsv --ifs ';' cut -f scientificName | sed 's/^/\t/g' | tail -n+2 | gzip >> names.tsv.gz
+
+preston_track_uri "$DWCA_REMOTE"
+
+${PRESTON_CMD} cat $(preston_head) | ${PRESTON_CMD} dwc-stream | jq --raw-output '.["http://rs.tdwg.org/dwc/terms/scientificName"]' | gzip >> names.tsv.gz
 
 if [ $(cat names.tsv.gz | gunzip | wc -l) -lt 2 ]
 then
