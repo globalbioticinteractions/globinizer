@@ -179,9 +179,17 @@ function resolve_names {
 
 echo -e "\nReview of [${REPO_NAME}] started at [$(date -Iseconds)]." | tee_readme 
 
+if [ $(cat README.md | yq --front-matter=extract --header-preprocess '.datasets[].url' | wc -l) -gt 0 ]
+then
+  export TSV_LOCAL=$(cat README.md | yq --front-matter=extract --header-preprocess '.datasets[] | select(.type == "text/tab-separated-values") | .url' | grep -v "^http[s]{0,1}://") 
+  export CSV_LOCAL=$(cat README.md | yq --front-matter=extract --header-preprocess '.datasets[] | select(.type == "text/csv") | .url' | grep -v "^http[s]{0,1}://") 
+else 
+  export TSV_LOCAL=$(ls -1 *.txt *.tsv)
+  export CSV_LOCAL=$(ls -1 *.csv)
+fi
 
-cat *.txt *.tsv | mlr --tsvlite cut -f scientificName | sed 's/^/\t/g' | gzip >> names.tsv.gz
-cat *.csv | mlr --icsv --otsv --ifs ';' cut -f scientificName | sed 's/^/\t/g' | tail -n+2 | gzip >> names.tsv.gz
+cat ${TSV_LOCAL} | mlr --tsvlite cut -f scientificName | sed 's/^/\t/g' | gzip >> names.tsv.gz
+cat ${CSV_LOCAL} | mlr --icsv --otsv --ifs ';' cut -f scientificName | sed 's/^/\t/g' | tail -n+2 | gzip >> names.tsv.gz
 
 if [ $(cat names.tsv.gz | gunzip | wc -l) -lt 2 ]
 then
