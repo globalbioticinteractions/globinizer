@@ -248,7 +248,7 @@ fi
 if [ $(echo "$DWCA_REMOTE" | wc -c) -gt 1  ]
 then
   preston_track_uri "$DWCA_REMOTE"
-  ${PRESTON_CMD} cat $(preston_head) | ${PRESTON_CMD} dwc-stream | jq --raw-output '.["http://rs.tdwg.org/dwc/terms/scientificName"]' | gzip >> names.tsv.gz
+  ${PRESTON_CMD} cat $(preston_head) | ${PRESTON_CMD} dwc-stream | jq --raw-output 'select(.["http://rs.tdwg.org/dwc/terms/scientificName"]) | .["http://rs.tdwg.org/dwc/terms/scientificName"]' | gzip >> names.tsv.gz
 fi
 
 if [ $(cat names.tsv.gz | gunzip | wc -l) -lt 2 ]
