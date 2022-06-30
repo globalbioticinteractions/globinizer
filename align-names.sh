@@ -211,7 +211,7 @@ function preston_track_local {
 }
 
 function preston_head {
-  preston history --log tsv\
+  ${PRESTON_CMD} history --log tsv\
   | tail -n1\
   | tr '\t' '\n'\
   | grep "^hash://"\
