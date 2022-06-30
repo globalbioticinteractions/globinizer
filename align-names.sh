@@ -10,7 +10,7 @@
 #     ./align-names.sh 
 #
 
-#set -x
+set -x
 
 export REPO_NAME=$1
 
@@ -207,7 +207,7 @@ fi
 
 
 function preston_track_local {
-  echo -e $1 | sed "s+^+file://$PWD/+g" | xargs ${PRESTON_CMD} track
+  echo -e "$1" | sed "s+^+file://$PWD/+g" | xargs ${PRESTON_CMD} track
 }
 
 function preston_head {
