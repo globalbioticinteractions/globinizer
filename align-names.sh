@@ -25,6 +25,8 @@ export MLR_TSV_INPUT_OPTS="--icsvlite --ifs tab"
 export MLR_TSV_OUTPUT_OPTS="--ocsvlite --ofs tab"
 export MLR_TSV_OPTS="${MLR_TSV_INPUT_OPTS} ${MLR_TSV_OUTPUT_OPTS}"
 
+export YQ_VERSION=4.25.3
+
 function echo_logo {
   echo "$(cat <<_EOF_
 ███    ██  █████  ███    ███ ███████                                        
@@ -99,6 +101,7 @@ function install_deps {
   then
     sudo apt-get -q update &> /dev/null
     sudo apt-get -q install miller jq -y &> /dev/null
+    sudo curl -L https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_386 > /usr/local/bin/yq && sudo chmod +x yq 
     sudo pip install s3cmd &> /dev/null   
   fi
 
