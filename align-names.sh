@@ -232,16 +232,24 @@ function preston_head {
   | head -n1  
 }
 
-preston_track_local "$TSV_LOCAL"
-${PRESTON_CMD} cat $(preston_head) | mlr --tsvlite cut -f scientificName | sed 's/^/\t/g' | gzip >> names.tsv.gz
+if [ $(echo "$TSV_LOCAL" | wc -c) -gt 1  ]
+then
+  preston_track_local "$TSV_LOCAL"
+  ${PRESTON_CMD} cat $(preston_head) | mlr --tsvlite cut -f scientificName | sed 's/^/\t/g' | gzip >> names.tsv.gz
+fi
 
-preston_track_local "$CSV_LOCAL"
 
-${PRESTON_CMD} cat $(preston_head) | mlr --icsv --otsv --ifs ';' cut -f scientificName | sed 's/^/\t/g' | tail -n+2 | gzip >> names.tsv.gz
+if [ $(echo "$CSV_LOCAL" | wc -c) -gt 1  ]
+then
+  preston_track_local "$CSV_LOCAL"
+  ${PRESTON_CMD} cat $(preston_head) | mlr --icsv --otsv --ifs ';' cut -f scientificName | sed 's/^/\t/g' | tail -n+2 | gzip >> names.tsv.gz
+fi
 
-preston_track_uri "$DWCA_REMOTE"
-
-${PRESTON_CMD} cat $(preston_head) | ${PRESTON_CMD} dwc-stream | jq --raw-output '.["http://rs.tdwg.org/dwc/terms/scientificName"]' | gzip >> names.tsv.gz
+if [ $(echo "$DWCA_REMOTE" | wc -c) -gt 1  ]
+then
+  preston_track_uri "$DWCA_REMOTE"
+  ${PRESTON_CMD} cat $(preston_head) | ${PRESTON_CMD} dwc-stream | jq --raw-output '.["http://rs.tdwg.org/dwc/terms/scientificName"]' | gzip >> names.tsv.gz
+fi
 
 if [ $(cat names.tsv.gz | gunzip | wc -l) -lt 2 ]
 then
