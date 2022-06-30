@@ -235,14 +235,14 @@ function preston_head {
 if [ $(echo "$TSV_LOCAL" | wc -c) -gt 1  ]
 then
   preston_track_local "$TSV_LOCAL"
-  ${PRESTON_CMD} cat $(preston_head) | mlr --tsvlite cut -f scientificName | sed 's/^/\t/g' | gzip >> names.tsv.gz
+  ${PRESTON_CMD} cat $(preston_head) | grep "hasVersion" | ${PRESTON_CMD} cat | mlr --tsvlite cut -f scientificName | sed 's/^/\t/g' | gzip >> names.tsv.gz
 fi
 
 
 if [ $(echo "$CSV_LOCAL" | wc -c) -gt 1  ]
 then
   preston_track_local "$CSV_LOCAL"
-  ${PRESTON_CMD} cat $(preston_head) | mlr --icsv --otsv --ifs ';' cut -f scientificName | sed 's/^/\t/g' | tail -n+2 | gzip >> names.tsv.gz
+  ${PRESTON_CMD} cat $(preston_head) | grep "hasVersion" | ${PRESTON_CMD} cat | mlr --icsv --otsv --ifs ';' cut -f scientificName | sed 's/^/\t/g' | tail -n+2 | gzip >> names.tsv.gz
 fi
 
 if [ $(echo "$DWCA_REMOTE" | wc -c) -gt 1  ]
