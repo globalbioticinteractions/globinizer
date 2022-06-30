@@ -17,6 +17,9 @@ export REPO_NAME=$1
 export NOMER_VERSION=0.2.13
 export NOMER_JAR="$PWD/nomer.jar"
 
+export PRESTON_VERSION=0.3.10
+export PRESTON_JAR="$PWD/preston.jar"
+
 export REVIEW_REPO_HOST="blob.globalbioticinteractions.org"
 export README=$(mktemp)
 export REVIEW_DIR="review/${REPO_NAME}"
@@ -118,6 +121,19 @@ function configure_taxonomy {
     unzip -qq  .nomer/$1_mapdb.zip -d .nomer
 }
 
+function configure_preston {
+  if [[ $(which preston) ]]
+  then
+    echo using local preston found at [$(which preston)]
+    export NOMER_CMD="preston"
+  else
+    local PRESTON_DOWNLOAD_URL="https://github.com/bio-guoda/preston/releases/download/${PRESTON_VERSION}/preston.jar"
+    echo preston not found... installing from [${PRESTON_DOWNLOAD_URL}]
+    curl --silent -L "${PRESTON_DOWNLOAD_URL}" > "${PRESTON_JAR}"
+    export PRESTON_CMD="java -Xmx4G -jar ${PRESTON_JAR}"
+  fi
+}
+
 function configure_nomer {
   #NOMER_OPTS=" --cache-dir=\"${ELTON_DATASETS_DIR}\""
 
@@ -157,6 +173,7 @@ echo_logo | tee_readme
 install_deps
 
 configure_nomer
+configure_preston
 
 function resolve_names {
   local RESOLVED=names-aligned-$2.tsv.gz
@@ -188,8 +205,25 @@ else
   export CSV_LOCAL=$(ls -1 *.csv)
 fi
 
-cat ${TSV_LOCAL} | mlr --tsvlite cut -f scientificName | sed 's/^/\t/g' | gzip >> names.tsv.gz
-cat ${CSV_LOCAL} | mlr --icsv --otsv --ifs ';' cut -f scientificName | sed 's/^/\t/g' | tail -n+2 | gzip >> names.tsv.gz
+
+function preston_track_local {
+  echo -e $1 | sed "s+^+file://$PWD/+g" | xargs ${PRESTON_CMD} track
+}
+
+function preston_head {
+  preston history --log tsv\
+  | tail -n1\
+  | tr '\t' '\n'\
+  | grep "^hash://"\
+  | head -n1  
+}
+
+preston_track_local "$TSV_LOCAL"
+${PRESTON_CMD} cat $(preston_head) | mlr --tsvlite cut -f scientificName | sed 's/^/\t/g' | gzip >> names.tsv.gz
+
+preston_track_local "$CSV_LOCAL"
+
+${PRESTON_CMD} cat $(preston_head) | mlr --icsv --otsv --ifs ';' cut -f scientificName | sed 's/^/\t/g' | tail -n+2 | gzip >> names.tsv.gz
 
 if [ $(cat names.tsv.gz | gunzip | wc -l) -lt 2 ]
 then
@@ -215,7 +249,7 @@ cat names-aligned.tsv.gz | gunzip | mlr --itsvlite --ocsv --ofs ';' cat > names-
 cat names-aligned.tsv.gz | gunzip > names-aligned.tsv
 cat names-aligned.tsv.gz | gunzip > names-aligned.txt
 
-zip names-aligned.zip names-aligned.csv names-aligned.tsv names-aligned.txt
+zip -r names-aligned.zip names-aligned.csv names-aligned.tsv names-aligned.txt data/
 
 ${NOMER_CMD} clean 
 
