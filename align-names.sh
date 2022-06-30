@@ -101,13 +101,14 @@ function install_deps {
   then
     sudo apt-get -q update &> /dev/null
     sudo apt-get -q install miller jq -y &> /dev/null
-    sudo curl -L https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_386 > /usr/local/bin/yq && sudo chmod +x yq 
+    sudo curl -L https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_386 > /usr/local/bin/yq && sudo chmod +x /usr/local/bin/yq 
     sudo pip install s3cmd &> /dev/null   
   fi
 
   mlr --version
   s3cmd --version
   java -version
+  yq --version
 }
 
 function configure_taxonomy {
