@@ -10,7 +10,7 @@
 #     ./align-names.sh 
 #
 
-set -x
+#set -x
 
 export REPO_NAME=$1
 
