@@ -152,6 +152,7 @@ function configure_nomer {
     configure_taxonomy gbif
     configure_taxonomy itis
     configure_taxonomy globi
+    configure_taxonomy discoverlife
         
   fi
 
@@ -262,6 +263,7 @@ resolve_names names.tsv.gz col
 resolve_names names.tsv.gz ncbi
 resolve_names names.tsv.gz gbif
 resolve_names names.tsv.gz itis
+resolve_names names.tsv.gz discoverlife
 ls names-aligned-*.tsv.gz | xargs -I '{}' sh -c "cat '{}' | gunzip | tail -n+2" | gzip > names-aligned.tsv.gz
 
 echo "top 10 unresolved names sorted by decreasing number of mismatches across taxonomies"
