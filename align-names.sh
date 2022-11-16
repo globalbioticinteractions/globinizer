@@ -230,11 +230,7 @@ function preston_track_local {
 }
 
 function preston_head {
-  ${PRESTON_CMD} history --log tsv\
-  | tail -n1\
-  | tr '\t' '\n'\
-  | grep "^hash://"\
-  | head -n1  
+  ${PRESTON_CMD} head 
 }
 
 if [ $(echo "$TSV_LOCAL" | wc -c) -gt 1  ]
