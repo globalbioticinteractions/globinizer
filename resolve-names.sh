@@ -21,7 +21,7 @@ export ELTON_DATA_REPO_MAIN="https://raw.githubusercontent.com/${REPO_NAME}/main
 export ELTON_JAR="$PWD/elton.jar"
 export ELTON_OPTS=""
 
-export NOMER_VERSION=0.2.13
+export NOMER_VERSION=0.4.3
 export NOMER_JAR="$PWD/nomer.jar"
 
 export REVIEW_REPO_HOST="blob.globalbioticinteractions.org"
@@ -157,7 +157,7 @@ function configure_nomer {
     curl --silent -L "${NOMER_DOWNLOAD_URL}" > "${NOMER_JAR}"
     export NOMER_CMD="java -Xmx4G -jar ${NOMER_JAR}"
     
-    configure_taxonomy catalogue_of_life 
+    configure_taxonomy col 
     configure_taxonomy ncbi
     configure_taxonomy discoverlife
     configure_taxonomy gbif
