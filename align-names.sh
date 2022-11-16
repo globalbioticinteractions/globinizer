@@ -120,10 +120,10 @@ function install_deps {
 }
 
 function configure_matcher {
-    mkdir -p .nomer
+    mkdir -p ~/.cache/nomer
     local DOWNLOAD_URL="https://github.com/globalbioticinteractions/nomer/releases/download/${NOMER_VERSION}/$1_mapdb.zip"
     curl --silent -L "${DOWNLOAD_URL}" > ".nomer/$1_mapdb.zip"    
-    unzip -qq  .nomer/$1_mapdb.zip -d .nomer
+    unzip -qq ~/.cache/nomer/$1_mapdb.zip -d .nomer
 }
 
 function configure_preston {
