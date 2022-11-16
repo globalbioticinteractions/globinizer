@@ -277,11 +277,10 @@ echo -e '---\n\n'
 
 
 
-cat names-aligned.tsv.gz | gunzip | mlr --itsvlite --ocsv --ofs ';' cat > names-aligned.csv
 cat names-aligned.tsv.gz | gunzip > names-aligned.tsv
 cat names-aligned.tsv.gz | gunzip > names-aligned.txt
 
-zip -r names-aligned.zip names-aligned.csv names-aligned.tsv names-aligned.txt data/
+zip -r names-aligned.zip names-aligned.tsv names-aligned.txt data/
 
 ${NOMER_CMD} clean 
 
