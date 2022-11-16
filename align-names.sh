@@ -120,10 +120,11 @@ function install_deps {
 }
 
 function configure_matcher {
-    mkdir -p ~/.cache/nomer
+    local NOMER_CACHE=~/.cache/nomer
+    mkdir -p "${NOMER_CACHE}"
     local DOWNLOAD_URL="https://github.com/globalbioticinteractions/nomer/releases/download/${NOMER_VERSION}/$1_mapdb.zip"
-    curl --silent -L "${DOWNLOAD_URL}" > ".nomer/$1_mapdb.zip"    
-    unzip -qq ~/.cache/nomer/$1_mapdb.zip -d .nomer
+    curl --silent -L "${DOWNLOAD_URL}" > "${NOMER_CACHE}/$1_mapdb.zip"    
+    unzip -qq "${NOMER_CACHE}/$1_mapdb.zip" -d "${NOMER_CACHE}"
 }
 
 function configure_preston {
