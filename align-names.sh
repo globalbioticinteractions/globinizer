@@ -14,10 +14,10 @@
 
 export REPO_NAME=$1
 
-export NOMER_VERSION=0.2.13
+export NOMER_VERSION=0.4.3
 export NOMER_JAR="$PWD/nomer.jar"
 
-export PRESTON_VERSION=0.3.10
+export PRESTON_VERSION=0.5.1
 export PRESTON_JAR="$PWD/preston.jar"
 
 export REVIEW_REPO_HOST="blob.globalbioticinteractions.org"
@@ -99,6 +99,11 @@ function save_readme {
   cat ${README} > README.txt
 }
 
+function get_matchers {
+  cat README.md\
+  | yq --front-matter=extract --header-preprocess '.taxonomies[].id'
+}
+
 function install_deps {
   if [[ -n ${TRAVIS_REPO_SLUG} || -n ${GITHUB_REPOSITORY} ]]
   then
@@ -114,7 +119,7 @@ function install_deps {
   yq --version
 }
 
-function configure_taxonomy {
+function configure_matcher {
     mkdir -p .nomer
     local DOWNLOAD_URL="https://github.com/globalbioticinteractions/nomer/releases/download/${NOMER_VERSION}/$1_mapdb.zip"
     curl --silent -L "${DOWNLOAD_URL}" > ".nomer/$1_mapdb.zip"    
@@ -147,13 +152,11 @@ function configure_nomer {
     curl --silent -L "${NOMER_DOWNLOAD_URL}" > "${NOMER_JAR}"
     export NOMER_CMD="java -Xmx4G -jar ${NOMER_JAR}"
     
-    configure_taxonomy catalogue_of_life 
-    configure_taxonomy ncbi
-    configure_taxonomy gbif
-    configure_taxonomy itis
-    configure_taxonomy globi
-    configure_taxonomy discoverlife
-        
+    for matcher in $(get_matchers)
+    do
+      configure_matcher $matcher
+    done
+
   fi
 
   export NOMER_VERSION=$(${NOMER_CMD} version)
@@ -258,12 +261,12 @@ then
   exit 1
 fi
 
-# name resolving
-resolve_names names.tsv.gz col
-resolve_names names.tsv.gz ncbi
-resolve_names names.tsv.gz gbif
-resolve_names names.tsv.gz itis
-resolve_names names.tsv.gz discoverlife
+# align names with configured taxonomies
+for matcher in $(get_matchers)
+do
+  resolve_names names.tsv.gz $matcher
+done
+
 ls names-aligned-*.tsv.gz | xargs -I '{}' sh -c "cat '{}' | gunzip | tail -n+2" | gzip > names-aligned.tsv.gz
 
 echo "top 10 unresolved names sorted by decreasing number of mismatches across taxonomies"
