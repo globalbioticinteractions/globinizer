@@ -14,7 +14,7 @@
 
 export REPO_NAME=$1
 
-export NOMER_VERSION=0.4.3
+export NOMER_VERSION=0.4.4
 export NOMER_JAR="$PWD/nomer.jar"
 
 export PRESTON_VERSION=0.5.1
