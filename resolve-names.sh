@@ -11,7 +11,7 @@
 #     ./check-dataset.sh globalbioticinteractions/template-dataset /var/cache/elton/datasets
 #
 
-set -x
+#set -x
 
 export REPO_NAME=$1
 export ELTON_UPDATE_DISABLED=$2
@@ -21,7 +21,7 @@ export ELTON_DATA_REPO_MAIN="https://raw.githubusercontent.com/${REPO_NAME}/main
 export ELTON_JAR="$PWD/elton.jar"
 export ELTON_OPTS=""
 
-export NOMER_VERSION=0.4.4
+export NOMER_VERSION=0.2.13
 export NOMER_JAR="$PWD/nomer.jar"
 
 export REVIEW_REPO_HOST="blob.globalbioticinteractions.org"
@@ -138,11 +138,10 @@ function configure_elton {
 }
 
 function configure_taxonomy {
-    local NOMER_CACHE=~/.cache/nomer
-    mkdir -p "${NOMER_CACHE}"
+    mkdir -p .nomer
     local DOWNLOAD_URL="https://github.com/globalbioticinteractions/nomer/releases/download/${NOMER_VERSION}/$1_mapdb.zip"
-    curl --silent -L "${DOWNLOAD_URL}" > "${NOMER_CACHE}/$1_mapdb.zip"    
-    unzip -qq "${NOMER_CACHE}/$1_mapdb.zip" -d "${NOMER_CACHE}"
+    curl --silent -L "${DOWNLOAD_URL}" > ".nomer/$1_mapdb.zip"    
+    unzip -qq  .nomer/$1_mapdb.zip -d .nomer
 }
 
 function configure_nomer {
@@ -158,7 +157,7 @@ function configure_nomer {
     curl --silent -L "${NOMER_DOWNLOAD_URL}" > "${NOMER_JAR}"
     export NOMER_CMD="java -Xmx4G -jar ${NOMER_JAR}"
     
-    configure_taxonomy col 
+    configure_taxonomy catalogue_of_life 
     configure_taxonomy ncbi
     configure_taxonomy discoverlife
     configure_taxonomy gbif
@@ -191,6 +190,7 @@ function resolve_names {
   local RESOLVED=indexed-names-resolved-$2.tsv.gz
   echo -e "\n--- [$2] start ---\n"
   time cat $1 | gunzip | tail -n+2 | sort | uniq\
+    | ${NOMER_CMD} replace globi-correct\
     | ${NOMER_CMD} replace gn-parse\
     | ${NOMER_CMD} append $2 --include-header\
     | gzip > $RESOLVED
