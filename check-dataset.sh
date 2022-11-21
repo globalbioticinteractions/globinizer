@@ -140,7 +140,7 @@ function configure_elton {
 function configure_taxonomy {
     local NOMER_CACHE=~/.cache/nomer
     mkdir -p "${NOMER_CACHE}"
-    local DOWNLOAD_URL="https://github.com/globalbioticinteractions/nomer/releases/download/${NOMER_VERSION}/$1_m    apdb.zip"
+    local DOWNLOAD_URL="https://github.com/globalbioticinteractions/nomer/releases/download/${NOMER_VERSION}/$1_mapdb.zip"
     curl --silent -L "${DOWNLOAD_URL}" > "${NOMER_CACHE}/$1_mapdb.zip"    
     unzip -qq "${NOMER_CACHE}/$1_mapdb.zip" -d "${NOMER_CACHE}"
 }
