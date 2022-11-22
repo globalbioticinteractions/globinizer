@@ -17,7 +17,7 @@ export REPO_NAME=$1
 export NOMER_VERSION=0.4.5
 export NOMER_JAR="$PWD/nomer.jar"
 
-export PRESTON_VERSION=0.3.10
+export PRESTON_VERSION=0.5.1
 export PRESTON_JAR="$PWD/preston.jar"
 
 export REVIEW_REPO_HOST="blob.globalbioticinteractions.org"
