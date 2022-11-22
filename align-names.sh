@@ -61,6 +61,15 @@ _EOF_
 )"
 }
 
+function echo_nomer_schema {
+  # ignore authorship for now
+  echo "$(cat <<_EOF_
+nomer.schema.input=[{"column":0,"type":"externalId"},{"column": 1,"type":"name"}]
+nomer.schema.output=[{"column":0,"type":"externalId"},{"column": 1,"type":"name"}]
+_EOF_
+)"
+}
+
 function echo_review_badge {
   local number_of_review_notes=$1
   if [ ${number_of_review_notes} -gt 0 ] 
@@ -125,7 +134,7 @@ function configure_preston {
   if [[ $(which preston) ]]
   then
     echo using local preston found at [$(which preston)]
-    export NOMER_CMD="preston"
+    export PRESTON_CMD="preston"
   else
     local PRESTON_DOWNLOAD_URL="https://github.com/bio-guoda/preston/releases/download/${PRESTON_VERSION}/preston.jar"
     echo preston not found... installing from [${PRESTON_DOWNLOAD_URL}]
@@ -135,8 +144,6 @@ function configure_preston {
 }
 
 function configure_nomer {
-  #NOMER_OPTS=" --cache-dir=\"${ELTON_DATASETS_DIR}\""
-
   if [[ $(which nomer) ]]
   then 
     echo using local nomer found at [$(which nomer)]
@@ -178,11 +185,12 @@ configure_preston
 
 function resolve_names {
   local RESOLVED=names-aligned-$2.tsv.gz
+  echo_nomer_schema > parse.properties
   echo  'nomer.schema.input=[{"column":3,"type":"externalId"},{"column": 4,"type":"name"}]' > resolve.properties
 
   echo -e "\n--- [$2] start ---\n"
   time cat $1 | gunzip | tail -n+2 | sort | uniq\
-    | ${NOMER_CMD} append --include-header gbif-parse\
+    | ${NOMER_CMD} append --include-header --properties parse.properties gbif-parse\
     | ${NOMER_CMD} append --properties resolve.properties --include-header $2\
     | gzip > $RESOLVED
   NUMBER_OF_PROVIDED_NAMES=$(cat $1 | gunzip | tail -n+2 | cut -f1,2 | sort | uniq | wc -l)
@@ -278,8 +286,6 @@ cat names-aligned.tsv.gz | gunzip > names-aligned.tsv
 cat names-aligned.tsv.gz | gunzip > names-aligned.txt
 
 zip -r names-aligned.zip names-aligned.csv names-aligned.tsv names-aligned.txt data/
-
-${NOMER_CMD} clean 
 
 NUMBER_OF_NOTES=$(cat *.tsv.gz | gunzip | grep "NONE" | wc -l)
 
