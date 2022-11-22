@@ -21,7 +21,7 @@ export ELTON_DATA_REPO_MAIN="https://raw.githubusercontent.com/${REPO_NAME}/main
 export ELTON_JAR="$PWD/elton.jar"
 export ELTON_OPTS=""
 
-export NOMER_VERSION=0.2.13
+export NOMER_VERSION=0.4.5
 export NOMER_JAR="$PWD/nomer.jar"
 
 export REVIEW_REPO_HOST="blob.globalbioticinteractions.org"
@@ -157,12 +157,16 @@ function configure_nomer {
     curl --silent -L "${NOMER_DOWNLOAD_URL}" > "${NOMER_JAR}"
     export NOMER_CMD="java -Xmx4G -jar ${NOMER_JAR}"
     
-    configure_taxonomy catalogue_of_life 
+    configure_taxonomy col 
     configure_taxonomy ncbi
     configure_taxonomy discoverlife
     configure_taxonomy gbif
     configure_taxonomy itis
     configure_taxonomy globi
+    configure_taxonomy ott
+    configure_taxonomy tpt
+    configure_taxonomy batnames
+    configure_taxonomy wfo
         
   fi
 
@@ -241,6 +245,10 @@ resolve_names indexed-names.tsv.gz ncbi
 resolve_names indexed-names.tsv.gz discoverlife
 resolve_names indexed-names.tsv.gz gbif
 resolve_names indexed-names.tsv.gz itis
+resolve_names indexed-names.tsv.gz ott
+resolve_names indexed-names.tsv.gz tpt
+resolve_names indexed-names.tsv.gz batnames
+resolve_names indexed-names.tsv.gz wfo
 ${NOMER_CMD} clean 
 
 cat indexed-interactions.tsv.gz | gunzip | head -n501 > indexed-interactions-sample.tsv
