@@ -154,7 +154,7 @@ function configure_nomer {
     curl --silent -L "${NOMER_DOWNLOAD_URL}" > "${NOMER_JAR}"
     export NOMER_CMD="java -Xmx4G -jar ${NOMER_JAR}"
     
-    configure_taxonomy catalogue_of_life 
+    configure_taxonomy col 
     configure_taxonomy ncbi
     configure_taxonomy gbif
     configure_taxonomy itis
