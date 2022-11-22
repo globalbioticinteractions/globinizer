@@ -10,7 +10,7 @@
 #     ./align-names.sh 
 #
 
-#set -x
+set -x
 
 export REPO_NAME=$1
 
@@ -146,6 +146,14 @@ function configure_preston {
 }
 
 function configure_nomer {
+  local TAXONOMY_IDS=$(cat README.md | yq --front-matter=extract --header-preprocess '.taxonomies[].id' | sort | uniq)
+  if [ $(echo ${TAXONOMY_IDS} | wc -l) -gt 1 ]
+  then
+    NOMER_MATCHERS=${TAXONOMY_IDS}
+  fi
+
+  echo nomer configured to use matchers: [${NOMER_MATCHERS}]
+
   if [[ $(which nomer) ]]
   then 
     echo using local nomer found at [$(which nomer)]
@@ -160,20 +168,11 @@ function configure_nomer {
     do
       configure_taxonomy $matcher
     done
-        
   fi
 
   export NOMER_VERSION=$(${NOMER_CMD} version)
-
   echo nomer version "${NOMER_VERSION}"
-  
-  local TAXONOMY_IDS=$(cat README.md | yq --front-matter=extract --header-preprocess '.taxonomies[].id' | sort | uniq)
-  if [ $(echo ${TAXONOMY_IDS} | wc -l) -gt 1 ]
-  then
-    NOMER_MATCHERS=${TAXONOMY_IDS}
-  fi
 
-  echo nomer configured to use matchers: [${NOMER_MATCHERS}]
 }
 
 
