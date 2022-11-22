@@ -124,10 +124,11 @@ function install_deps {
 }
 
 function configure_taxonomy {
-    mkdir -p ~/.cache/nomer
+    local NOMER_CACHE_DIR=~/.cache/nomer
+    mkdir -p ${NOMER_CACHE_DIR}
     local DOWNLOAD_URL="https://github.com/globalbioticinteractions/nomer/releases/download/${NOMER_VERSION}/$1_mapdb.zip"
-    curl --silent -L "${DOWNLOAD_URL}" > ".nomer/$1_mapdb.zip"    
-    unzip -qq  .nomer/$1_mapdb.zip -d ~/.cache/nomer
+    curl --silent -L "${DOWNLOAD_URL}" > "${NOMER_CACHE_DIR}/$1_mapdb.zip"    
+    unzip -qq  ${NOMER_CACHE_DIR}/$1_mapdb.zip -d ${NOMER_CACHE_DIR}
 }
 
 function configure_preston {
