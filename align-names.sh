@@ -16,6 +16,7 @@ export REPO_NAME=$1
 
 export NOMER_VERSION=0.4.5
 export NOMER_JAR="$PWD/nomer.jar"
+export NOMER_MATCHERS="col ncbi gbif itis wfo"
 
 export PRESTON_VERSION=0.5.1
 export PRESTON_JAR="$PWD/preston.jar"
@@ -155,18 +156,24 @@ function configure_nomer {
     curl --silent -L "${NOMER_DOWNLOAD_URL}" > "${NOMER_JAR}"
     export NOMER_CMD="java -Xmx4G -jar ${NOMER_JAR}"
     
-    configure_taxonomy col 
-    configure_taxonomy ncbi
-    configure_taxonomy gbif
-    configure_taxonomy itis
-    configure_taxonomy globi
-    configure_taxonomy discoverlife
+    for matcher in ${NOMER_MATCHERS}
+    do
+      configure_taxonomy $matcher
+    done
         
   fi
 
   export NOMER_VERSION=$(${NOMER_CMD} version)
 
   echo nomer version "${NOMER_VERSION}"
+  
+  local TAXONOMY_IDS=$(cat README.md | yq --front-matter=extract --header-preprocess '.taxonomies[].id' | sort | uniq)
+  if [ $(echo ${TAXONOMY_IDS} | wc -l) -gt 1 ]
+  then
+    NOMER_MATCHERS=${TAXONOMY_IDS}
+  fi
+
+  echo nomer configured to use matchers: [${NOMER_MATCHERS}]
 }
 
 
@@ -217,8 +224,6 @@ else
   export DWCA_REMOTE=
 fi
 
-
-
 function preston_track_uri {
   if [ $(echo "$1" | wc -c) -gt 1  ]
   then
@@ -264,11 +269,12 @@ then
 fi
 
 # name resolving
-resolve_names names.tsv.gz col
-resolve_names names.tsv.gz ncbi
-resolve_names names.tsv.gz gbif
-resolve_names names.tsv.gz itis
-resolve_names names.tsv.gz discoverlife
+for matcher in ${NOMER_MATCHERS}
+do
+  echo using matcher [$matcher]  
+  resolve_names names.tsv.gz $matcher
+done
+
 ls names-aligned-*.tsv.gz | xargs -I '{}' sh -c "cat '{}' | gunzip | tail -n+2" | gzip > names-aligned.tsv.gz
 
 echo "top 10 unresolved names sorted by decreasing number of mismatches across taxonomies"
