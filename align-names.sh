@@ -14,10 +14,10 @@
 
 export REPO_NAME=$1
 
-export NOMER_VERSION=0.4.5
+export NOMER_VERSION=0.2.13
 export NOMER_JAR="$PWD/nomer.jar"
 
-export PRESTON_VERSION=0.5.1
+export PRESTON_VERSION=0.3.10
 export PRESTON_JAR="$PWD/preston.jar"
 
 export REVIEW_REPO_HOST="blob.globalbioticinteractions.org"
@@ -147,16 +147,12 @@ function configure_nomer {
     curl --silent -L "${NOMER_DOWNLOAD_URL}" > "${NOMER_JAR}"
     export NOMER_CMD="java -Xmx4G -jar ${NOMER_JAR}"
     
-    configure_taxonomy col
+    configure_taxonomy catalogue_of_life 
     configure_taxonomy ncbi
     configure_taxonomy gbif
     configure_taxonomy itis
     configure_taxonomy globi
     configure_taxonomy discoverlife
-    configure_taxonomy ott
-    configure_taxonomy batnames
-    configure_taxonomy wfo
-    configure_taxonomy tpt
         
   fi
 
@@ -230,7 +226,11 @@ function preston_track_local {
 }
 
 function preston_head {
-  ${PRESTON_CMD} head
+  ${PRESTON_CMD} history --log tsv\
+  | tail -n1\
+  | tr '\t' '\n'\
+  | grep "^hash://"\
+  | head -n1  
 }
 
 if [ $(echo "$TSV_LOCAL" | wc -c) -gt 1  ]
@@ -264,10 +264,6 @@ resolve_names names.tsv.gz ncbi
 resolve_names names.tsv.gz gbif
 resolve_names names.tsv.gz itis
 resolve_names names.tsv.gz discoverlife
-resolve_names names.tsv.gz wfo
-resolve_names names.tsv.gz batnames
-resolve_names names.tsv.gz tpt
-resolve_names names.tsv.gz ott
 ls names-aligned-*.tsv.gz | xargs -I '{}' sh -c "cat '{}' | gunzip | tail -n+2" | gzip > names-aligned.tsv.gz
 
 echo "top 10 unresolved names sorted by decreasing number of mismatches across taxonomies"
@@ -275,6 +271,9 @@ echo '---'
 cat names-aligned.tsv.gz | gunzip | grep NONE | cut -f2 | sort | uniq -c | sort -nr | head | sed 's/^[ ]+//g'
 echo -e '---\n\n'
 
+
+
+cat names-aligned.tsv.gz | gunzip | mlr --itsvlite --ocsv --ofs ';' cat > names-aligned.csv
 cat names-aligned.tsv.gz | gunzip > names-aligned.tsv
 cat names-aligned.tsv.gz | gunzip > names-aligned.txt
 
