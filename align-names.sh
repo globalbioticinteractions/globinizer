@@ -217,7 +217,7 @@ function resolve_names {
   echo [$2] aligned $NUMBER_RESOLVED_NAMES resolved names to $NUMBER_OF_PROVIDED_NAMES provided names.
   echo [$2] first 10 unresolved names include:
   echo 
-  cat $RESOLVED | gunzip | grep NONE | cut -f1,2 | head -n11 | mlr --itsvlite --omd cat 
+  cat $RESOLVED | gunzip | grep NONE | cut -f1,2 | head
   echo -e "\n--- [$2] end ---\n"
 }
 
