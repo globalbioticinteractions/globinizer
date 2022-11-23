@@ -23,6 +23,7 @@ export PRESTON_JAR="$PWD/preston.jar"
 
 export REVIEW_REPO_HOST="blob.globalbioticinteractions.org"
 export README=$(mktemp)
+export HEADER=$(mktemp)
 export REVIEW_DIR="review/${REPO_NAME}"
 
 export MLR_TSV_INPUT_OPTS="--icsvlite --ifs tab"
@@ -68,6 +69,8 @@ providedExternalId	providedName	parseRelation	parsedExternalId	parsedName	parsed
 _EOF_
 )"
 }
+
+names_aligned_header > $HEADER
 
 function echo_nomer_schema {
   # ignore authorship for now
@@ -210,7 +213,7 @@ function resolve_names {
     | gzip > $RESOLVED_NO_HEADER
   NUMBER_OF_PROVIDED_NAMES=$(cat $1 | gunzip | cut -f1,2 | sort | uniq | wc -l)
   NUMBER_RESOLVED_NAMES=$(cat $RESOLVED_NO_HEADER | gunzip | grep -v NONE | sort | uniq | wc -l)
-  cat <$(names_aligned_header | gzip) <${RESOLVED_NO_HEADER} >${RESOLVED}
+  cat <$(cat $HEADER | gzip) <${RESOLVED_NO_HEADER} >${RESOLVED}
   echo [$2] aligned $NUMBER_RESOLVED_NAMES resolved names to $NUMBER_OF_PROVIDED_NAMES provided names.
   echo [$2] first 10 unresolved names include:
   echo 
@@ -283,7 +286,7 @@ do
   resolve_names names.tsv.gz $matcher
 done
 
-names_aligned_header | gzip > names-aligned.tsv.gz
+cat $HEADER | gzip > names-aligned.tsv.gz
 ls names-aligned-*.tsv.gz | grep -v "no-header" | xargs cat >> names-aligned.tsv.gz
 
 echo "top 10 unresolved names sorted by decreasing number of mismatches across taxonomies"
