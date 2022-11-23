@@ -62,6 +62,13 @@ _EOF_
 )"
 }
 
+function names_aligned_header {
+  echo "$(cat <<_EOF_
+providedExternalId	providedName	parseRelation	parsedExternalId	parsedName	parsedAuthority	7	8	9	10	11	12	13	alignRelation	alignedExternalId	alignedName	alignedAuthority	alignedRank	alignedCommonNames	alignedPath	alignedPathIds	alignedPathNames	23	alignedUrl
+_EOF_
+)"
+}
+
 function echo_nomer_schema {
   # ignore authorship for now
   echo "$(cat <<_EOF_
@@ -191,21 +198,23 @@ configure_nomer
 configure_preston
 
 function resolve_names {
+  local RESOLVED_NO_HEADER=names-aligned-$2-no-header.tsv.gz
   local RESOLVED=names-aligned-$2.tsv.gz
   echo_nomer_schema > parse.properties
   echo  'nomer.schema.input=[{"column":3,"type":"externalId"},{"column": 4,"type":"name"}]' > resolve.properties
 
   echo -e "\n--- [$2] start ---\n"
-  time cat $1 | gunzip | tail -n+2 | sort | uniq\
-    | ${NOMER_CMD} append --include-header --properties parse.properties gbif-parse\
-    | ${NOMER_CMD} append --properties resolve.properties --include-header $2\
-    | gzip > $RESOLVED
-  NUMBER_OF_PROVIDED_NAMES=$(cat $1 | gunzip | tail -n+2 | cut -f1,2 | sort | uniq | wc -l)
-  NUMBER_RESOLVED_NAMES=$(cat $RESOLVED | gunzip | tail -n+2 | grep -v NONE | sort | uniq | wc -l)
+  time cat $1 | gunzip | sort | uniq\
+    | ${NOMER_CMD} append --properties parse.properties gbif-parse\
+    | ${NOMER_CMD} append --properties resolve.properties  $2\
+    | gzip > $RESOLVED_NO_HEADER
+  NUMBER_OF_PROVIDED_NAMES=$(cat $1 | gunzip | cut -f1,2 | sort | uniq | wc -l)
+  NUMBER_RESOLVED_NAMES=$(cat $RESOLVED_NO_HEADER | gunzip | grep -v NONE | sort | uniq | wc -l)
+  cat <$(names_aligned_header | gzip) <${RESOLVED_NO_HEADER} >${RESOLVED}
   echo [$2] aligned $NUMBER_RESOLVED_NAMES resolved names to $NUMBER_OF_PROVIDED_NAMES provided names.
   echo [$2] first 10 unresolved names include:
   echo 
-  cat $RESOLVED | gunzip | tail -n+2 | grep NONE | cut -f1,2 | head -n11 | mlr --itsvlite --omd cat 
+  cat $RESOLVED | gunzip | grep NONE | cut -f1,2 | head -n11 | mlr --itsvlite --omd cat 
   echo -e "\n--- [$2] end ---\n"
 }
 
@@ -245,14 +254,14 @@ function preston_head {
 if [ $(echo "$TSV_LOCAL" | wc -c) -gt 1  ]
 then
   preston_track_local "$TSV_LOCAL"
-  ${PRESTON_CMD} cat $(preston_head) | grep "hasVersion" | ${PRESTON_CMD} cat | mlr --tsvlite cut -f scientificName | sed 's/^/\t/g' | gzip >> names.tsv.gz
+  ${PRESTON_CMD} cat $(preston_head) | grep "hasVersion" | ${PRESTON_CMD} cat | mlr --tsvlite cut -f scientificName | tail -n+2 | sed 's/^/\t/g' | gzip >> names.tsv.gz
 fi
 
 
 if [ $(echo "$CSV_LOCAL" | wc -c) -gt 1  ]
 then
   preston_track_local "$CSV_LOCAL"
-  ${PRESTON_CMD} cat $(preston_head) | grep "hasVersion" | ${PRESTON_CMD} cat | mlr --icsv --otsv --ifs ';' cut -f scientificName | sed 's/^/\t/g' | tail -n+2 | gzip >> names.tsv.gz
+  ${PRESTON_CMD} cat $(preston_head) | grep "hasVersion" | ${PRESTON_CMD} cat | mlr --icsv --otsv --ifs ';' cut -f scientificName | tail -n+2 | sed 's/^/\t/g' | gzip >> names.tsv.gz
 fi
 
 if [ $(echo "$DWCA_REMOTE" | wc -c) -gt 1  ]
@@ -274,7 +283,8 @@ do
   resolve_names names.tsv.gz $matcher
 done
 
-ls names-aligned-*.tsv.gz | xargs -I '{}' sh -c "cat '{}' | gunzip | tail -n+2" | gzip > names-aligned.tsv.gz
+names_aligned_header | gzip > names-aligned.tsv.gz
+ls names-aligned-*.tsv.gz | grep -v "no-header" | xargs cat >> names-aligned.tsv.gz
 
 echo "top 10 unresolved names sorted by decreasing number of mismatches across taxonomies"
 echo '---'
