@@ -287,7 +287,7 @@ do
 done
 
 cat $HEADER > names-aligned.tsv.gz
-ls names-aligned-*.tsv.gz | grep -v "no-header" | xargs cat >> names-aligned.tsv.gz
+ls names-aligned-*.tsv.gz | grep "no-header" | xargs cat >> names-aligned.tsv.gz
 
 echo "top 10 unresolved names sorted by decreasing number of mismatches across taxonomies"
 echo '---'
