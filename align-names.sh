@@ -17,6 +17,7 @@ export REPO_NAME=$1
 export NOMER_VERSION=0.4.5
 export NOMER_JAR="$PWD/nomer.jar"
 export NOMER_MATCHERS="col ncbi gbif itis wfo"
+export NOMER_CACHE_DIR=${NOMER_CACHE_DIR:-~/.cache/nomer}
 
 export PRESTON_VERSION=0.5.1
 export PRESTON_JAR="$PWD/preston.jar"
@@ -135,7 +136,6 @@ function install_deps {
 }
 
 function configure_taxonomy {
-    local NOMER_CACHE_DIR=~/.cache/nomer
     mkdir -p ${NOMER_CACHE_DIR}
     local DOWNLOAD_URL="https://github.com/globalbioticinteractions/nomer/releases/download/${NOMER_VERSION}/$1_mapdb.zip"
     curl --silent -L "${DOWNLOAD_URL}" > "${NOMER_CACHE_DIR}/$1_mapdb.zip"    

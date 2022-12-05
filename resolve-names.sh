@@ -24,6 +24,7 @@ export ELTON_OPTS=""
 export NOMER_VERSION=0.4.5
 export NOMER_JAR="$PWD/nomer.jar"
 export NOMER_PROPERTIES="$(mktemp)"
+export NOMER_CACHE_DIR="${NOMER_CACHE_DIR:-~/.cache/nomer}"
 export NOMER_OPTS=""
 
 export REVIEW_REPO_HOST="blob.globalbioticinteractions.org"
@@ -61,6 +62,7 @@ _EOF_
 function echo_nomer_schema {
   # ignore authorship for now
   echo "$(cat <<_EOF_
+nomer.cache.dir=${NOMER_CACHE_DIR}
 nomer.schema.input=[{"column":0,"type":"externalId"},{"column": 1,"type":"name"}]
 nomer.schema.output=[{"column":0,"type":"externalId"},{"column": 1,"type":"name"}]
 _EOF_
@@ -150,7 +152,6 @@ function configure_elton {
 }
 
 function configure_taxonomy {
-    local NOMER_CACHE_DIR=~/.cache/nomer
     mkdir -p ${NOMER_CACHE_DIR}
     local DOWNLOAD_URL="https://github.com/globalbioticinteractions/nomer/releases/download/${NOMER_VERSION}/$1_mapdb.zip"
     curl --silent -L "${DOWNLOAD_URL}" > "${NOMER_CACHE_DIR}/$1_mapdb.zip"
