@@ -122,7 +122,7 @@ function install_deps {
 }
 
 function configure_elton {
-  ELTON_OPTS=" --cache-dir=\"${ELTON_DATASETS_DIR}\""
+  ELTON_OPTS=" --cache-dir=${ELTON_DATASETS_DIR}"
 
   if [[ $(which elton) ]]
   then 
