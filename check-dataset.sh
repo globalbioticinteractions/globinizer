@@ -89,7 +89,7 @@ _EOF_
 function echo_reproduce {
   echo -e "\n\nIf you'd like, you can generate your own review notes by:"
   echo "  - installing GloBI's Elton via https://github.com/globalbioticinteractions/elton"
-  echo "  - running \"elton update $REPO_NAME && elton review --type note,summary $REPO_NAME > review.tsv\""
+  echo "  - running \"elton update $REPO_NAME && elton review --type note --type summary $REPO_NAME > review.tsv\""
   echo "  - inspecting review.tsv"
   echo -e "\nPlease email info@globalbioticinteractions.org for questions/ comments."
 }
@@ -225,7 +225,7 @@ else
   echo no update: using provided elton datasets dir [${ELTON_DATASETS_DIR}] instead.
 fi
 
-${ELTON_CMD} review ${ELTON_OPTS} ${ELTON_NAMESPACE} --type note,summary | gzip > review.tsv.gz
+${ELTON_CMD} review ${ELTON_OPTS} ${ELTON_NAMESPACE} --type note --type summary | gzip > review.tsv.gz
 cat review.tsv.gz | gunzip | head -n501 > review-sample.tsv
 cat review-sample.tsv | tsv2csv > review-sample.csv
 
