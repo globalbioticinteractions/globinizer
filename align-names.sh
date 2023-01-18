@@ -217,6 +217,7 @@ function resolve_names {
   cat $HEADER ${RESOLVED_NO_HEADER}\
     | mlr --tsvlite put -s catalog=$2 '$alignedCatalog=@catalog'\
     | mlr --tsvlite reorder -f alignedCatalog -a alignRelation\
+    | mlr --tsvlite reorder -f alignedUrl -a alignRelation\
     >${RESOLVED}
    
   
