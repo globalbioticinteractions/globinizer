@@ -214,7 +214,13 @@ function resolve_names {
     | gzip > $RESOLVED_NO_HEADER
   NUMBER_OF_PROVIDED_NAMES=$(cat $1 | gunzip | cut -f1,2 | sort | uniq | wc -l)
   NUMBER_RESOLVED_NAMES=$(cat $RESOLVED_NO_HEADER | gunzip | grep -v NONE | sort | uniq | wc -l)
-  cat $HEADER ${RESOLVED_NO_HEADER} >${RESOLVED}
+  cat $HEADER ${RESOLVED_NO_HEADER}\
+    | mlr --tsvlite put -s catalog=$2 '$alignedCatalog=@catalog'\
+    | mlr --tsvlite reorder -f alignedCatalog -a alignRelation\
+    >${RESOLVED}
+   
+  
+ 
   echo [$2] aligned $NUMBER_RESOLVED_NAMES resolved names to $NUMBER_OF_PROVIDED_NAMES provided names.
   echo [$2] first 10 unresolved names include:
   echo 
