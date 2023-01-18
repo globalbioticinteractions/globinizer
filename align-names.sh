@@ -297,7 +297,11 @@ echo -e '---\n\n'
 
 
 
-cat names-aligned.tsv.gz | gunzip | mlr --itsvlite --ocsv --ofs ';' cat > names-aligned.csv
+cat names-aligned.tsv.gz\
+ | gunzip\
+ | mlr --tsvlite sort -f providedName\
+ | mlr --itsvlite --ocsv --ofs ';' cat\
+ > names-aligned.csv
 cat names-aligned.tsv.gz | gunzip > names-aligned.tsv
 cat names-aligned.tsv.gz | gunzip > names-aligned.txt
 
