@@ -216,7 +216,7 @@ function resolve_names {
   NUMBER_RESOLVED_NAMES=$(cat $RESOLVED_NO_HEADER | gunzip | grep -v NONE | sort | uniq | wc -l)
   cat $HEADER ${RESOLVED_NO_HEADER}\
     | mlr --tsvlite put -s catalog=$2 '$alignedCatalog=@catalog'\
-    | mlr --tsvlite reorder -f alignedCatalog,alignedUrl,alignedId -a alignRelation\
+    | mlr --tsvlite reorder -f alignedCatalog,alignedUrl,alignedExternalId -a alignRelation\
     >${RESOLVED}
    
   
