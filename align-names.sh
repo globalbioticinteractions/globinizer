@@ -205,14 +205,16 @@ function resolve_names {
   local RESOLVED_NO_HEADER=names-aligned-$2-no-header.tsv.gz
   local RESOLVED=names-aligned-$2.tsv.gz
   echo_nomer_schema > parse.properties
-  echo 'nomer.schema.input=[{"column":3,"type":"externalId"},{"column": 4,"type":"name"}]' > resolve.properties
+  echo  'nomer.schema.input=[{"column":3,"type":"externalId"},{"column": 4,"type":"name"}]' > resolve.properties
 
   echo -e "\n--- [$2] start ---\n"
-  time cat $1 | gunzip | sort | uniq | ${NOMER_CMD} append --properties parse.properties gbif-parse | ${NOMER_CMD} append --properties resolve.properties  $2 | gzip > $RESOLVED_NO_HEADER
+  time cat $1 | gunzip | sort | uniq\
+    | ${NOMER_CMD} append --properties parse.properties gbif-parse\
+    | ${NOMER_CMD} append --properties resolve.properties  $2\
+    | gzip > $RESOLVED_NO_HEADER
   NUMBER_OF_PROVIDED_NAMES=$(cat $1 | gunzip | cut -f1,2 | sort | uniq | wc -l)
   NUMBER_RESOLVED_NAMES=$(cat $RESOLVED_NO_HEADER | gunzip | grep -v NONE | sort | uniq | wc -l)
-  cat $HEADER ${RESOLVED_NO_HEADER} | mlr --tsvlite put -s catalog=$2 '$alignedCatalog=@catalog' | mlr --tsvlite reorder -f alignedCatalog,alignedUrl,alignedExternalId -a alignRelation >${RESOLVED}
-
+  cat $HEADER ${RESOLVED_NO_HEADER} >${RESOLVED}
   echo [$2] aligned $NUMBER_RESOLVED_NAMES resolved names to $NUMBER_OF_PROVIDED_NAMES provided names.
   echo [$2] first 10 unresolved names include:
   echo 
@@ -295,7 +297,7 @@ echo -e '---\n\n'
 
 
 
-cat names-aligned.tsv.gz | gunzip | mlr --tsvlite sort -f providedName | mlr --itsvlite --ocsv --ofs ';' cat > names-aligned.csv
+cat names-aligned.tsv.gz | gunzip | mlr --itsvlite --ocsv --ofs ';' cat > names-aligned.csv
 cat names-aligned.tsv.gz | gunzip > names-aligned.tsv
 cat names-aligned.tsv.gz | gunzip > names-aligned.txt
 
