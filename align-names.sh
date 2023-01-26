@@ -158,7 +158,7 @@ function configure_preston {
 
 function configure_nomer {
   local TAXONOMY_IDS=$(cat README.md | yq --front-matter=extract --header-preprocess '.taxonomies[].id' | sort | uniq)
-  if [ $(echo ${TAXONOMY_IDS} | tr ' ' '\n' | wc -l) -gt 1 ]
+  if [ $(echo ${TAXONOMY_IDS} | grep -v null | tr ' ' '\n' | wc -l) -gt 0 ]
   then
     NOMER_MATCHERS=${TAXONOMY_IDS}
   fi
