@@ -280,7 +280,7 @@ if [ $(echo "$NOMER_CATALOGS" | wc -c) -gt 1  ]
 then
   for catalog in "$NOMER_CATALOGS"
   do 
-    nomer ls ${catalog} > ${catalog}.tsv
+    ${NOMER_CMD} ls ${catalog} > ${catalog}.tsv
     preston_track_local "${catalog}.tsv"
     ${PRESTON_CMD} cat $(preston_head) | grep "hasVersion" | ${PRESTON_CMD} cat | cut -f1,2 | gzip >> names.tsv.gz
   done  
