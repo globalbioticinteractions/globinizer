@@ -230,10 +230,12 @@ then
   export TSV_LOCAL=$(cat README.md | yq --front-matter=extract --header-preprocess '.datasets[] | select(.type == "text/tab-separated-values") | .url' | grep -v -P "^http[s]{0,1}://") 
   export CSV_LOCAL=$(cat README.md | yq --front-matter=extract --header-preprocess '.datasets[] | select(.type == "text/csv") | .url' | grep -v -P "^http[s]{0,1}://") 
   export DWCA_REMOTE=$(cat README.md | yq --front-matter=extract --header-preprocess '.datasets[] | select(.type == "application/dwca" or .type == "application/rss+xml") | .url' | grep -P "^http[s]{0,1}://") 
+  export NOMER_CATALOGS=$(cat README.md | yq --front-matter=extract --header-preprocess '.datasets[] | select(.type == "application/nomer") | .url' | grep -Po "[a-z]+$") 
 else 
   export TSV_LOCAL=$(ls -1 *.txt *.tsv)
   export CSV_LOCAL=$(ls -1 *.csv)
   export DWCA_REMOTE=
+  export NOMER_CATALOGS=
 fi
 
 function preston_track_uri {
@@ -273,6 +275,17 @@ then
   preston_track_uri "$DWCA_REMOTE"
   ${PRESTON_CMD} cat $(preston_head) | ${PRESTON_CMD} dwc-stream | jq --raw-output 'select(.["http://rs.tdwg.org/dwc/terms/scientificName"]) | [ .["http://www.w3.org/ns/prov#wasDerivedFrom"] , .["http://rs.tdwg.org/dwc/terms/scientificName"] ] | @tsv ' | gzip >> names.tsv.gz
 fi
+
+if [ $(echo "$NOMER_CATALOGS" | wc -c) -gt 1  ]
+then
+  for catalog in "$NOMER_CATALOGS"
+  do 
+    nomer ls ${catalog} > ${catalog}.tsv
+    preston_track_local "${catalog}.tsv"
+    ${PRESTON_CMD} cat $(preston_head) | grep "hasVersion" | ${PRESTON_CMD} cat | cut -f1,2 | gzip >> names.tsv.gz
+  done  
+fi
+
 
 if [ $(cat names.tsv.gz | gunzip | wc -l) -lt 2 ]
 then
