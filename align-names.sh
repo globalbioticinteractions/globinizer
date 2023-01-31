@@ -73,12 +73,22 @@ _EOF_
 
 names_aligned_header | gzip > $HEADER
 
-function echo_nomer_schema {
+function parse_schema {
   # ignore authorship for now
   echo "$(cat <<_EOF_
 nomer.cache.dir=${NOMER_CACHE_DIR}
 nomer.schema.input=[{"column":0,"type":"externalId"},{"column": 1,"type":"name"}]
 nomer.schema.output=[{"column":0,"type":"externalId"},{"column": 1,"type":"name"}]
+nomer.append.schema.output=[{"column":0,"type":"externalUrl"},{"column": 1,"type":"name"},{"column": 2,"type":"authorship"},{"column": 3,"type":"rank"},{"column": 4,"type":"commonNames"},{"column": 5,"type":"path"},{"column": 6,"type":"pathIds"},{"column": 7,"type":"pathNames"},{"column": 8,"type":"pathAuthorships"},{"column": 9,"type":"nameSource"},{"column": 10,"type":"nameSourceUrl"},{"column": 11,"type":"nameSourceAccessedAt"}]
+_EOF_
+)"
+}
+
+
+function resolve_schema {
+  echo "$(cat <<_EOF_
+nomer.schema.input=[{"column":3,"type":"externalId"},{"column": 4,"type":"name"}]
+nomer.append.schema.output=[{"column":0,"type":"externalUrl"},{"column": 1,"type":"name"},{"column": 2,"type":"authorship"},{"column": 3,"type":"rank"},{"column": 4,"type":"commonNames"},{"column": 5,"type":"path"},{"column": 6,"type":"pathIds"},{"column": 7,"type":"pathNames"},{"column": 8,"type":"pathAuthorships"},{"column": 9,"type":"nameSource"},{"column": 10,"type":"nameSourceUrl"},{"column": 11,"type":"nameSourceAccessedAt"}]
 _EOF_
 )"
 }
@@ -204,8 +214,8 @@ configure_preston
 function resolve_names {
   local RESOLVED_NO_HEADER=names-aligned-$2-no-header.tsv.gz
   local RESOLVED=names-aligned-$2.tsv.gz
-  echo_nomer_schema > parse.properties
-  echo  'nomer.schema.input=[{"column":3,"type":"externalId"},{"column": 4,"type":"name"}]' > resolve.properties
+  parse_schema > parse.properties
+  resolve_schema > resolve.properties
 
   echo -e "\n--- [$2] start ---\n"
   time cat $1 | gunzip | sort | uniq\
