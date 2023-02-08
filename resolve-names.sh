@@ -203,13 +203,20 @@ configure_elton
 configure_nomer
 
 function resolve_names {
-  local RESOLVED=indexed-names-resolved-$2.tsv.gz
+  local RESOLVED_STEM=indexed-names-resolved-$2
+  local RESOLVED=${RESOLVED_STEM}.tsv.gz
+  local RESOLVED_CSV=${RESOLVED_STEM}.csv.gz
   echo -e "\n--- [$2] start ---\n"
   time cat $1 | gunzip | tail -n+2 | sort | uniq\
     | ${NOMER_CMD} replace ${NOMER_OPTS} globi-correct\
     | ${NOMER_CMD} replace ${NOMER_OPTS} gn-parse\
     | ${NOMER_CMD} append ${NOMER_OPTS} $2 --include-header\
-    | gzip > $RESOLVED
+    | gzip > ${RESOLVED}
+  cat ${RESOLVED}\
+    | gunzip\
+    | tsv2csv\
+    | gzip\
+    > ${RESOLVED_CSV}
   echo [$2] resolved $(cat $RESOLVED | gunzip | tail -n+2 | grep -v NONE | wc -l) out of $(cat $RESOLVED | gunzip | tail -n+2 | wc -l) names.
   echo [$2] first 10 unresolved names include:
   cat $RESOLVED | gunzip | tail -n+2 | grep NONE | cut -f1,2 | head -n11 
@@ -257,6 +264,7 @@ resolve_names indexed-names.tsv.gz ncbi
 resolve_names indexed-names.tsv.gz discoverlife
 resolve_names indexed-names.tsv.gz gbif
 resolve_names indexed-names.tsv.gz itis
+resolve_names indexed-names.tsv.gz tpt
 
 cat indexed-interactions.tsv.gz | gunzip | head -n501 > indexed-interactions-sample.tsv
 cat indexed-interactions-sample.tsv | tsv2csv > indexed-interactions-sample.csv
