@@ -264,6 +264,7 @@ resolve_names indexed-names.tsv.gz ncbi
 resolve_names indexed-names.tsv.gz discoverlife
 resolve_names indexed-names.tsv.gz gbif
 resolve_names indexed-names.tsv.gz itis
+resolve_names indexed-names.tsv.gz globi
 resolve_names indexed-names.tsv.gz tpt
 
 cat indexed-interactions.tsv.gz | gunzip | head -n501 > indexed-interactions-sample.tsv
@@ -333,11 +334,19 @@ then
   upload indexed-names.csv.gz "indexed names"
 
   upload indexed-names-resolved-col.tsv.gz "indexed names resolved against Catalogue of Life"  
+  upload indexed-names-resolved-col.csv.gz "indexed names resolved against Catalogue of Life"  
   upload indexed-names-resolved-ncbi.tsv.gz "indexed names resolved against NCBI Taxonomy"  
+  upload indexed-names-resolved-ncbi.csv.gz "indexed names resolved against NCBI Taxonomy"  
   upload indexed-names-resolved-discoverlife.tsv.gz "indexed names resolved against DiscoverLife Bee Checklist"  
+  upload indexed-names-resolved-discoverlife.csv.gz "indexed names resolved against DiscoverLife Bee Checklist"  
   upload indexed-names-resolved-gbif.tsv.gz "indexed names resolved against GBIF backbone taxonomy"  
+  upload indexed-names-resolved-gbif.csv.gz "indexed names resolved against GBIF backbone taxonomy"  
   upload indexed-names-resolved-itis.tsv.gz "indexed names resolved against Integrated Taxonomic Information System"  
+  upload indexed-names-resolved-itis.csv.gz "indexed names resolved against Integrated Taxonomic Information System"  
   upload indexed-names-resolved-globi.tsv.gz "indexed names resolved against GloBI Taxon Graph"  
+  upload indexed-names-resolved-globi.csv.gz "indexed names resolved against GloBI Taxon Graph"  
+  upload indexed-names-resolved-tpt.tsv.gz "indexed names resolved against Terrestrial Parasite Tracker Taxonomy"  
+  upload indexed-names-resolved-tpt.csv.gz "indexed names resolved against Terrestrial Parasite Tracker Taxonomy"  
 
   upload indexed-names-sample.tsv "indexed names sample"
   upload indexed-names-sample.csv "indexed names sample"
