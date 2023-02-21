@@ -184,7 +184,6 @@ function configure_nomer {
     echo nomer not found... installing from [${NOMER_DOWNLOAD_URL}]
     curl --silent -L "${NOMER_DOWNLOAD_URL}" > "${NOMER_JAR}"
     export NOMER_CMD="java -Xmx4G -jar ${NOMER_JAR}"
-    
     for matcher in ${NOMER_MATCHERS}
     do
       configure_taxonomy $matcher
@@ -225,6 +224,15 @@ function resolve_names {
   NUMBER_OF_PROVIDED_NAMES=$(cat $1 | gunzip | cut -f1,2 | sort | uniq | wc -l)
   NUMBER_RESOLVED_NAMES=$(cat $RESOLVED_NO_HEADER | gunzip | grep -v NONE | sort | uniq | wc -l)
   cat $HEADER ${RESOLVED_NO_HEADER} >${RESOLVED}
+  cat ${RESOLVED}\
+  | gunzip\
+  | mlr --tsvlite put "$alignedCatalogName = ${2}"\
+  | mlr --tsvlite reorder -f alignedCatalogName -a alignRelation\
+  | gzip\
+  > ${RESOLVED}.new
+
+  mv ${RESOLVED}.new ${RESOLVED}
+  cat ${RESOLVED}.new | gunzip | tail -n+2 | gzip > ${RESOLVED_NO_HEADER}
   echo [$2] aligned $NUMBER_RESOLVED_NAMES resolved names to $NUMBER_OF_PROVIDED_NAMES provided names.
   echo [$2] first 10 unresolved names include:
   echo 
@@ -264,7 +272,7 @@ function preston_track_local {
 }
 
 function preston_head {
-  ${PRESTON_CMD} head 
+  ${PRESTON_CMD} head
 }
 
 if [ $(echo "$TSV_LOCAL" | wc -c) -gt 1  ]
@@ -289,11 +297,11 @@ fi
 if [ $(echo "$NOMER_CATALOGS" | wc -c) -gt 1  ]
 then
   for catalog in "$NOMER_CATALOGS"
-  do 
+  do
     ${NOMER_CMD} ls ${catalog} > ${catalog}.tsv
     preston_track_local "${catalog}.tsv"
     ${PRESTON_CMD} cat $(preston_head) | grep "hasVersion" | ${PRESTON_CMD} cat | cut -f1,2 | gzip >> names.tsv.gz
-  done  
+  done
 fi
 
 
@@ -313,12 +321,20 @@ done
 cat $HEADER > names-aligned.tsv.gz
 ls names-aligned-*.tsv.gz | grep "no-header" | xargs cat >> names-aligned.tsv.gz
 
+
+
 echo "top 10 unresolved names sorted by decreasing number of mismatches across taxonomies"
 echo '---'
 cat names-aligned.tsv.gz | gunzip | grep NONE | cut -f2 | sort | uniq -c | sort -nr | head | sed 's/^[ ]+//g'
 echo -e '---\n\n'
 
+cat names-aligned.tsv.gz\
+ | gunzip\
+ | mlr --tsvlite sort -f providedName\
+ | gzip\
+ > names-aligned-sorted.tsv.gz
 
+mv names-aligned-sorted.tsv.gz names-aligned-tsv.gz
 
 cat names-aligned.tsv.gz | gunzip | mlr --itsvlite --ocsv --ofs ';' cat > names-aligned.csv
 cat names-aligned.tsv.gz | gunzip > names-aligned.tsv
