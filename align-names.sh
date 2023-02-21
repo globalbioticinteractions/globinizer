@@ -66,7 +66,7 @@ _EOF_
 
 function names_aligned_header {
   echo "$(cat <<_EOF_
-providedExternalId	providedName	parseRelation	parsedExternalId	parsedName	parsedAuthority	parsedRank	parsedCommonNames	parsedPath	parsedPathIds	parsedPathNames	12	13	14	15	alignRelation	alignedExternalId	alignedName	alignedAuthority	alignedRank	alignedCommonNames	alignedPath	alignedPathIds	alignedPathNames	25	alignedUrl	27	28
+providedExternalId	providedName	parseRelation	parsedExternalId	parsedName	parsedAuthority	parsedRank	parsedCommonNames	parsedPath	parsedPathIds	parsedPathNames	parsedPathAuthorships	parsedNameSource	parsedNameSourceUrl	parsedNameSourceAccessedAt	alignRelation	alignedExternalId	alignedName	alignedAuthority	alignedRank	alignedCommonNames	alignedPath	alignedPathIds	alignedPathNames	alignedPathAuthorships	alignedNameSource	alignedNameSourceUrl	alignedNameSourceAccessedAt
 _EOF_
 )"
 }
