@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 #   attempt to align names found in .txt files with various taxonomies using
-#   GloBI's nomer. 
+#   GloBI's nomer.
 #
 #   usage:
-#     align-names.sh 
-# 
+#     align-names.sh
+#
 #   example:
-#     ./align-names.sh 
+#     ./align-names.sh
 #
 
 #set -x
@@ -95,7 +95,7 @@ _EOF_
 
 function echo_review_badge {
   local number_of_review_notes=$1
-  if [ ${number_of_review_notes} -gt 0 ] 
+  if [ ${number_of_review_notes} -gt 0 ]
   then
     echo "$(cat <<_EOF_
 <svg xmlns="http://www.w3.org/2000/svg" width="62" height="20">   <linearGradient id="b" x2="0" y2="100%">     <stop offset="0" stop-color="#bbb" stop-opacity=".1"/>     <stop offset="1" stop-opacity=".1"/>   </linearGradient>   <mask id="a">     <rect width="62" height="20" rx="3" fill="#fff"/>   </mask>   <g mask="url(#a)">     <path fill="#555" d="M0 0h43v20H0z"/>     <path fill="#dfb317" d="M43 0h65v20H43z"/>     <path fill="url(#b)" d="M0 0h82v20H0z"/>   </g>   <g fill="#fff" text-anchor="middle"      font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11">     <text x="21.5" y="15" fill="#010101" fill-opacity=".3">       review     </text>     <text x="21.5" y="14">       review     </text>     <text x="53" y="15" fill="#010101" fill-opacity=".3">       &#x1F4AC;     </text>     <text x="53" y="14">       &#x1F4AC;     </text>   </g> </svg>
@@ -137,7 +137,7 @@ function install_deps {
     sudo apt-get -q update &> /dev/null
     sudo apt-get -q install miller jq -y &> /dev/null
     sudo curl --silent -L https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_386 > /usr/local/bin/yq && sudo chmod +x /usr/local/bin/yq 
-    sudo pip install s3cmd &> /dev/null   
+    sudo pip install s3cmd &> /dev/null
   fi
 
   mlr --version
@@ -149,7 +149,7 @@ function install_deps {
 function configure_taxonomy {
     mkdir -p ${NOMER_CACHE_DIR}
     local DOWNLOAD_URL="https://github.com/globalbioticinteractions/nomer/releases/download/${NOMER_VERSION}/$1_mapdb.zip"
-    curl --silent -L "${DOWNLOAD_URL}" > "${NOMER_CACHE_DIR}/$1_mapdb.zip"    
+    curl --silent -L "${DOWNLOAD_URL}" > "${NOMER_CACHE_DIR}/$1_mapdb.zip"
     unzip -qq  ${NOMER_CACHE_DIR}/$1_mapdb.zip -d ${NOMER_CACHE_DIR}
 }
 
@@ -204,7 +204,7 @@ function tsv2csv {
   mlr ${MLR_TSV_INPUT_OPTS} --ocsv cat
 }
 
-echo_logo | tee_readme 
+echo_logo | tee_readme
 
 install_deps
 
@@ -233,7 +233,7 @@ function resolve_names {
 }
 
 
-echo -e "\nReview of [${REPO_NAME}] started at [$(date -Iseconds)]." | tee_readme 
+echo -e "\nReview of [${REPO_NAME}] started at [$(date -Iseconds)]." | tee_readme
 
 if [ $(cat README.md | yq --front-matter=extract --header-preprocess '.datasets[].url' | wc -l) -gt 0 ]
 then
@@ -306,7 +306,7 @@ fi
 # name resolving
 for matcher in ${NOMER_MATCHERS}
 do
-  echo using matcher [$matcher]  
+  echo using matcher [$matcher]
   resolve_names names.tsv.gz $matcher
 done
 
