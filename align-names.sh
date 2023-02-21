@@ -232,7 +232,7 @@ function resolve_names {
   > ${RESOLVED}.new
 
   mv ${RESOLVED}.new ${RESOLVED}
-  cat ${RESOLVED}.new | gunzip | tail -n+2 | gzip > ${RESOLVED_NO_HEADER}
+  cat ${RESOLVED} | gunzip | tail -n+2 | gzip > ${RESOLVED_NO_HEADER}
   echo [$2] aligned $NUMBER_RESOLVED_NAMES resolved names to $NUMBER_OF_PROVIDED_NAMES provided names.
   echo [$2] first 10 unresolved names include:
   echo 
