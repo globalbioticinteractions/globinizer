@@ -226,7 +226,7 @@ function resolve_names {
   cat $HEADER ${RESOLVED_NO_HEADER} >${RESOLVED}
   cat ${RESOLVED}\
   | gunzip\
-  | mlr --tsvlite put "$alignedCatalogName = ${2}"\
+  | mlr --tsvlite put -s catalogName="${2}" '$alignedCatalogName = @catalogName'\
   | mlr --tsvlite reorder -f alignedCatalogName -a alignRelation\
   | gzip\
   > ${RESOLVED}.new
