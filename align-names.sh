@@ -33,7 +33,7 @@ export MLR_TSV_OPTS="${MLR_TSV_INPUT_OPTS} ${MLR_TSV_OUTPUT_OPTS}"
 
 export YQ_VERSION=4.25.3
 
-function echo_logo {
+echo_logo() {
   echo "$(cat <<_EOF_
 ███    ██  █████  ███    ███ ███████                                        
 ████   ██ ██   ██ ████  ████ ██                                             
@@ -64,7 +64,7 @@ _EOF_
 )"
 }
 
-function names_aligned_header {
+names_aligned_header() {
   echo "$(cat <<_EOF_
 providedExternalId	providedName	parseRelation	parsedExternalId	parsedName	parsedAuthority	parsedRank	parsedCommonNames	parsedPath	parsedPathIds	parsedPathNames	parsedPathAuthorships	parsedNameSource	parsedNameSourceUrl	parsedNameSourceAccessedAt	alignRelation	alignedExternalId	alignedName	alignedAuthority	alignedRank	alignedCommonNames	alignedPath	alignedPathIds	alignedPathNames	alignedPathAuthorships	alignedNameSource	alignedNameSourceUrl	alignedNameSourceAccessedAt
 _EOF_
@@ -73,7 +73,7 @@ _EOF_
 
 names_aligned_header | gzip > $HEADER
 
-function parse_schema {
+parse_schema() {
   # ignore authorship for now
   echo "$(cat <<_EOF_
 nomer.cache.dir=${NOMER_CACHE_DIR}
@@ -85,7 +85,7 @@ _EOF_
 }
 
 
-function resolve_schema {
+resolve_schema() {
   echo "$(cat <<_EOF_
 nomer.schema.input=[{"column":3,"type":"externalId"},{"column": 4,"type":"name"}]
 nomer.append.schema.output=[{"column":0,"type":"externalUrl"},{"column": 1,"type":"name"},{"column": 2,"type":"authorship"},{"column": 3,"type":"rank"},{"column": 4,"type":"commonNames"},{"column": 5,"type":"path"},{"column": 6,"type":"pathIds"},{"column": 7,"type":"pathNames"},{"column": 8,"type":"pathAuthorships"},{"column": 9,"type":"nameSource"},{"column": 10,"type":"nameSourceUrl"},{"column": 11,"type":"nameSourceAccessedAt"}]
@@ -93,7 +93,7 @@ _EOF_
 )"
 }
 
-function echo_review_badge {
+echo_review_badge() {
   local number_of_review_notes=$1
   if [ ${number_of_review_notes} -gt 0 ]
   then
@@ -109,7 +109,7 @@ _EOF_
   fi
 }
 
-function echo_reproduce {
+echo_reproduce() {
   echo -e "\n\nIf you'd like, you can generate your own name alignment by:"
   echo "  - installing GloBI's Nomer via https://github.com/globalbioticinteractions/nomer"
   echo "  - inspecting the align-names.sh script at https://github.com/globalbioticinteractions/globinizer/blob/master/align-names.sh"
@@ -117,21 +117,21 @@ function echo_reproduce {
   echo -e "\nPlease email info@globalbioticinteractions.org for questions/ comments."
 }
 
-function use_review_dir {
+use_review_dir() {
   rm -rf ${REVIEW_DIR}
   mkdir -p ${REVIEW_DIR}
   cd ${REVIEW_DIR}
 }
 
-function tee_readme {
+tee_readme() {
   tee --append $README
 }
 
-function save_readme {
+save_readme() {
   cat ${README} > README.txt
 }
 
-function install_deps {
+install_deps() {
   if [[ -n ${TRAVIS_REPO_SLUG} || -n ${GITHUB_REPOSITORY} ]]
   then
     sudo apt-get -q update &> /dev/null
@@ -146,14 +146,14 @@ function install_deps {
   yq --version
 }
 
-function configure_taxonomy {
+configure_taxonomy() {
     mkdir -p ${NOMER_CACHE_DIR}
     local DOWNLOAD_URL="https://github.com/globalbioticinteractions/nomer/releases/download/${NOMER_VERSION}/$1_mapdb.zip"
     curl --silent -L "${DOWNLOAD_URL}" > "${NOMER_CACHE_DIR}/$1_mapdb.zip"
     unzip -qq  ${NOMER_CACHE_DIR}/$1_mapdb.zip -d ${NOMER_CACHE_DIR}
 }
 
-function configure_preston {
+configure_preston() {
   if [[ $(which preston) ]]
   then
     echo using local preston found at [$(which preston)]
@@ -166,7 +166,7 @@ function configure_preston {
   fi
 }
 
-function configure_nomer {
+configure_nomer() {
   local TAXONOMY_IDS=$(cat README.md | yq --front-matter=extract --header-preprocess '.taxonomies[] | select(.["enabled"] != false) | .id' | sort | uniq)
   if [ $(echo ${TAXONOMY_IDS} | grep -v null | tr ' ' '\n' | wc -l) -gt 0 ]
   then
@@ -197,7 +197,7 @@ function configure_nomer {
 }
 
 
-function tsv2csv {
+tsv2csv() {
   # for backward compatibility do not use
   #   mlr --itsv --ocsv cat
   # but use:
@@ -211,7 +211,7 @@ install_deps
 configure_nomer
 configure_preston
 
-function resolve_names {
+resolve_names() {
   local RESOLVED_NO_HEADER=names-aligned-$2-no-header.tsv.gz
   local RESOLVED=names-aligned-$2.tsv.gz
   parse_schema > parse.properties
@@ -261,14 +261,14 @@ else
   export NOMER_CATALOGS=
 fi
 
-function preston_track_uri {
+preston_track_uri() {
   if [ $(echo "$1" | wc -c) -gt 1  ]
   then
     echo -e "$1" | xargs ${PRESTON_CMD} track
   fi
 }
 
-function preston_track_local {
+preston_track_local() {
   # exclude empty lists
   if [ $(echo "$1" | wc -c) -gt 1  ]
   then
@@ -276,7 +276,7 @@ function preston_track_local {
   fi
 }
 
-function preston_head {
+preston_head() {
   ${PRESTON_CMD} head 
 }
 
@@ -362,19 +362,4 @@ echo_reproduce >> ${README}
 
 save_readme
 
-#
-# publish review artifacts
-#
-
-function upload_file_io {
-  echo -e "\nDownload the name alignment results with the single-use, and expiring, file.io link at:"
-  curl --silent -F "file=@names-aligned.zip" https://file.io | jq --raw-output .link  
-}
-
-
 echo_reproduce
-
-#upload_file_io
-
-
-#exit ${NUMBER_OF_NOTES}
