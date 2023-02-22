@@ -54,9 +54,9 @@ echo_logo() {
 ██████     ██        ██   ████  ██████  ██      ██ ███████ ██   ██          
 
 ⚠️ Disclaimer: The name alignment results in this review should be considered
-friendly, yet naive, notes from an unsophisticated taxonomic robot. 
+friendly, yet naive, notes from an unsophisticated taxonomic robot.
 Please carefully review the results listed below and share issues/ideas
-by email info at globalbioticinteractions.org or by opening an issue at 
+by email info at globalbioticinteractions.org or by opening an issue at
 https://github.com/globalbioticinteractions/globalbioticinteractions/issues .
 
 
@@ -184,7 +184,7 @@ configure_nomer() {
     echo nomer not found... installing from [${NOMER_DOWNLOAD_URL}]
     curl --silent -L "${NOMER_DOWNLOAD_URL}" > "${NOMER_JAR}"
     export NOMER_CMD="java -Xmx4G -jar ${NOMER_JAR}"
-    
+
     for matcher in ${NOMER_MATCHERS}
     do
       configure_taxonomy $matcher
@@ -225,8 +225,8 @@ resolve_names() {
   NUMBER_OF_PROVIDED_NAMES=$(cat $1 | gunzip | cut -f1,2 | sort | uniq | wc -l)
   NUMBER_RESOLVED_NAMES=$(cat $RESOLVED_NO_HEADER | gunzip | grep -v NONE | sort | uniq | wc -l)
   cat $HEADER ${RESOLVED_NO_HEADER} >${RESOLVED}
-  
-  # insert catalogue name (or "matcher") 
+
+  # insert catalogue name (or "matcher")
   # https://github.com/globalbioticinteractions/name-alignment-template/issues/6
     cat ${RESOLVED}\
   | gunzip\
@@ -237,10 +237,10 @@ resolve_names() {
 
   mv ${RESOLVED}.new ${RESOLVED}
   cat ${RESOLVED} | gunzip | tail -n+2 | gzip > ${RESOLVED_NO_HEADER}
-  
+
   echo [$2] aligned $NUMBER_RESOLVED_NAMES resolved names to $NUMBER_OF_PROVIDED_NAMES provided names.
   echo [$2] first 10 unresolved names include:
-  echo 
+  echo
   cat $RESOLVED | gunzip | grep NONE | cut -f1,2 | head
   echo -e "\n--- [$2] end ---\n"
 }
@@ -254,7 +254,7 @@ then
   export CSV_LOCAL=$(cat README.md | yq --front-matter=extract --header-preprocess '.datasets[] | select(.["enabled"] != false) | select(.type == "text/csv") | .url' | grep -v -P "^http[s]{0,1}://") 
   export DWCA_REMOTE=$(cat README.md | yq --front-matter=extract --header-preprocess '.datasets[] | select(.["enabled"] != false) | select(.type == "application/dwca" or .type == "application/rss+xml") | .url' | grep -P "^http[s]{0,1}://") 
   export NOMER_CATALOGS=$(cat README.md | yq --front-matter=extract --header-preprocess '.datasets[] | select(.["enabled"] != false) | select(.type == "application/nomer") | .id' | grep -Po "[a-z]+$") 
-else 
+else
   export TSV_LOCAL=$(ls -1 *.txt *.tsv)
   export CSV_LOCAL=$(ls -1 *.csv)
   export DWCA_REMOTE=
@@ -277,7 +277,7 @@ preston_track_local() {
 }
 
 preston_head() {
-  ${PRESTON_CMD} head 
+  ${PRESTON_CMD} head
 }
 
 if [ $(echo "$TSV_LOCAL" | wc -c) -gt 1  ]
@@ -302,11 +302,11 @@ fi
 if [ $(echo "$NOMER_CATALOGS" | wc -c) -gt 1  ]
 then
   for catalog in "$NOMER_CATALOGS"
-  do 
+  do
     ${NOMER_CMD} ls ${catalog} > ${catalog}.tsv
     preston_track_local "${catalog}.tsv"
     ${PRESTON_CMD} cat $(preston_head) | grep "hasVersion" | ${PRESTON_CMD} cat | cut -f1,2 | gzip >> names.tsv.gz
-  done  
+  done
 fi
 
 
