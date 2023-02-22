@@ -339,7 +339,7 @@ cat names-aligned.tsv.gz\
  | gzip\
  > names-aligned-sorted.tsv.gz
 
-mv names-aligned-sorted.tsv.gz names-aligned-tsv.gz
+mv names-aligned-sorted.tsv.gz names-aligned.tsv.gz
 
 cat names-aligned.tsv.gz | gunzip | mlr --itsvlite --ocsv --ofs ';' cat > names-aligned.csv
 cat names-aligned.tsv.gz | gunzip > names-aligned.tsv
