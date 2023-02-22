@@ -331,7 +331,15 @@ echo '---'
 cat names-aligned.tsv.gz | gunzip | grep NONE | cut -f2 | sort | uniq -c | sort -nr | head | sed 's/^[ ]+//g'
 echo -e '---\n\n'
 
+# sort by provided name to help visually compare the matches across catalogs for a provided name
+# as suggested in https://github.com/globalbioticinteractions/name-alignment-template/issues/7
+cat names-aligned.tsv.gz\
+ | gunzip\
+ | mlr --tsvlite sort -f providedName\
+ | gzip\
+ > names-aligned-sorted.tsv.gz
 
+mv names-aligned-sorted.tsv.gz names-aligned-tsv.gz
 
 cat names-aligned.tsv.gz | gunzip | mlr --itsvlite --ocsv --ofs ';' cat > names-aligned.csv
 cat names-aligned.tsv.gz | gunzip > names-aligned.tsv
