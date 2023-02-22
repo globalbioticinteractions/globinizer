@@ -278,14 +278,14 @@ function preston_head {
 if [ $(echo "$TSV_LOCAL" | wc -c) -gt 1  ]
 then
   preston_track_local "$TSV_LOCAL"
-  ${PRESTON_CMD} cat $(preston_head) | grep "hasVersion" | ${PRESTON_CMD} cat | mlr --tsvlite put 'if (!is_present($id)) { $id = "" }' | mlr --tsvlite cut -f id,scientificName | tail -n+2 | gzip >> names.tsv.gz
+  ${PRESTON_CMD} cat $(preston_head) | grep "hasVersion" | ${PRESTON_CMD} cat | mlr --tsvlite put 'if (is_absent($id)) { $id = "" }' | mlr --tsvlite reorder -f id,scientificName | mlr --tsvlite cut -f id,scientificName | tail -n+2 | gzip >> names.tsv.gz
 fi
 
 
 if [ $(echo "$CSV_LOCAL" | wc -c) -gt 1  ]
 then
   preston_track_local "$CSV_LOCAL"
-  ${PRESTON_CMD} cat $(preston_head) | grep "hasVersion" | ${PRESTON_CMD} cat | mlr --tsvlite put 'if (!is_present($id)) { $id = "" }' | mlr --icsv --otsv --ifs ';' cut -f id,scientificName | tail -n+2 | gzip >> names.tsv.gz
+  ${PRESTON_CMD} cat $(preston_head) | grep "hasVersion" | ${PRESTON_CMD} cat | mlr --tsvlite put 'if (is_absent($id)) { $id = "" }' | mlr --tsvlite reorder -f id,scientificName | mlr --icsv --otsv --ifs ';' cut -f id,scientificName | tail -n+2 | gzip >> names.tsv.gz
 fi
 
 if [ $(echo "$DWCA_REMOTE" | wc -c) -gt 1  ]
