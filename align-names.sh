@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 #   attempt to align names found in .txt files with various taxonomies using
-#   GloBI's nomer. 
+#   GloBI's nomer.
 #
 #   usage:
-#     align-names.sh 
-# 
+#     align-names.sh
+#
 #   example:
-#     ./align-names.sh 
+#     ./align-names.sh
 #
 
 #set -x
@@ -66,7 +66,7 @@ _EOF_
 
 function names_aligned_header {
   echo "$(cat <<_EOF_
-providedExternalId	providedName	parseRelation	parsedExternalId	parsedName	parsedAuthority	parsedRank	parsedCommonNames	parsedPath	parsedPathIds	parsedPathNames	parsedPathAuthorships	parsedNameSource	parsedNameSourceUrl	parsedNameSourceAccessedAt	alignRelation	alignedCatalogName	alignedExternalId	alignedName	alignedAuthority	alignedRank	alignedCommonNames	alignedPath	alignedPathIds	alignedPathNames	alignedPathAuthorships	alignedNameSource	alignedNameSourceUrl	alignedNameSourceAccessedAt
+providedExternalId	providedName	parseRelation	parsedExternalId	parsedName	parsedAuthority	7	8	9	10	11	12	13	alignRelation	alignedExternalId	alignedName	alignedAuthority	alignedRank	alignedCommonNames	alignedPath	alignedPathIds	alignedPathNames	23	alignedUrl
 _EOF_
 )"
 }
@@ -95,7 +95,7 @@ _EOF_
 
 function echo_review_badge {
   local number_of_review_notes=$1
-  if [ ${number_of_review_notes} -gt 0 ] 
+  if [ ${number_of_review_notes} -gt 0 ]
   then
     echo "$(cat <<_EOF_
 <svg xmlns="http://www.w3.org/2000/svg" width="62" height="20">   <linearGradient id="b" x2="0" y2="100%">     <stop offset="0" stop-color="#bbb" stop-opacity=".1"/>     <stop offset="1" stop-opacity=".1"/>   </linearGradient>   <mask id="a">     <rect width="62" height="20" rx="3" fill="#fff"/>   </mask>   <g mask="url(#a)">     <path fill="#555" d="M0 0h43v20H0z"/>     <path fill="#dfb317" d="M43 0h65v20H43z"/>     <path fill="url(#b)" d="M0 0h82v20H0z"/>   </g>   <g fill="#fff" text-anchor="middle"      font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11">     <text x="21.5" y="15" fill="#010101" fill-opacity=".3">       review     </text>     <text x="21.5" y="14">       review     </text>     <text x="53" y="15" fill="#010101" fill-opacity=".3">       &#x1F4AC;     </text>     <text x="53" y="14">       &#x1F4AC;     </text>   </g> </svg>
@@ -137,7 +137,7 @@ function install_deps {
     sudo apt-get -q update &> /dev/null
     sudo apt-get -q install miller jq -y &> /dev/null
     sudo curl --silent -L https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_386 > /usr/local/bin/yq && sudo chmod +x /usr/local/bin/yq 
-    sudo pip install s3cmd &> /dev/null   
+    sudo pip install s3cmd &> /dev/null
   fi
 
   mlr --version
@@ -149,7 +149,7 @@ function install_deps {
 function configure_taxonomy {
     mkdir -p ${NOMER_CACHE_DIR}
     local DOWNLOAD_URL="https://github.com/globalbioticinteractions/nomer/releases/download/${NOMER_VERSION}/$1_mapdb.zip"
-    curl --silent -L "${DOWNLOAD_URL}" > "${NOMER_CACHE_DIR}/$1_mapdb.zip"    
+    curl --silent -L "${DOWNLOAD_URL}" > "${NOMER_CACHE_DIR}/$1_mapdb.zip"
     unzip -qq  ${NOMER_CACHE_DIR}/$1_mapdb.zip -d ${NOMER_CACHE_DIR}
 }
 
@@ -184,6 +184,7 @@ function configure_nomer {
     echo nomer not found... installing from [${NOMER_DOWNLOAD_URL}]
     curl --silent -L "${NOMER_DOWNLOAD_URL}" > "${NOMER_JAR}"
     export NOMER_CMD="java -Xmx4G -jar ${NOMER_JAR}"
+    
     for matcher in ${NOMER_MATCHERS}
     do
       configure_taxonomy $matcher
@@ -203,7 +204,7 @@ function tsv2csv {
   mlr ${MLR_TSV_INPUT_OPTS} --ocsv cat
 }
 
-echo_logo | tee_readme 
+echo_logo | tee_readme
 
 install_deps
 
@@ -224,15 +225,6 @@ function resolve_names {
   NUMBER_OF_PROVIDED_NAMES=$(cat $1 | gunzip | cut -f1,2 | sort | uniq | wc -l)
   NUMBER_RESOLVED_NAMES=$(cat $RESOLVED_NO_HEADER | gunzip | grep -v NONE | sort | uniq | wc -l)
   cat $HEADER ${RESOLVED_NO_HEADER} >${RESOLVED}
-  cat ${RESOLVED}\
-  | gunzip\
-  | mlr --tsvlite put -s catalogName="${2}" '$alignedCatalogName = @catalogName'\
-  | mlr --tsvlite reorder -f alignedCatalogName -a alignRelation\
-  | gzip\
-  > ${RESOLVED}.new
-
-  mv ${RESOLVED}.new ${RESOLVED}
-  cat ${RESOLVED} | gunzip | tail -n+2 | gzip > ${RESOLVED_NO_HEADER}
   echo [$2] aligned $NUMBER_RESOLVED_NAMES resolved names to $NUMBER_OF_PROVIDED_NAMES provided names.
   echo [$2] first 10 unresolved names include:
   echo 
@@ -241,7 +233,7 @@ function resolve_names {
 }
 
 
-echo -e "\nReview of [${REPO_NAME}] started at [$(date -Iseconds)]." | tee_readme 
+echo -e "\nReview of [${REPO_NAME}] started at [$(date -Iseconds)]." | tee_readme
 
 if [ $(cat README.md | yq --front-matter=extract --header-preprocess '.datasets[].url' | wc -l) -gt 0 ]
 then
@@ -272,20 +264,20 @@ function preston_track_local {
 }
 
 function preston_head {
-  ${PRESTON_CMD} head
+  ${PRESTON_CMD} head 
 }
 
 if [ $(echo "$TSV_LOCAL" | wc -c) -gt 1  ]
 then
   preston_track_local "$TSV_LOCAL"
-  ${PRESTON_CMD} cat $(preston_head) | grep "hasVersion" | ${PRESTON_CMD} cat | mlr --tsvlite put 'if (is_absent($id)) { $id = "" }' | mlr --tsvlite reorder -f id,scientificName | mlr --tsvlite cut -f id,scientificName | tail -n+2 | gzip >> names.tsv.gz
+  ${PRESTON_CMD} cat $(preston_head) | grep "hasVersion" | ${PRESTON_CMD} cat | mlr --tsvlite cut -f scientificName | tail -n+2 | sed 's/^/\t/g' | gzip >> names.tsv.gz
 fi
 
 
 if [ $(echo "$CSV_LOCAL" | wc -c) -gt 1  ]
 then
   preston_track_local "$CSV_LOCAL"
-  ${PRESTON_CMD} cat $(preston_head) | grep "hasVersion" | ${PRESTON_CMD} cat | mlr --tsvlite put 'if (is_absent($id)) { $id = "" }' | mlr --tsvlite reorder -f id,scientificName | mlr --icsv --otsv --ifs ';' cut -f id,scientificName | tail -n+2 | gzip >> names.tsv.gz
+  ${PRESTON_CMD} cat $(preston_head) | grep "hasVersion" | ${PRESTON_CMD} cat | mlr --icsv --otsv --ifs ';' cut -f scientificName | tail -n+2 | sed 's/^/\t/g' | gzip >> names.tsv.gz
 fi
 
 if [ $(echo "$DWCA_REMOTE" | wc -c) -gt 1  ]
@@ -297,11 +289,11 @@ fi
 if [ $(echo "$NOMER_CATALOGS" | wc -c) -gt 1  ]
 then
   for catalog in "$NOMER_CATALOGS"
-  do
+  do 
     ${NOMER_CMD} ls ${catalog} > ${catalog}.tsv
     preston_track_local "${catalog}.tsv"
     ${PRESTON_CMD} cat $(preston_head) | grep "hasVersion" | ${PRESTON_CMD} cat | cut -f1,2 | gzip >> names.tsv.gz
-  done
+  done  
 fi
 
 
@@ -314,27 +306,19 @@ fi
 # name resolving
 for matcher in ${NOMER_MATCHERS}
 do
-  echo using matcher [$matcher]  
+  echo using matcher [$matcher]
   resolve_names names.tsv.gz $matcher
 done
 
 cat $HEADER > names-aligned.tsv.gz
 ls names-aligned-*.tsv.gz | grep "no-header" | xargs cat >> names-aligned.tsv.gz
 
-
-
 echo "top 10 unresolved names sorted by decreasing number of mismatches across taxonomies"
 echo '---'
 cat names-aligned.tsv.gz | gunzip | grep NONE | cut -f2 | sort | uniq -c | sort -nr | head | sed 's/^[ ]+//g'
 echo -e '---\n\n'
 
-cat names-aligned.tsv.gz\
- | gunzip\
- | mlr --tsvlite sort -f providedName\
- | gzip\
- > names-aligned-sorted.tsv.gz
 
-mv names-aligned-sorted.tsv.gz names-aligned-tsv.gz
 
 cat names-aligned.tsv.gz | gunzip | mlr --itsvlite --ocsv --ofs ';' cat > names-aligned.csv
 cat names-aligned.tsv.gz | gunzip > names-aligned.tsv
