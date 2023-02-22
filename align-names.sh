@@ -225,6 +225,19 @@ function resolve_names {
   NUMBER_OF_PROVIDED_NAMES=$(cat $1 | gunzip | cut -f1,2 | sort | uniq | wc -l)
   NUMBER_RESOLVED_NAMES=$(cat $RESOLVED_NO_HEADER | gunzip | grep -v NONE | sort | uniq | wc -l)
   cat $HEADER ${RESOLVED_NO_HEADER} >${RESOLVED}
+  
+  # insert catalogue name (or "matcher") 
+  # https://github.com/globalbioticinteractions/name-alignment-template/issues/6
+    cat ${RESOLVED}\
+  | gunzip\
+  | mlr --tsvlite put -s catalogName="${2}" '$alignedCatalogName = @catalogName'\
+  | mlr --tsvlite reorder -f alignedCatalogName -a alignRelation\
+  | gzip\
+  > ${RESOLVED}.new
+
+  mv ${RESOLVED}.new ${RESOLVED}
+  cat ${RESOLVED} | gunzip | tail -n+2 | gzip > ${RESOLVED_NO_HEADER}
+  
   echo [$2] aligned $NUMBER_RESOLVED_NAMES resolved names to $NUMBER_OF_PROVIDED_NAMES provided names.
   echo [$2] first 10 unresolved names include:
   echo 
@@ -310,7 +323,7 @@ do
   resolve_names names.tsv.gz $matcher
 done
 
-cat $HEADER > names-aligned.tsv.gz
+ls names-aligned-*.tsv.gz | grep -v "no-header" | xargs cat | gunzip | head -n1 | gzip > names-aligned.tsv.gz
 ls names-aligned-*.tsv.gz | grep "no-header" | xargs cat >> names-aligned.tsv.gz
 
 echo "top 10 unresolved names sorted by decreasing number of mismatches across taxonomies"
