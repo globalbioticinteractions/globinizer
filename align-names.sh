@@ -66,7 +66,7 @@ _EOF_
 
 names_aligned_header() {
   echo "$(cat <<_EOF_
-providedExternalId	providedName	parseRelation	parsedExternalId	parsedName	parsedAuthority	parsedRank	parsedCommonNames	parsedPath	parsedPathIds	parsedPathNames	parsedPathAuthorships	parsedNameSource	parsedNameSourceUrl	parsedNameSourceAccessedAt	alignRelation	alignedExternalId	alignedName	alignedAuthority	alignedRank	alignedCommonNames	alignedPath	alignedPathIds	alignedPathNames	alignedPathAuthorships	alignedNameSource	alignedNameSourceUrl	alignedNameSourceAccessedAt
+providedExternalId	providedName	parseRelation	parsedExternalId	parsedName	parsedAuthority	parsedRank	parsedCommonNames	parsedPath	parsedPathIds	parsedPathNames	parsedPathAuthorships	parsedNameSource	parsedNameSourceUrl	parsedNameSourceAccessedAt	alignRelation	alignedExternalId	alignedName	alignedAuthority	alignedRank	alignedCommonNames	alignedKingdomName	alignedKingdomId	alignedPhylumName	alignedPhylumId	alignedClassName	alignedClassId	alignedOrderName	alignedOrderId	alignedFamilyName	alignedFamilyId	alignedGenusName	alignedGenusId	alignedSubgenusName	alignedSubgenusId	alignedSpeciesName	alignedSpeciesId	alignedSubspeciesName	alignedSubspeciesId	alignedPath	alignedPathIds	alignedPathNames	alignedPathAuthorships	alignedNameSource	alignedNameSourceUrl	alignedNameSourceAccessedAt
 _EOF_
 )"
 }
@@ -85,10 +85,10 @@ _EOF_
 }
 
 
-resolve_schema() {
+align_schema() {
   echo "$(cat <<_EOF_
 nomer.schema.input=[{"column":3,"type":"externalId"},{"column": 4,"type":"name"}]
-nomer.append.schema.output=[{"column":0,"type":"externalUrl"},{"column": 1,"type":"name"},{"column": 2,"type":"authorship"},{"column": 3,"type":"rank"},{"column": 4,"type":"commonNames"},{"column": 5,"type":"path"},{"column": 6,"type":"pathIds"},{"column": 7,"type":"pathNames"},{"column": 8,"type":"pathAuthorships"},{"column": 9,"type":"nameSource"},{"column": 10,"type":"nameSourceUrl"},{"column": 11,"type":"nameSourceAccessedAt"}]
+nomer.append.schema.output=[{"column":0,"type":"externalUrl"},{"column": 1,"type":"name"},{"column": 2,"type":"authorship"},{"column": 3,"type":"rank"},{"column": 4,"type":"commonNames"},{"column": 5, "type":"path.kingdom.name"},{"column": 6, "type":"path.kingdom.id"},{"column": 7, "type":"path.phylum.name"},{"column": 8, "type":"path.phylum.id"},{"column":9, "type":"path.class.name"},{"column":10, "type":"path.class.id"},{"column":11, "type":"path.order.name"},{"column":12, "type":"path.order.id"},{"column":13, "type":"path.family.name"},{"column":14, "type":"path.family.id"},{"column":15, "type":"path.genus.name"},{"column":16, "type":"path.genus.id"},{"column":17, "type":"path.subgenus.name"},{"column":18, "type":"path.subgenus.id"},{"column":19, "type":"path.species.name"},{"column":20, "type":"path.species.id"},{"column":21, "type":"path.subspecies.name"},{"column":22, "type":"path.subspecies.id"},{"column":23,"type":"path"},{"column":24,"type":"pathIds"},{"column":25,"type":"pathNames"},{"column":26,"type":"pathAuthorships"},{"column":27,"type":"nameSource"},{"column":28,"type":"nameSourceUrl"},{"column":29,"type":"nameSourceAccessedAt"}]
 _EOF_
 )"
 }
@@ -215,12 +215,12 @@ resolve_names() {
   local RESOLVED_NO_HEADER=names-aligned-$2-no-header.tsv.gz
   local RESOLVED=names-aligned-$2.tsv.gz
   parse_schema > parse.properties
-  resolve_schema > resolve.properties
+  align_schema > align.properties
 
   echo -e "\n--- [$2] start ---\n"
   time cat $1 | gunzip | sort | uniq\
     | ${NOMER_CMD} append --properties parse.properties gbif-parse\
-    | ${NOMER_CMD} append --properties resolve.properties  $2\
+    | ${NOMER_CMD} append --properties align.properties  $2\
     | gzip > $RESOLVED_NO_HEADER
   NUMBER_OF_PROVIDED_NAMES=$(cat $1 | gunzip | cut -f1,2 | sort | uniq | wc -l)
   NUMBER_RESOLVED_NAMES=$(cat $RESOLVED_NO_HEADER | gunzip | grep -v NONE | sort | uniq | wc -l)
