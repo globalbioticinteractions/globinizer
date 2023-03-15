@@ -310,7 +310,7 @@ then
 fi
 
 
-if [ $(cat names.tsv.gz | gunzip | wc -l) -lt 2 ]
+if [ $(cat names.tsv.gz | gunzip | wc -l) -lt 1 ]
 then
   echo "no names found: please check your configuration"
   exit 1
