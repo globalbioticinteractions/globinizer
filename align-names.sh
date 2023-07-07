@@ -14,12 +14,12 @@
 
 export REPO_NAME=$1
 
-export NOMER_VERSION=0.4.12
+export NOMER_VERSION=0.5.0
 export NOMER_JAR="$PWD/nomer.jar"
 export NOMER_MATCHERS="col ncbi gbif itis wfo"
 export NOMER_CACHE_DIR=${NOMER_CACHE_DIR:-~/.cache/nomer}
 
-export PRESTON_VERSION=0.5.1
+export PRESTON_VERSION=0.7.1
 export PRESTON_JAR="$PWD/preston.jar"
 
 export REVIEW_REPO_HOST="blob.globalbioticinteractions.org"
