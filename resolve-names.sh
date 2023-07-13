@@ -108,21 +108,21 @@ function save_html_report {
                       href="https://github.com/$REPO_NAME">$REPO_NAME</a></span><span
         class="c0">&nbsp;as of $(date) </span></p>
 <p class="c1"><span class="c0">According to GloBI's review process*, this collection contains</span></p>
-<p class="c1"><span class="c9">&nbsp;</span><span class="c5">$(echo printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | tail -n+2 | sort | uniq | wc -l)) interactions</span></p>
+<p class="c1"><span class="c9">&nbsp;</span><span class="c5">$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | tail -n+2 | sort | uniq | wc -l)) interactions</span></p>
 <p class="c1"><span class="c6">involving </span><span class="c2">$(cat indexed-interactions.tsv.gz | gunzip | mlr --tsvlite cut -f interactionTypeName | tail -n+2 | sort | uniq | wc -l)  unique types of associations</span><span class="c0">, and these are the top 5:</span>
 </p>
-$(cat indexed-interactions.tsv.gz | gunzip | mlr --tsvlite cut -f interactionTypeName | tail -n+2 | sort | uniq -c | sort -nr | head -n5 | sed 's+^+<p class="c1"><span class="c0">&nbsp; &nbsp;+g' | sed 's+$+</span></p>+g')
+$(cat indexed-interactions.tsv.gz | gunzip | mlr --tsvlite cut -f interactionTypeName | tail -n+2 | sort | uniq -c | sort -nr | head -n5 | sed 's+^+<p class="c1"><span class="c0">\&nbsp; \&nbsp;+g' | sed 's+$+</span></p>+g')
 <p class="c1 c3"><span class="c0"></span></p>
 <p class="c1"><span class="c0">In these interactions, there appears to be </span></p>
-<p class="c1"><span class="c10">$(echo printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | mlr --tsvlite cut -f sourceTaxonName | tail -n+2 | wc -l)) primary taxa</span><span
+<p class="c1"><span class="c10">$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | mlr --tsvlite cut -f sourceTaxonName | tail -n+2 | wc -l)) primary taxa</span><span
         class="c0">&nbsp;(aka source taxa or subject taxa)</span></p>
 <p class="c1"><span class="c0">top 5 most documented primary taxa in this dataset: </span></p>
-$(cat indexed-interactions.tsv.gz | gunzip | mlr --tsvlite cut -f sourceTaxonName | tail -n+2 | sort | uniq -c | sort -nr | head -n5 | sed 's+^+<p class="c1"><span class="c0">&nbsp; &nbsp;+g' | sed 's+$</span></p>+g')
+$(cat indexed-interactions.tsv.gz | gunzip | mlr --tsvlite cut -f sourceTaxonName | tail -n+2 | sort | uniq -c | sort -nr | head -n5 | sed 's+^+<p class="c1"><span class="c0">\&nbsp; \&nbsp;+g' | sed 's+$</span></p>+g')
 <p class="c1"><span class="c0">and</span></p>
-<p class="c1"><span class="c6">&nbsp;</span><span class="c10">$(echo printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | mlr --tsvlite cut -f targetTaxonName | tail -n+2 | sort | uniq | wc -l)) associated taxa</span><span class="c0">&nbsp;(aka target taxa or object taxa)</span>
+<p class="c1"><span class="c6">&nbsp;</span><span class="c10">$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | mlr --tsvlite cut -f targetTaxonName | tail -n+2 | sort | uniq | wc -l)) associated taxa</span><span class="c0">&nbsp;(aka target taxa or object taxa)</span>
 </p>
 <p class="c1"><span class="c0">5 most frequently appearing associated taxa are:</span></p>
-$(cat indexed-interactions.tsv.gz | gunzip | mlr --tsvlite cut -f targetTaxonName | tail -n+2 | sort | uniq -c | sort -nr | head -n5 | sed 's+^+<p class="c1"><span class="c0">&nbsp; &nbsp;+g' | sed 's+$+</span></p>+g')
+$(cat indexed-interactions.tsv.gz | gunzip | mlr --tsvlite cut -f targetTaxonName | tail -n+2 | sort | uniq -c | sort -nr | head -n5 | sed 's+^+<p class="c1"><span class="c0">\&nbsp; \&nbsp;+g' | sed 's+$+</span></p>+g')
 <p class="c1"><span class="c0">Download the full datasets used in this review here. Learn more about the structure of this download here or contact mailto:info@globalbioticinteractions.org.</span>
 </p>
 <p class="c1"><span class="c6">To see all interactions on </span><span class="c7"><a class="c12"
@@ -132,7 +132,7 @@ $(cat indexed-interactions.tsv.gz | gunzip | mlr --tsvlite cut -f targetTaxonNam
 <p class="c1"><span class="c0">As part of the review, all names are matched against GBIF Taxonomic Backbone, ITIS, NCBI Taxonomy, Catalogue of Life, Parasite Tracker Taxonomy, and DiscoverLife. The top 5 names that for some reason, did not match any of our taxonomic resources are:</span>
 </p>
 
-$(cat indexed-names-resolved-col.tsv.gz indexed-names-resolved-ncbi.tsv.gz indexed-names-resolved-itis.tsv.gz indexed-names-resolved-gbif.tsv.gz indexed-names-resolved-tpt.tsv.gz indexed-names-resolved-discoverlife.tsv.gz | gunzip | grep -v providedIndexId | grep NONE | cut -f2 | sort | uniq -c | sort -nr | head -n5 | sed 's+^+<p class="c1"><span class="c0">&nbsp; &nbsp;+g' | sed 's+$+</span></p>+g')
+$(cat indexed-names-resolved-col.tsv.gz indexed-names-resolved-ncbi.tsv.gz indexed-names-resolved-itis.tsv.gz indexed-names-resolved-gbif.tsv.gz indexed-names-resolved-tpt.tsv.gz indexed-names-resolved-discoverlife.tsv.gz | gunzip | grep -v providedIndexId | grep NONE | cut -f2 | sort | uniq -c | sort -nr | head -n5 | sed 's+^+<p class="c1"><span class="c0">\&nbsp; \&nbsp;+g' | sed 's+$+</span></p>+g')
 <p class="c1"><span class="c0">Download the full list of names matches here. Learn more about the structure of the name reports here or contact us by <a class="c12" href="mailto:info@globalbioticinteractions.org">email</a>.</span>
 </p>
 <p class="c1"><span class="c0">For additional review resources go <a class="c12" href="https://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/README.txt">here</a> . </span>
