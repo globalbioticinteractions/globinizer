@@ -315,7 +315,7 @@ cat indexed-names-sample.tsv | tsv2csv > indexed-names-sample.csv
 for taxonomy in ${TAXONOMIES}; do resolve_names indexed-names.tsv.gz ${taxonomy}; done;
 
 # concatenate all name alignments
-echo ${TAXONOMIES} | tr ' ' '\n' | awk '{ print indexed-names-resolved-$1.tsv.gz }' | xargs mlr --tsvlite cat | mlr --tsvlite sort -f providedName | uniq | gzip > indexed-names-resolved.tsv.gz
+echo ${TAXONOMIES} | tr ' ' '\n' | awk '{ print "indexed-names-resolved-" $1 ".tsv.gz" }' | xargs mlr --tsvlite cat | mlr --tsvlite sort -f providedName | uniq | gzip > indexed-names-resolved.tsv.gz
 mlr --itsvlite --ojsonl indexed-names-resolved.tsv.gz | gzip > indexed-names-resolved.csv.gz
 mlr --itsvlite --ojsonl indexed-names-resolved.tsv.gz | gzip > indexed-names-resolved.json.gz
 
