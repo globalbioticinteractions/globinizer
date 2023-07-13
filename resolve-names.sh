@@ -94,6 +94,82 @@ function echo_reproduce {
   echo -e "\nPlease email info@globalbioticinteractions.org for questions/ comments."
 }
 
+function save_html_report {
+  REVIEW_DATE="10 July 2023"
+
+  cat > review.html <<_EOF_
+<html>
+<head>
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+    <style type="text/css">
+        ol{margin:0;padding:0}table td,table th{padding:0}.c0{color:#595959;font-weight:400;text-decoration:none;vertical-align:baseline;font-size:12pt;font-family:"Arial";font-style:normal}.c5{color:#595959;font-weight:700;text-decoration:none;vertical-align:baseline;font-size:36pt;font-family:"Arial";font-style:normal}.c8{color:#000000;font-weight:400;text-decoration:none;vertical-align:baseline;font-size:11pt;font-family:"Arial";font-style:normal}.c11{padding-top:0pt;padding-bottom:0pt;line-height:1.15;orphans:2;widows:2;text-align:left}.c7{text-decoration-skip-ink:none;font-size:12pt;-webkit-text-decoration-skip:none;color:#0097a7;text-decoration:underline}.c1{padding-top:0pt;padding-bottom:12pt;line-height:1.15;text-align:left}.c10{font-size:24pt;color:#595959;font-weight:700}.c2{font-size:18pt;color:#595959;font-weight:700}.c4{background-color:#ffffff;max-width:468pt;padding:72pt 72pt 72pt 72pt}.c12{color:inherit;text-decoration:inherit}.c6{color:#595959;font-size:12pt}.c9{color:#595959;font-size:36pt}.c3{height:11pt}.title{padding-top:0pt;color:#000000;font-size:26pt;padding-bottom:3pt;font-family:"Arial";line-height:1.15;page-break-after:avoid;orphans:2;widows:2;text-align:left}.subtitle{padding-top:0pt;color:#666666;font-size:15pt;padding-bottom:16pt;font-family:"Arial";line-height:1.15;page-break-after:avoid;orphans:2;widows:2;text-align:left}li{color:#000000;font-size:11pt;font-family:"Arial"}p{margin:0;color:#000000;font-size:11pt;font-family:"Arial"}h1{padding-top:20pt;color:#000000;font-size:20pt;padding-bottom:6pt;font-family:"Arial";line-height:1.15;page-break-after:avoid;orphans:2;widows:2;text-align:left}h2{padding-top:18pt;color:#000000;font-size:16pt;padding-bottom:6pt;font-family:"Arial";line-height:1.15;page-break-after:avoid;orphans:2;widows:2;text-align:left}h3{padding-top:16pt;color:#434343;font-size:14pt;padding-bottom:4pt;font-family:"Arial";line-height:1.15;page-break-after:avoid;orphans:2;widows:2;text-align:left}h4{padding-top:14pt;color:#666666;font-size:12pt;padding-bottom:4pt;font-family:"Arial";line-height:1.15;page-break-after:avoid;orphans:2;widows:2;text-align:left}h5{padding-top:12pt;color:#666666;font-size:11pt;padding-bottom:4pt;font-family:"Arial";line-height:1.15;page-break-after:avoid;orphans:2;widows:2;text-align:left}h6{padding-top:12pt;color:#666666;font-size:11pt;padding-bottom:4pt;font-family:"Arial";line-height:1.15;page-break-after:avoid;font-style:italic;orphans:2;widows:2;text-align:left}
+    </style>
+</head>
+<body class="c4 doc-content"><p class="c1"><span class="c6">Review of interactions in collection of the </span><span
+        class="c7"><a class="c12"
+                      href="https://github.com/$REPO_NAME">$REPO_NAME</a></span><span
+        class="c0">&nbsp;as of $REVIEW_DATE </span></p>
+<p class="c1"><span class="c0">According to GloBI's review process*, this collection contains</span></p>
+<p class="c1"><span class="c9">&nbsp;</span><span class="c5">117,300 interactions</span></p>
+<p class="c1"><span class="c6">involving </span><span class="c2">6 unique types of associations</span><span class="c0">, and these are the top 5:</span>
+</p>
+<p class="c1"><span class="c0">&nbsp; 81582 adjacentTo </span></p>
+<p class="c1"><span class="c0">&nbsp; 34986 ectoparasiteOf</span></p>
+<p class="c1"><span class="c0">&nbsp; &nbsp; 564 parasiteOf</span></p>
+<p class="c1"><span class="c0">&nbsp; &nbsp; 166 interactsWith</span></p>
+<p class="c1"><span class="c0">&nbsp; &nbsp; &nbsp; 1 hostOf</span></p>
+<p class="c1 c3"><span class="c0"></span></p>
+<p class="c1"><span class="c0">In these interactions, there appears to be </span></p>
+<p class="c1"><span class="c10">19,263 primary taxa</span><span
+        class="c0">&nbsp;(aka source taxa or subject taxa)</span></p>
+<p class="c1"><span class="c0">top 5 most documented primary taxa in this dataset: </span></p>
+<p class="c1"><span class="c0">&nbsp; &nbsp;2638 Trichobius joblingi Wenzel, 1966</span></p>
+<p class="c1"><span class="c0">&nbsp; &nbsp;1384 Marchantiophyta Stotler &amp; Crand.-Stotl.</span></p>
+<p class="c1"><span class="c0">&nbsp; &nbsp;1287 Megistopoda aranea (Coquillétt, 1899)</span></p>
+<p class="c1"><span class="c0">&nbsp; &nbsp;1162 Megistopoda proxima (Séguy, 1926)</span></p>
+<p class="c1"><span class="c0">&nbsp; &nbsp;1012 Trichobius parasiticus Gervais, 1844</span></p>
+<p class="c1"><span class="c0">and</span></p>
+<p class="c1"><span class="c6">&nbsp;</span><span class="c10">31,896 associated taxa</span><span class="c0">&nbsp;(aka target taxa or object taxa)</span>
+</p>
+<p class="c1"><span class="c0">5 most frequently appearing associated taxa are:</span></p>
+<p class="c1"><span class="c0">&nbsp; 2692 Carollia perspicillata</span></p>
+<p class="c1"><span class="c0">&nbsp; &nbsp;1740 Artibeus jamaicensis</span></p>
+<p class="c1"><span class="c0">&nbsp; &nbsp;1564 Desmodus rotundus</span></p>
+<p class="c1"><span class="c0">&nbsp; &nbsp;1527 Sturnira lilium</span></p>
+<p class="c1"><span class="c0">&nbsp; &nbsp;1373 ground</span></p>
+<p class="c1"><span class="c0">Download the full datasets used in this review here. Learn more about the structure of this download here or contact mailto:info@globalbioticinteractions.org.</span>
+</p>
+<p class="c1"><span class="c6">To see all interactions on </span><span class="c7"><a class="c12"
+                                                                                     href="https://www.google.com/url?q=https://globalbioticinteractions.org&amp;sa=D&amp;source=editors&amp;ust=1689279423357461&amp;usg=AOvVaw2c417cqTKPcVHoH4I-5kk6">GloBI website</a></span><span
+        class="c0">, click here. https://www.globalbioticinteractions.org/?accordingTo=globi%3Aglobalbioticinteractions%2Ffmnh&amp;interactionType=interactsWith .</span>
+</p>
+<p class="c1"><span class="c0">As part of the review, all names are matched against GBIF Taxonomic Backbone, ITIS, Catalogue of Life, Parasite Tracker Taxonomy, and DiscoverLife. The top 5 names that for some reason, did not match any of our taxonomic resources are:</span>
+</p>
+<p class="c1"><span class="c0">&nbsp; &nbsp; &nbsp;57 Angiosperms</span></p>
+<p class="c1"><span class="c0">&nbsp; &nbsp; &nbsp;47 Tree</span></p>
+<p class="c1"><span class="c0">&nbsp; &nbsp; &nbsp;41 Oak</span></p>
+<p class="c1"><span class="c0">&nbsp; &nbsp; &nbsp;37 Wood</span></p>
+<p class="c1"><span class="c0">&nbsp; &nbsp; &nbsp;34 Inorganic</span></p>
+<p class="c1"><span class="c0">Download the full list of names matches here. Learn more about the structure of the name reports here or contact mailto:info@globalbioticinteractions.org.</span>
+</p>
+<p class="c1"><span class="c0">For additional review resources go here. https://depot.globalbioticinteractions.org/reviews/globalbioticinteractions/fmnh/README.txt . </span>
+</p>
+<p class="c1 c3"><span class="c0"></span></p>
+<p class="c1 c3"><span class="c0"></span></p>
+<p class="c1 c3"><span class="c0"></span></p>
+<p class="c1"><span class="c0">*⚠️ Disclaimer: The results in this review should be considered</span></p>
+<p class="c1"><span class="c0">friendly, yet naive, notes from an unsophisticated robot. </span></p>
+<p class="c1"><span class="c0">Please carefully review the results listed below and share issues/ideas</span></p>
+<p class="c1"><span class="c0">by email info at globalbioticinteractions.org or by opening an issue at </span></p>
+<p class="c1"><span class="c0">https://github.com/globalbioticinteractions/globalbioticinteractions/issues .</span></p>
+<p class="c1 c3"><span class="c0"></span></p>
+<p class="c3 c11"><span class="c8"></span></p></body>
+</html>
+_EOF_
+}
+
+
+
 function use_review_dir {
   rm -rf ${REVIEW_DIR}
   mkdir -p ${REVIEW_DIR}
@@ -292,6 +368,8 @@ echo_reproduce >> ${README}
 
 save_readme
 
+save_html_report
+
 #
 # publish review artifacts
 #
@@ -318,6 +396,7 @@ function upload {
 if [[ -n $(which s3cmd) ]] && [[ -n ${ARTIFACTS_KEY} ]] && [[ -n ${ARTIFACTS_SECRET} ]] && [[ -n ${ARTIFACTS_BUCKET} ]]
 then
   echo -e "\nThis review generated the following resources:" | tee_readme
+  upload review.html "review summary web page"
   upload review.svg "review badge"
   upload review.tsv.gz "data review"
   
