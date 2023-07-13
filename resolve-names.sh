@@ -35,6 +35,8 @@ export MLR_TSV_INPUT_OPTS="--icsvlite --ifs tab"
 export MLR_TSV_OUTPUT_OPTS="--ocsvlite --ofs tab"
 export MLR_TSV_OPTS="${MLR_TSV_INPUT_OPTS} ${MLR_TSV_OUTPUT_OPTS}"
 
+export TAXONOMIES="col ncbi discoverlife gbif itis globi tpt"
+
 function echo_logo {
   echo "$(cat <<_EOF_
    _____ _       ____ _____   _____            _                
@@ -117,7 +119,7 @@ $(cat indexed-interactions.tsv.gz | gunzip | mlr --tsvlite cut -f interactionTyp
 <p class="c1"><span class="c10">$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | mlr --tsvlite cut -f sourceTaxonName | tail -n+2 | wc -l)) primary taxa</span><span
         class="c0">&nbsp;(aka source taxa or subject taxa)</span></p>
 <p class="c1"><span class="c0">top 5 most documented primary taxa in this dataset: </span></p>
-$(cat indexed-interactions.tsv.gz | gunzip | mlr --tsvlite cut -f sourceTaxonName | tail -n+2 | sort | uniq -c | sort -nr | head -n5 | sed 's+^+<p class="c1"><span class="c0">\&nbsp; \&nbsp;+g' | sed 's+$</span></p>+g')
+$(cat indexed-interactions.tsv.gz | gunzip | mlr --tsvlite cut -f sourceTaxonName | tail -n+2 | sort | uniq -c | sort -nr | head -n5 | sed 's+^+<p class="c1"><span class="c0">\&nbsp; \&nbsp;+g' | sed 's+$+</span></p>+g')
 <p class="c1"><span class="c0">and</span></p>
 <p class="c1"><span class="c6">&nbsp;</span><span class="c10">$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | mlr --tsvlite cut -f targetTaxonName | tail -n+2 | sort | uniq | wc -l)) associated taxa</span><span class="c0">&nbsp;(aka target taxa or object taxa)</span>
 </p>
@@ -129,11 +131,11 @@ $(cat indexed-interactions.tsv.gz | gunzip | mlr --tsvlite cut -f targetTaxonNam
                                                                                      href="https://globalbioticinteractions.org">GloBI website</a></span><span
         class="c0">, click <a class="c12" href="https://www.globalbioticinteractions.org/?accordingTo=globi%3A$(echo ${REPO_NAME} | sed 's+/+%2F+g')">here<a> .</span>
 </p>
-<p class="c1"><span class="c0">As part of the review, all names are matched against GBIF Taxonomic Backbone, ITIS, NCBI Taxonomy, Catalogue of Life, Parasite Tracker Taxonomy, and DiscoverLife. The top 5 names that for some reason, did not match any of our taxonomic resources are:</span>
+<p class="c1"><span class="c0">As part of the review, all names are matched against GBIF Taxonomic Backbone, ITIS, NCBI Taxonomy, Catalogue of Life, Parasite Tracker Taxonomy, and DiscoverLife. The top 5 names that for some reason, did not match some or any of our taxonomic resources are:</span>
 </p>
 
-$(cat indexed-names-resolved-col.tsv.gz indexed-names-resolved-ncbi.tsv.gz indexed-names-resolved-itis.tsv.gz indexed-names-resolved-gbif.tsv.gz indexed-names-resolved-tpt.tsv.gz indexed-names-resolved-discoverlife.tsv.gz | gunzip | grep -v providedIndexId | grep NONE | cut -f2 | sort | uniq -c | sort -nr | head -n5 | sed 's+^+<p class="c1"><span class="c0">\&nbsp; \&nbsp;+g' | sed 's+$+</span></p>+g')
-<p class="c1"><span class="c0">Download the full list of names matches here. Learn more about the structure of the name reports here or contact us by <a class="c12" href="mailto:info@globalbioticinteractions.org">email</a>.</span>
+$(cat indexed-names-resolved.tsv.gz | tail -n+2 | grep NONE | cut -f2 | sort | uniq -c | sort -nr | head -n5 | sed 's+^+<p class="c1"><span class="c0">\&nbsp; \&nbsp;+g' | sed 's+$+</span></p>+g')
+<p class="c1"><span class="c0">Download the full list of names matches <a class="c12" href="https://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/indexed-names-resolved.csv">here</a>. Learn more about the structure of the name reports here or contact us by <a class="c12" href="mailto:info@globalbioticinteractions.org">email</a>.</span>
 </p>
 <p class="c1"><span class="c0">For additional review resources go <a class="c12" href="https://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/README.txt">here</a> . </span>
 </p>
@@ -229,14 +231,8 @@ function configure_nomer {
     echo nomer not found... installing from [${NOMER_DOWNLOAD_URL}]
     curl --silent -L "${NOMER_DOWNLOAD_URL}" > "${NOMER_JAR}"
     export NOMER_CMD="java -Xmx4G -jar ${NOMER_JAR}"
-    
-    configure_taxonomy col 
-    configure_taxonomy ncbi
-    configure_taxonomy discoverlife
-    configure_taxonomy gbif
-    configure_taxonomy itis
-    configure_taxonomy tpt
-    configure_taxonomy globi
+   
+    for taxonomy in ${TAXONOMIES}; do configure_taxonomy ${taxonomy}; done; 
         
   fi
 
@@ -317,13 +313,12 @@ cat indexed-names.tsv.gz | gunzip | head -n501 > indexed-names-sample.tsv
 cat indexed-names-sample.tsv | tsv2csv > indexed-names-sample.csv
 
 # name resolving 
-resolve_names indexed-names.tsv.gz col
-resolve_names indexed-names.tsv.gz ncbi
-resolve_names indexed-names.tsv.gz discoverlife
-resolve_names indexed-names.tsv.gz gbif
-resolve_names indexed-names.tsv.gz itis
-resolve_names indexed-names.tsv.gz globi
-resolve_names indexed-names.tsv.gz tpt
+for taxonomy in ${TAXONOMIES}; do resolve_names indexed-names.tsv.gz ${taxonomy}; done;
+
+# concatenate all name alignments
+echo ${TAXONOMIES} | tr ' ' '\n' | awk '{ print indexed-names-resolved-$1.tsv.gz }' | xargs mlr --tsvlite cat | mlr --tsvlite sort -f providedName | uniq | gzip > indexed-names-resolved.tsv.gz
+mlr --itsvlite --ojsonl indexed-names-resolved.tsv.gz | gzip > indexed-names-resolved.csv.gz
+mlr --itsvlite --ojsonl indexed-names-resolved.tsv.gz | gzip > indexed-names-resolved.json.gz
 
 cat indexed-interactions.tsv.gz | gunzip | head -n501 > indexed-interactions-sample.tsv
 cat indexed-interactions-sample.tsv | tsv2csv > indexed-interactions-sample.csv
@@ -394,6 +389,9 @@ then
   upload indexed-names.tsv.gz "indexed names"
   upload indexed-names.csv.gz "indexed names"
 
+  upload indexed-names-resolved.tsv.gz "indexed names resolved across taxonomies [${TAXONOMIES}] (tab-separated values)"  
+  upload indexed-names-resolved.csv.gz "indexed names resolved across taxonomies [${TAXONOMIES}] (comma-separated values)"  
+  upload indexed-names-resolved.json.gz "indexed names resolved across taxonomies [${TAXONOMIES}] (line-json)"  
   upload indexed-names-resolved-col.tsv.gz "indexed names resolved against Catalogue of Life"  
   upload indexed-names-resolved-col.csv.gz "indexed names resolved against Catalogue of Life"  
   upload indexed-names-resolved-ncbi.tsv.gz "indexed names resolved against NCBI Taxonomy"  
