@@ -31,6 +31,7 @@ export REVIEW_REPO_HOST="blob.globalbioticinteractions.org"
 export README=$(mktemp)
 export REVIEW_DIR="review/${REPO_NAME}"
 
+export MLR_TSV_OPTS="--csvlite --fs tab"
 export MLR_TSV_INPUT_OPTS="--icsvlite --ifs tab"
 export MLR_TSV_OUTPUT_OPTS="--ocsvlite --ofs tab"
 export MLR_TSV_OPTS="${MLR_TSV_INPUT_OPTS} ${MLR_TSV_OUTPUT_OPTS}"
@@ -111,20 +112,20 @@ function save_html_report {
         class="c0">&nbsp;as of $(date) </span></p>
 <p class="c1"><span class="c0">According to GloBI's review process*, this collection contains</span></p>
 <p class="c1"><span class="c9">&nbsp;</span><span class="c5">$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | tail -n+2 | sort | uniq | wc -l)) interactions</span></p>
-<p class="c1"><span class="c6">involving </span><span class="c2">$(cat indexed-interactions.tsv.gz | gunzip | mlr --tsvlite cut -f interactionTypeName | tail -n+2 | sort | uniq | wc -l)  unique types of associations</span><span class="c0">, and these are the top 5:</span>
+<p class="c1"><span class="c6">involving </span><span class="c2">$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f interactionTypeName | tail -n+2 | sort | uniq | wc -l)  unique types of associations</span><span class="c0">, and these are the top 5:</span>
 </p>
-$(cat indexed-interactions.tsv.gz | gunzip | mlr --tsvlite cut -f interactionTypeName | tail -n+2 | sort | uniq -c | sort -nr | head -n5 | sed 's+^+<p class="c1"><span class="c0">\&nbsp; \&nbsp;+g' | sed 's+$+</span></p>+g')
+$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f interactionTypeName | tail -n+2 | sort | uniq -c | sort -nr | head -n5 | sed 's+^+<p class="c1"><span class="c0">\&nbsp; \&nbsp;+g' | sed 's+$+</span></p>+g')
 <p class="c1 c3"><span class="c0"></span></p>
 <p class="c1"><span class="c0">In these interactions, there appears to be </span></p>
-<p class="c1"><span class="c10">$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | mlr --tsvlite cut -f sourceTaxonName | tail -n+2 | wc -l)) primary taxa</span><span
+<p class="c1"><span class="c10">$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f sourceTaxonName | tail -n+2 | wc -l)) primary taxa</span><span
         class="c0">&nbsp;(aka source taxa or subject taxa)</span></p>
 <p class="c1"><span class="c0">top 5 most documented primary taxa in this dataset: </span></p>
-$(cat indexed-interactions.tsv.gz | gunzip | mlr --tsvlite cut -f sourceTaxonName | tail -n+2 | sort | uniq -c | sort -nr | head -n5 | sed 's+^+<p class="c1"><span class="c0">\&nbsp; \&nbsp;+g' | sed 's+$+</span></p>+g')
+$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f sourceTaxonName | tail -n+2 | sort | uniq -c | sort -nr | head -n5 | sed 's+^+<p class="c1"><span class="c0">\&nbsp; \&nbsp;+g' | sed 's+$+</span></p>+g')
 <p class="c1"><span class="c0">and</span></p>
-<p class="c1"><span class="c6">&nbsp;</span><span class="c10">$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | mlr --tsvlite cut -f targetTaxonName | tail -n+2 | sort | uniq | wc -l)) associated taxa</span><span class="c0">&nbsp;(aka target taxa or object taxa)</span>
+<p class="c1"><span class="c6">&nbsp;</span><span class="c10">$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f targetTaxonName | tail -n+2 | sort | uniq | wc -l)) associated taxa</span><span class="c0">&nbsp;(aka target taxa or object taxa)</span>
 </p>
 <p class="c1"><span class="c0">5 most frequently appearing associated taxa are:</span></p>
-$(cat indexed-interactions.tsv.gz | gunzip | mlr --tsvlite cut -f targetTaxonName | tail -n+2 | sort | uniq -c | sort -nr | head -n5 | sed 's+^+<p class="c1"><span class="c0">\&nbsp; \&nbsp;+g' | sed 's+$+</span></p>+g')
+$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f targetTaxonName | tail -n+2 | sort | uniq -c | sort -nr | head -n5 | sed 's+^+<p class="c1"><span class="c0">\&nbsp; \&nbsp;+g' | sed 's+$+</span></p>+g')
 <p class="c1"><span class="c0">Download the full datasets used in this review here. Learn more about the structure of this download here or contact mailto:info@globalbioticinteractions.org.</span>
 </p>
 <p class="c1"><span class="c6">To see all interactions on </span><span class="c7"><a class="c12"
@@ -315,9 +316,9 @@ cat indexed-names-sample.tsv | tsv2csv > indexed-names-sample.csv
 for taxonomy in ${TAXONOMIES}; do resolve_names indexed-names.tsv.gz ${taxonomy}; done;
 
 # concatenate all name alignments
-echo ${TAXONOMIES} | tr ' ' '\n' | awk '{ print "indexed-names-resolved-" $1 ".tsv.gz" }' | xargs mlr --tsvlite cat | mlr --tsvlite sort -f providedName | uniq | gzip > indexed-names-resolved.tsv.gz
-mlr --itsvlite --ocsv cat indexed-names-resolved.tsv.gz | gzip > indexed-names-resolved.csv.gz
-mlr --itsvlite --ojsonl cat indexed-names-resolved.tsv.gz | gzip > indexed-names-resolved.json.gz
+echo ${TAXONOMIES} | tr ' ' '\n' | awk '{ print "indexed-names-resolved-" $1 ".tsv.gz" }' | xargs mlr --prepipe gunzip ${MLR_TSV_OPTS} cat | mlr ${MLR_TSV_OPTS} sort -f providedName | uniq | gzip > indexed-names-resolved.tsv.gz
+mlr ${MLR_TSV_OPTS} --ocsv cat indexed-names-resolved.tsv.gz | gzip > indexed-names-resolved.csv.gz
+mlr ${MLR_TSV_INPUT_OPTS} --ojsonl cat indexed-names-resolved.tsv.gz | gzip > indexed-names-resolved.json.gz
 
 cat indexed-interactions.tsv.gz | gunzip | head -n501 > indexed-interactions-sample.tsv
 cat indexed-interactions-sample.tsv | tsv2csv > indexed-interactions-sample.csv
