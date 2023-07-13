@@ -108,51 +108,36 @@ function save_html_report {
 <body class="c4 doc-content"><p class="c1"><span class="c6">Review of interactions in collection of the </span><span
         class="c7"><a class="c12"
                       href="https://github.com/$REPO_NAME">$REPO_NAME</a></span><span
-        class="c0">&nbsp;as of $REVIEW_DATE </span></p>
+        class="c0">&nbsp;as of $(date) </span></p>
 <p class="c1"><span class="c0">According to GloBI's review process*, this collection contains</span></p>
-<p class="c1"><span class="c9">&nbsp;</span><span class="c5">117,300 interactions</span></p>
+<p class="c1"><span class="c9">&nbsp;</span><span class="c5">$(echo <(cat indexed-interactions.tsv.gz | gunzip | tail -n+2 | sort | uniq | wc -l)) interactions</span></p>
 <p class="c1"><span class="c6">involving </span><span class="c2">6 unique types of associations</span><span class="c0">, and these are the top 5:</span>
 </p>
-<p class="c1"><span class="c0">&nbsp; 81582 adjacentTo </span></p>
-<p class="c1"><span class="c0">&nbsp; 34986 ectoparasiteOf</span></p>
-<p class="c1"><span class="c0">&nbsp; &nbsp; 564 parasiteOf</span></p>
-<p class="c1"><span class="c0">&nbsp; &nbsp; 166 interactsWith</span></p>
-<p class="c1"><span class="c0">&nbsp; &nbsp; &nbsp; 1 hostOf</span></p>
+$(cat indexed-interactions.tsv.gz | gunzip | mlr --tsvlite cut -f interactionTypeName | tail -n+2 | sort | uniq -c | sort -nr | head -n5 | sed 's+^+<p class="c1"><span class="c0">&nbsp; &nbsp;+g' | sed 's+$</span></p>+g')
 <p class="c1 c3"><span class="c0"></span></p>
 <p class="c1"><span class="c0">In these interactions, there appears to be </span></p>
-<p class="c1"><span class="c10">19,263 primary taxa</span><span
+<p class="c1"><span class="c10">$(cat indexed-interactions.tsv.gz | gunzip | mlr --tsvlite cut -f sourceTaxonName | tail -n+2 | wc -l) primary taxa</span><span
         class="c0">&nbsp;(aka source taxa or subject taxa)</span></p>
 <p class="c1"><span class="c0">top 5 most documented primary taxa in this dataset: </span></p>
-<p class="c1"><span class="c0">&nbsp; &nbsp;2638 Trichobius joblingi Wenzel, 1966</span></p>
-<p class="c1"><span class="c0">&nbsp; &nbsp;1384 Marchantiophyta Stotler &amp; Crand.-Stotl.</span></p>
-<p class="c1"><span class="c0">&nbsp; &nbsp;1287 Megistopoda aranea (Coquillétt, 1899)</span></p>
-<p class="c1"><span class="c0">&nbsp; &nbsp;1162 Megistopoda proxima (Séguy, 1926)</span></p>
-<p class="c1"><span class="c0">&nbsp; &nbsp;1012 Trichobius parasiticus Gervais, 1844</span></p>
+$(cat indexed-interactions.tsv.gz | gunzip | mlr --tsvlite cut -f sourceTaxonName | tail -n+2 | sort | uniq -c | sort -nr | head -n5 | sed 's+^+<p class="c1"><span class="c0">&nbsp; &nbsp;+g' | sed 's+$</span></p>+g')
 <p class="c1"><span class="c0">and</span></p>
-<p class="c1"><span class="c6">&nbsp;</span><span class="c10">31,896 associated taxa</span><span class="c0">&nbsp;(aka target taxa or object taxa)</span>
+<p class="c1"><span class="c6">&nbsp;</span><span class="c10">$(cat indexed-interactions.tsv.gz | gunzip | mlr --tsvlite cut -f targetTaxonName | tail -n+2 | sort | uniq | wc -l)${NUMBER_OF_DISINCT_TARGET_TAXA} associated taxa</span><span class="c0">&nbsp;(aka target taxa or object taxa)</span>
 </p>
 <p class="c1"><span class="c0">5 most frequently appearing associated taxa are:</span></p>
-<p class="c1"><span class="c0">&nbsp; 2692 Carollia perspicillata</span></p>
-<p class="c1"><span class="c0">&nbsp; &nbsp;1740 Artibeus jamaicensis</span></p>
-<p class="c1"><span class="c0">&nbsp; &nbsp;1564 Desmodus rotundus</span></p>
-<p class="c1"><span class="c0">&nbsp; &nbsp;1527 Sturnira lilium</span></p>
-<p class="c1"><span class="c0">&nbsp; &nbsp;1373 ground</span></p>
+$(cat indexed-interactions.tsv.gz | gunzip | mlr --tsvlite cut -f targetTaxonName | tail -n+2 | sort | uniq -c | sort -nr | head -n5 | sed 's+^+<p class="c1"><span class="c0">&nbsp; &nbsp;+g' | sed 's+$</span></p>+g')
 <p class="c1"><span class="c0">Download the full datasets used in this review here. Learn more about the structure of this download here or contact mailto:info@globalbioticinteractions.org.</span>
 </p>
 <p class="c1"><span class="c6">To see all interactions on </span><span class="c7"><a class="c12"
-                                                                                     href="https://www.google.com/url?q=https://globalbioticinteractions.org&amp;sa=D&amp;source=editors&amp;ust=1689279423357461&amp;usg=AOvVaw2c417cqTKPcVHoH4I-5kk6">GloBI website</a></span><span
-        class="c0">, click here. https://www.globalbioticinteractions.org/?accordingTo=globi%3Aglobalbioticinteractions%2Ffmnh&amp;interactionType=interactsWith .</span>
+                                                                                     href="https://globalbioticinteractions.org">GloBI website</a></span><span
+        class="c0">, click here. https://www.globalbioticinteractions.org/?accordingTo=globi%3A$(echo ${REPO_NAME} | sed 's+/+%2F+g') .</span>
 </p>
 <p class="c1"><span class="c0">As part of the review, all names are matched against GBIF Taxonomic Backbone, ITIS, Catalogue of Life, Parasite Tracker Taxonomy, and DiscoverLife. The top 5 names that for some reason, did not match any of our taxonomic resources are:</span>
 </p>
-<p class="c1"><span class="c0">&nbsp; &nbsp; &nbsp;57 Angiosperms</span></p>
-<p class="c1"><span class="c0">&nbsp; &nbsp; &nbsp;47 Tree</span></p>
-<p class="c1"><span class="c0">&nbsp; &nbsp; &nbsp;41 Oak</span></p>
-<p class="c1"><span class="c0">&nbsp; &nbsp; &nbsp;37 Wood</span></p>
-<p class="c1"><span class="c0">&nbsp; &nbsp; &nbsp;34 Inorganic</span></p>
-<p class="c1"><span class="c0">Download the full list of names matches here. Learn more about the structure of the name reports here or contact mailto:info@globalbioticinteractions.org.</span>
+
+$(cat indexed-names-resolved-col.tsv.gz indexed-names-resolved-ncbi.tsv.gz indexed-names-resolved-itis.tsv.gz indexed-names-resolved-gbif.tsv.gz indexed-names-resolved-tpt.tsv.gz indexed-names-resolved-discoverlife.tsv.gz | gunzip | grep -v providedIndexId | grep NONE | cut -f2 | sort | uniq -c | sort -nr | head -n5 | sed 's+^+<p class="c1"><span class="c0">&nbsp; &nbsp;+g' | sed 's+$</span></p>+g')
+<p class="c1"><span class="c0">Download the full list of names matches here. Learn more about the structure of the name reports here or contact us by <a href="mailto:info@globalbioticinteractions.org">email</a>.</span>
 </p>
-<p class="c1"><span class="c0">For additional review resources go here. https://depot.globalbioticinteractions.org/reviews/globalbioticinteractions/fmnh/README.txt . </span>
+<p class="c1"><span class="c0">For additional review resources go <a href="https://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/README.txt">here</a> . </span>
 </p>
 <p class="c1 c3"><span class="c0"></span></p>
 <p class="c1 c3"><span class="c0"></span></p>
@@ -160,8 +145,7 @@ function save_html_report {
 <p class="c1"><span class="c0">*⚠️ Disclaimer: The results in this review should be considered</span></p>
 <p class="c1"><span class="c0">friendly, yet naive, notes from an unsophisticated robot. </span></p>
 <p class="c1"><span class="c0">Please carefully review the results listed below and share issues/ideas</span></p>
-<p class="c1"><span class="c0">by email info at globalbioticinteractions.org or by opening an issue at </span></p>
-<p class="c1"><span class="c0">https://github.com/globalbioticinteractions/globalbioticinteractions/issues .</span></p>
+<p class="c1"><span class="c0">by <a href="mailto:info@globalbioticinteractions.org>email</a> or by opening an <a href="https://github.com/globalbioticinteractions/globalbioticinteractions/issues">issue</a>. at </span></p>
 <p class="c1 c3"><span class="c0"></span></p>
 <p class="c3 c11"><span class="c8"></span></p></body>
 </html>
