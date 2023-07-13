@@ -133,8 +133,7 @@ $(cat indexed-interactions.tsv.gz | gunzip | mlr --tsvlite cut -f targetTaxonNam
 </p>
 <p class="c1"><span class="c0">As part of the review, all names are matched against GBIF Taxonomic Backbone, ITIS, NCBI Taxonomy, Catalogue of Life, Parasite Tracker Taxonomy, and DiscoverLife. The top 5 names that for some reason, did not match some or any of our taxonomic resources are:</span>
 </p>
-
-$(cat indexed-names-resolved.tsv.gz | tail -n+2 | grep NONE | cut -f2 | sort | uniq -c | sort -nr | head -n5 | sed 's+^+<p class="c1"><span class="c0">\&nbsp; \&nbsp;+g' | sed 's+$+</span></p>+g')
+$(cat indexed-names-resolved.tsv.gz | gunzip | tail -n+2 | grep NONE | cut -f2 | sort | uniq -c | sort -nr | head -n5 | sed 's+^+<p class="c1"><span class="c0">\&nbsp; \&nbsp;+g' | sed 's+$+</span></p>+g')
 <p class="c1"><span class="c0">Download the full list of names matches <a class="c12" href="https://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/indexed-names-resolved.csv">here</a>. Learn more about the structure of the name reports here or contact us by <a class="c12" href="mailto:info@globalbioticinteractions.org">email</a>.</span>
 </p>
 <p class="c1"><span class="c0">For additional review resources go <a class="c12" href="https://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/README.txt">here</a> . </span>
