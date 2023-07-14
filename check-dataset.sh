@@ -318,7 +318,6 @@ for taxonomy in ${TAXONOMIES}; do resolve_names indexed-names.tsv.gz ${taxonomy}
 # concatenate all name alignments
 echo ${TAXONOMIES} | tr ' ' '\n' | awk '{ print "indexed-names-resolved-" $1 ".tsv.gz" }' | xargs mlr --prepipe gunzip ${MLR_TSV_OPTS} cat | mlr ${MLR_TSV_OPTS} sort -f providedName | uniq | gzip > indexed-names-resolved.tsv.gz
 mlr ${MLR_TSV_OPTS} --ocsv --prepipe gunzip cat indexed-names-resolved.tsv.gz | gzip > indexed-names-resolved.csv.gz
-mlr ${MLR_TSV_INPUT_OPTS} --ojson --prepipe gunzip cat indexed-names-resolved.tsv.gz | jq --compact-output .[] | gzip > indexed-names-resolved.json.gz
 
 cat indexed-interactions.tsv.gz | gunzip | head -n501 > indexed-interactions-sample.tsv
 cat indexed-interactions-sample.tsv | tsv2csv > indexed-interactions-sample.csv
@@ -391,7 +390,6 @@ then
 
   upload indexed-names-resolved.tsv.gz "indexed names resolved across taxonomies [${TAXONOMIES}] (tab-separated values)"  
   upload indexed-names-resolved.csv.gz "indexed names resolved across taxonomies [${TAXONOMIES}] (comma-separated values)"  
-  upload indexed-names-resolved.json.gz "indexed names resolved across taxonomies [${TAXONOMIES}] (line-json)"  
   upload indexed-names-resolved-col.tsv.gz "indexed names resolved against Catalogue of Life"  
   upload indexed-names-resolved-col.csv.gz "indexed names resolved against Catalogue of Life"  
   upload indexed-names-resolved-ncbi.tsv.gz "indexed names resolved against NCBI Taxonomy"  
