@@ -117,7 +117,7 @@ function save_html_report {
 $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f interactionTypeName | tail -n+2 | sort | uniq -c | sort -nr | head -n5 | sed 's+^+<p class="c1"><span class="c0">\&nbsp; \&nbsp;+g' | sed 's+$+</span></p>+g')
 <p class="c1 c3"><span class="c0"></span></p>
 <p class="c1"><span class="c0">In these interactions, there appears to be </span></p>
-<p class="c1"><span class="c10">$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f sourceTaxonName | tail -n+2 | wc -l)) primary taxa</span><span
+<p class="c1"><span class="c10">$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f sourceTaxonName | tail -n+2 | sort | uniq | wc -l)) primary taxa</span><span
         class="c0">&nbsp;(aka source taxa or subject taxa)</span></p>
 <p class="c1"><span class="c0">top 5 most documented primary taxa in this dataset: </span></p>
 $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f sourceTaxonName | tail -n+2 | sort | uniq -c | sort -nr | head -n5 | sed 's+^+<p class="c1"><span class="c0">\&nbsp; \&nbsp;+g' | sed 's+$+</span></p>+g')
