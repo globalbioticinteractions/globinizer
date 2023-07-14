@@ -357,7 +357,7 @@ function upload_file_io {
 
 function upload {
 
-  s3cmd --access_key "${ARTIFACTS_KEY}" --secret_key "${ARTIFACTS_SECRET}" --host "${REVIEW_REPO_HOST}" --host-bucket "${REVIEW_REPO_HOST}" put "$1" "s3://${ARTIFACTS_BUCKET}/reviews/${REPO_NAME}/$1" &> upload.log
+  s3cmd --config "${S3CMD_CONFIG}" put "$1" "s3://${ARTIFACTS_BUCKET}/reviews/${REPO_NAME}/$1" &> upload.log
 
   if [[ $? -ne 0 ]] ; then
      echo -e "\nfailed to upload $2, please check following upload log"
@@ -368,8 +368,8 @@ function upload {
 
 }
 
-# atttempt to use travis artifacts tool if available
-if [[ -n $(which s3cmd) ]] && [[ -n ${ARTIFACTS_KEY} ]] && [[ -n ${ARTIFACTS_SECRET} ]] && [[ -n ${ARTIFACTS_BUCKET} ]]
+# atttempt to use s3cmd tool if available and configured
+if [[ -n $(which s3cmd) ]] && [[ -n ${S3CMD_CONFIG} ]]
 then
   echo -e "\nThis review generated the following resources:" | tee_readme
   upload review.html "review summary web page"
