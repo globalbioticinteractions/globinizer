@@ -171,8 +171,9 @@ function save_readme {
 function install_deps {
   if [[ -n ${TRAVIS_REPO_SLUG} || -n ${GITHUB_REPOSITORY} ]]
   then
-    sudo apt-get -q update &> /dev/null
-    sudo apt-get -q install miller jq pandoc -y &> /dev/null
+    sudo apt -q update &> /dev/null
+    sudo apt -q install miller jq -y &> /dev/null
+    curl --silent -L https://github.com/jgm/pandoc/releases/download/2.19.2/pandoc-2.19.2-1-amd64.deb > pandoc.deb && sudo install -q ./pandoc.deb &> /dev/null
     sudo pip install s3cmd &> /dev/null   
   fi
 
