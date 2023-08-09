@@ -304,8 +304,11 @@ else
 fi
 
 ${ELTON_CMD} review ${ELTON_OPTS} ${ELTON_NAMESPACE} --type note --type summary | gzip > review.tsv.gz
+cat review.tsv.gz | gunzip | tsv2csv | gzip > review-sample.csv.gz
+cat review.tsv.gz | gunzip | tsv2html | gzip > review-sample.html.gz
 cat review.tsv.gz | gunzip | head -n501 > review-sample.tsv
 cat review-sample.tsv | tsv2csv > review-sample.csv
+cat review-sample.tsv | tsv2html > review-sample.html
 
 ${ELTON_CMD} interactions ${ELTON_OPTS} ${ELTON_NAMESPACE} | gzip > indexed-interactions.tsv.gz
 cat indexed-interactions.tsv.gz | gunzip | tsv2csv | gzip > indexed-interactions.csv.gz
@@ -319,6 +322,7 @@ cat indexed-interactions.tsv.gz\
 | gzip > indexed-citations.tsv.gz 
 
 cat indexed-citations.tsv.gz | gunzip | tsv2csv | gzip > indexed-citations.csv.gz 
+cat indexed-citations.tsv.gz | gunzip | tsv2html | gzip > indexed-citations.html.gz 
 
 ${ELTON_CMD} names ${ELTON_OPTS} ${ELTON_NAMESPACE}\
 | mlr ${MLR_TSV_OPTS} sort -f taxonName,taxonPath,taxonId,taxonPathIds,taxonRank,taxonPathNames\
@@ -388,6 +392,19 @@ function upload {
 
 }
 
+function upload_package_gz {
+  upload $1.tsv.gz $2
+  upload $1.csv.gz $2
+  upload $1.html.gz $2
+}
+
+function upload_package {
+  upload $1.tsv $2
+  upload $1.csv $2
+  upload $1.html $2
+}
+
+
 # atttempt to use s3cmd tool if available and configured
 if [[ -n $(which s3cmd) ]] && [[ -n ${S3CMD_CONFIG} ]]
 then
@@ -396,41 +413,26 @@ then
   upload review.svg "review badge"
   upload review.tsv.gz "data review"
   
-  upload review-sample.tsv "data review sample tab-separated"
-  upload review-sample.csv "data review sample csv"
+  upload_package review-sample "data review sample"
   
-  upload indexed-interactions.tsv.gz "indexed interactions"
-  upload indexed-interactions.csv.gz "indexed interactions"
+  upload_package_gz indexed-interactions "indexed interactions"
   
-  upload indexed-interactions-sample.tsv "indexed interactions sample"
-  upload indexed-interactions-sample.csv "indexed interactions sample"
+  upload_package indexed-interactions-sample "indexed interactions sample"
   
-  upload indexed-names.tsv.gz "indexed names"
-  upload indexed-names.csv.gz "indexed names"
+  upload_package_gz indexed-names "indexed names"
 
-  upload indexed-names-resolved.tsv.gz "indexed names resolved across taxonomies [${TAXONOMIES}] (tab-separated values)"  
-  upload indexed-names-resolved.csv.gz "indexed names resolved across taxonomies [${TAXONOMIES}] (comma-separated values)"  
-  upload indexed-names-resolved-col.tsv.gz "indexed names resolved against Catalogue of Life"  
-  upload indexed-names-resolved-col.csv.gz "indexed names resolved against Catalogue of Life"  
-  upload indexed-names-resolved-ncbi.tsv.gz "indexed names resolved against NCBI Taxonomy"  
-  upload indexed-names-resolved-ncbi.csv.gz "indexed names resolved against NCBI Taxonomy"  
-  upload indexed-names-resolved-discoverlife.tsv.gz "indexed names resolved against DiscoverLife Bee Checklist"  
-  upload indexed-names-resolved-discoverlife.csv.gz "indexed names resolved against DiscoverLife Bee Checklist"  
-  upload indexed-names-resolved-gbif.tsv.gz "indexed names resolved against GBIF backbone taxonomy"  
-  upload indexed-names-resolved-gbif.csv.gz "indexed names resolved against GBIF backbone taxonomy"  
-  upload indexed-names-resolved-itis.tsv.gz "indexed names resolved against Integrated Taxonomic Information System"  
-  upload indexed-names-resolved-itis.csv.gz "indexed names resolved against Integrated Taxonomic Information System"  
-  upload indexed-names-resolved-globi.tsv.gz "indexed names resolved against GloBI Taxon Graph"  
-  upload indexed-names-resolved-globi.csv.gz "indexed names resolved against GloBI Taxon Graph"  
-  upload indexed-names-resolved-tpt.tsv.gz "indexed names resolved against Terrestrial Parasite Tracker Taxonomy"  
-  upload indexed-names-resolved-tpt.csv.gz "indexed names resolved against Terrestrial Parasite Tracker Taxonomy"  
+  upload_package_gz indexed-names-resolved "indexed names resolved across taxonomies [${TAXONOMIES}]"  
+  upload_package_gz indexed-names-resolved-col "indexed names resolved against Catalogue of Life"  
+  upload_package_gz indexed-names-resolved-ncbi "indexed names resolved against NCBI Taxonomy"  
+  upload_package_gz indexed-names-resolved-discoverlife "indexed names resolved against DiscoverLife Bee Checklist"  
+  upload_package_gz indexed-names-resolved-gbif "indexed names resolved against GBIF backbone taxonomy"  
+  upload_package_gz indexed-names-resolved-itis "indexed names resolved against Integrated Taxonomic Information System"  
+  upload_package_gz indexed-names-resolved-globi "indexed names resolved against GloBI Taxon Graph"  
+  upload_package_gz indexed-names-resolved-tpt "indexed names resolved against Terrestrial Parasite Tracker Taxonomy"  
 
-  upload indexed-names-sample.tsv "indexed names sample"
-  upload indexed-names-sample.csv "indexed names sample"
+  upload_package indexed-names-sample "indexed names sample"
  
-  upload indexed-citations.tsv.gz "indexed citations"
-  upload indexed-citations.csv.gz "indexed citations"
-
+  upload_package indexed-citations "indexed citations"
 
   upload nanopub.trig.gz "interactions nanopubs"
   
