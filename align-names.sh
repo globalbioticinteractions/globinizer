@@ -135,7 +135,7 @@ install_deps() {
   if [[ -n ${TRAVIS_REPO_SLUG} || -n ${GITHUB_REPOSITORY} ]]
   then
     sudo apt-get -q update &> /dev/null
-    sudo apt-get -q install miller jq pandoc -y &> /dev/null
+    sudo apt-get -q install miller jq -y &> /dev/null
     sudo curl --silent -L https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_386 > /usr/local/bin/yq && sudo chmod +x /usr/local/bin/yq 
     curl --silent -L https://github.com/jgm/pandoc/releases/download/3.1.6.1/pandoc-3.1.6.1-1-amd64.deb > pandoc.deb && sudo apt install -q ./pandoc.deb
     sudo pip install s3cmd &> /dev/null
