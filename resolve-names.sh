@@ -284,6 +284,7 @@ function resolve_names {
     > ${RESOLVED_CSV}
   cat ${RESOLVED}\
     | gunzip\
+    | mlr ${MLR_TSV_OPTS} cut -f providedExternalId,providedName,relationName,resolvedExternalUrl,resolvedName,resolvedAuthorship,resolvedRank\
     | tsv2html\
     | gzip\
     > ${RESOLVED_HTML}
@@ -312,7 +313,7 @@ cat review-sample.tsv | tsv2html > review-sample.html
 
 ${ELTON_CMD} interactions ${ELTON_OPTS} ${ELTON_NAMESPACE} | gzip > indexed-interactions.tsv.gz
 cat indexed-interactions.tsv.gz | gunzip | tsv2csv | gzip > indexed-interactions.csv.gz
-cat indexed-interactions.tsv.gz | gunzip | tsv2html | gzip > indexed-interactions.html.gz
+cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -r -f sourceTaxon*,interactionTypeName,targetTaxon*,referenceCitation | tsv2html | gzip > indexed-interactions.html.gz
 
 cat indexed-interactions.tsv.gz\
 | gunzip\
@@ -330,10 +331,10 @@ ${ELTON_CMD} names ${ELTON_OPTS} ${ELTON_NAMESPACE}\
 | gzip > indexed-names.tsv.gz
 
 cat indexed-names.tsv.gz | gunzip | tsv2csv | gzip > indexed-names.csv.gz
-cat indexed-names.tsv.gz | gunzip | tsv2html | gzip > indexed-names.html.gz
+cat indexed-names.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -r -f taxon* | tsv2html | gzip > indexed-names.html.gz
 cat indexed-names.tsv.gz | gunzip | head -n501 > indexed-names-sample.tsv
 cat indexed-names-sample.tsv | tsv2csv > indexed-names-sample.csv
-cat indexed-names-sample.tsv | tsv2html > indexed-names-sample.html
+cat indexed-names-sample.tsv | mlr ${MLR_TSV_OPTS} cut -r -f taxon* | tsv2html > indexed-names-sample.html
 
 # name resolving 
 for taxonomy in ${TAXONOMIES}; do resolve_names indexed-names.tsv.gz ${taxonomy}; done;
@@ -344,7 +345,7 @@ mlr ${MLR_TSV_OPTS} --ocsv --prepipe gunzip cat indexed-names-resolved.tsv.gz | 
 
 cat indexed-interactions.tsv.gz | gunzip | head -n501 > indexed-interactions-sample.tsv
 cat indexed-interactions-sample.tsv | tsv2csv > indexed-interactions-sample.csv
-cat indexed-interactions-sample.tsv | tsv2html > indexed-interactions-sample.html
+cat indexed-interactions-sample.tsv | mlr ${MLR_TSV_OPT} cut -r -f sourceTaxon*,interactionTypeName,targetTaxon*,referenceCitation | tsv2html > indexed-interactions-sample.html
 
 ${ELTON_CMD} nanopubs ${ELTON_OPTS} ${ELTON_NAMESPACE} | gzip > nanopub.trig.gz
 cat nanopub.trig.gz | gunzip | head -n1 > nanopub-sample.trig

@@ -356,7 +356,7 @@ mv names-aligned-sorted.tsv.gz names-aligned.tsv.gz
 cat names-aligned.tsv.gz | gunzip | mlr --itsvlite --ocsv --ofs ';' cat > names-aligned.csv
 cat names-aligned.tsv.gz | gunzip > names-aligned.tsv
 cat names-aligned.tsv.gz | gunzip > names-aligned.txt
-cat names-aligned.tsv.gz | gunzip | tsv2html > names-aligned.html
+cat names-aligned.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f providedName,alignRelation,alignedCatalogName,alignedExternalId,alignedName,alignedAuthority,alignedRank,alignedKingdomName,alignedFamilyName | tsv2html > names-aligned.html
 
 zip -r names-aligned.zip names-aligned.csv names-aligned.tsv names-aligned.txt names-aligned.html data/
 
