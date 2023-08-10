@@ -173,7 +173,7 @@ function install_deps {
   then
     sudo apt -q update &> /dev/null
     sudo apt -q install miller jq -y &> /dev/null
-    curl --silent -L https://github.com/jgm/pandoc/releases/download/2.19.2/pandoc-2.19.2-1-amd64.deb > pandoc.deb && sudo apt install -q ./pandoc.deb &> /dev/null
+    curl --silent -L https://github.com/jgm/pandoc/releases/download/3.1.6.1/pandoc-3.1.6.1-1-amd64.deb > pandoc.deb && sudo apt install -q ./pandoc.deb &> /dev/null
     sudo pip install s3cmd &> /dev/null   
   fi
 
