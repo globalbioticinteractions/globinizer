@@ -301,7 +301,7 @@ fi
 if [ $(echo "$CSV_LOCAL" | wc -c) -gt 1  ]
 then
   preston_track_local "$CSV_LOCAL"
-  ${PRESTON_CMD} cat $(preston_head) | grep "hasVersion" | ${PRESTON_CMD} cat | mlr --icsv --otsvlite --ifs ';' put 'if (is_absent($id)) { $id = "" }' | mlr --tsvlite reorder -f id,scientificName | mlr --tsvlite cut -f id,scientificName | tail -n+2 | gzip >> names.tsv.gz
+  ${PRESTON_CMD} cat $(preston_head) | grep "hasVersion" | ${PRESTON_CMD} cat | mlr --icsv --ifs ';' --otsvlite put 'if (is_absent($id)) { $id = "" }' | mlr --tsvlite reorder -f id,scientificName | mlr --tsvlite cut -f id,scientificName | tail -n+2 | gzip >> names.tsv.gz
 fi
 
 if [ $(echo "$DWCA_REMOTE" | wc -c) -gt 1  ]
@@ -353,7 +353,7 @@ cat names-aligned.tsv.gz\
 
 mv names-aligned-sorted.tsv.gz names-aligned.tsv.gz
 
-cat names-aligned.tsv.gz | gunzip | mlr --itsvlite --ocsv --ofs ';' cat > names-aligned.csv
+cat names-aligned.tsv.gz | gunzip | mlr --itsvlite --ocsv cat > names-aligned.csv
 cat names-aligned.tsv.gz | gunzip > names-aligned.tsv
 cat names-aligned.tsv.gz | gunzip > names-aligned.txt
 cat names-aligned.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f providedName,alignRelation,alignedCatalogName,alignedExternalId,alignedName,alignedAuthority,alignedRank,alignedKingdomName,alignedFamilyName | tsv2html > names-aligned.html
