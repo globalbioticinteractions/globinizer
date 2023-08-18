@@ -623,7 +623,8 @@ fi
 
 mkdir -p tmp-review
 cp -R README.txt index.* datasets/* indexed-* review* tmp-review/
-cd tmp-review && gunzip -f *.gz && zip -R ../review.zip * && rm -rf tmp-review
+cd tmp-review && gunzip -f *.gz && zip -R ../review.zip *
+rm -rf tmp-review
 
 # attempt to use s3cmd tool if available and configured
 if [[ -n $(which s3cmd) ]] && [[ -n ${S3CMD_CONFIG} ]]
