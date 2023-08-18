@@ -325,15 +325,7 @@ At time of writing, the review badge looks like:
 
 [![review badge](review.svg)](index.html) .
 
-~~~
-
-~~~
-
-
-~~~
-
-~~~
-
+Note that if the badge is green, no review notes were generated. If the badge is yellow, some the review bots may need some help in interpreting the species interaction data.
 
 # Discussion
 
