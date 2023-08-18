@@ -11,7 +11,7 @@
 #     ./check-dataset.sh globalbioticinteractions/template-dataset /var/cache/elton/datasets
 #
 
-set -x
+#set -x
 
 export REPO_NAME=$1
 export ELTON_UPDATE_DISABLED=$2
@@ -589,9 +589,9 @@ then
   gunzip -f *.gz
 fi
 
-mkdir -p review
-cp -R README.txt index.* datasets/* indexed-* review* review/
-cd review && gunzip -f *.gz && zip -R ../review.zip * && rm -rf review
+mkdir -p tmp-review
+cp -R README.txt index.* datasets/* indexed-* review* tmp-review/
+cd tmp-review && gunzip -f *.gz && zip -R ../review.zip * && rm -rf tmp-review
 
 # attempt to use s3cmd tool if available and configured
 if [[ -n $(which s3cmd) ]] && [[ -n ${S3CMD_CONFIG} ]]
