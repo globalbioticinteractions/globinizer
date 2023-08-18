@@ -11,7 +11,7 @@
 #     ./check-dataset.sh globalbioticinteractions/template-dataset /var/cache/elton/datasets
 #
 
-#set -x
+set -x
 
 export REPO_NAME=$1
 export ELTON_UPDATE_DISABLED=$2
@@ -36,7 +36,8 @@ export MLR_TSV_INPUT_OPTS="--icsvlite --ifs tab"
 export MLR_TSV_OUTPUT_OPTS="--ocsvlite --ofs tab"
 export MLR_TSV_OPTS="${MLR_TSV_INPUT_OPTS} ${MLR_TSV_OUTPUT_OPTS}"
 
-export TAXONOMIES="col ncbi discoverlife gbif itis globi tpt"
+#export TAXONOMIES="col ncbi discoverlife gbif itis globi tpt"
+export TAXONOMIES="globalnames"
 
 function echo_logo {
   echo "$(cat <<_EOF_
@@ -97,58 +98,99 @@ function echo_reproduce {
   echo -e "\nPlease email info@globalbioticinteractions.org for questions/ comments."
 }
 
-function save_html_report {
-  cat > review.html <<_EOF_
-<html>
-<head>
-    <meta content="text/html; charset=UTF-8" http-equiv="content-type">
-    <style type="text/css">
-        ol{margin:0;padding:0}table td,table th{padding:0}.c0{color:#595959;font-weight:400;text-decoration:none;vertical-align:baseline;font-size:12pt;font-family:"Arial";font-style:normal}.c5{color:#595959;font-weight:700;text-decoration:none;vertical-align:baseline;font-size:36pt;font-family:"Arial";font-style:normal}.c8{color:#000000;font-weight:400;text-decoration:none;vertical-align:baseline;font-size:11pt;font-family:"Arial";font-style:normal}.c11{padding-top:0pt;padding-bottom:0pt;line-height:1.15;orphans:2;widows:2;text-align:left}.c7{text-decoration-skip-ink:none;font-size:12pt;-webkit-text-decoration-skip:none;color:#0097a7;text-decoration:underline}.c1{padding-top:0pt;padding-bottom:12pt;line-height:1.15;text-align:left}.c10{font-size:24pt;color:#595959;font-weight:700}.c2{font-size:18pt;color:#595959;font-weight:700}.c4{background-color:#ffffff;max-width:468pt;padding:72pt 72pt 72pt 72pt}.c12{color:inherit;text-decoration:inherit}.c6{color:#595959;font-size:12pt}.c9{color:#595959;font-size:36pt}.c3{height:11pt}.title{padding-top:0pt;color:#000000;font-size:26pt;padding-bottom:3pt;font-family:"Arial";line-height:1.15;page-break-after:avoid;orphans:2;widows:2;text-align:left}.subtitle{padding-top:0pt;color:#666666;font-size:15pt;padding-bottom:16pt;font-family:"Arial";line-height:1.15;page-break-after:avoid;orphans:2;widows:2;text-align:left}li{color:#000000;font-size:11pt;font-family:"Arial"}p{margin:0;color:#000000;font-size:11pt;font-family:"Arial"}h1{padding-top:20pt;color:#000000;font-size:20pt;padding-bottom:6pt;font-family:"Arial";line-height:1.15;page-break-after:avoid;orphans:2;widows:2;text-align:left}h2{padding-top:18pt;color:#000000;font-size:16pt;padding-bottom:6pt;font-family:"Arial";line-height:1.15;page-break-after:avoid;orphans:2;widows:2;text-align:left}h3{padding-top:16pt;color:#434343;font-size:14pt;padding-bottom:4pt;font-family:"Arial";line-height:1.15;page-break-after:avoid;orphans:2;widows:2;text-align:left}h4{padding-top:14pt;color:#666666;font-size:12pt;padding-bottom:4pt;font-family:"Arial";line-height:1.15;page-break-after:avoid;orphans:2;widows:2;text-align:left}h5{padding-top:12pt;color:#666666;font-size:11pt;padding-bottom:4pt;font-family:"Arial";line-height:1.15;page-break-after:avoid;orphans:2;widows:2;text-align:left}h6{padding-top:12pt;color:#666666;font-size:11pt;padding-bottom:4pt;font-family:"Arial";line-height:1.15;page-break-after:avoid;font-style:italic;orphans:2;widows:2;text-align:left}
-    </style>
-</head>
-<body class="c4 doc-content"><p class="c1"><span class="c6">Review of interactions in collection found via </span><span
-        class="c7"><a class="c12"
-                      href="https://github.com/$REPO_NAME">$REPO_NAME</a></span><span
-        class="c0">&nbsp;as of $(date) </span>.</p>
-<p class="c1"><span class="c0">According to GloBI's review process*, this collection contains</span></p>
-<p class="c1"><span class="c9">&nbsp;</span><span class="c5">$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | tail -n+2 | sort | uniq | wc -l)) interactions</span></p>
-<p class="c1"><span class="c6">involving </span><span class="c2">$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f interactionTypeName | tail -n+2 | sort | uniq | wc -l)  unique types of associations</span><span class="c0">, and these are the top 5:</span>
-</p>
-$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f interactionTypeName | tail -n+2 | sort | uniq -c | sort -nr | head -n5 | sed 's+^+<p class="c1"><span class="c0">\&nbsp; \&nbsp;+g' | sed 's+$+</span></p>+g')
-<p class="c1 c3"><span class="c0"></span></p>
-<p class="c1"><span class="c0">In these interactions, there appears to be </span></p>
-<p class="c1"><span class="c10">$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f sourceTaxonName | tail -n+2 | sort | uniq | wc -l)) primary taxa</span><span
-        class="c0">&nbsp;(aka source taxa or subject taxa)</span></p>
-<p class="c1"><span class="c0">top 5 most documented primary taxa in this dataset: </span></p>
-$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f sourceTaxonName | tail -n+2 | sort | uniq -c | sort -nr | head -n5 | sed 's+^+<p class="c1"><span class="c0">\&nbsp; \&nbsp;+g' | sed 's+$+</span></p>+g')
-<p class="c1"><span class="c0">and</span></p>
-<p class="c1"><span class="c6">&nbsp;</span><span class="c10">$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f targetTaxonName | tail -n+2 | sort | uniq | wc -l)) associated taxa</span><span class="c0">&nbsp;(aka target taxa or object taxa)</span>
-</p>
-<p class="c1"><span class="c0">5 most frequently appearing associated taxa are:</span></p>
-$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f targetTaxonName | tail -n+2 | sort | uniq -c | sort -nr | head -n5 | sed 's+^+<p class="c1"><span class="c0">\&nbsp; \&nbsp;+g' | sed 's+$+</span></p>+g')
-<p class="c1"><span class="c0">Download the full datasets used in this review here. Learn more about the structure of this download here or contact mailto:info@globalbioticinteractions.org.</span>
-</p>
-<p class="c1"><span class="c6">To see all interactions on </span><span class="c7"><a class="c12"
-                                                                                     href="https://globalbioticinteractions.org">GloBI website</a></span><span
-        class="c0">, click <a class="c12" href="https://www.globalbioticinteractions.org/?accordingTo=globi%3A$(echo ${REPO_NAME} | sed 's+/+%2F+g')">here<a> .</span>
-</p>
-<p class="c1"><span class="c0">As part of the review, all names are matched against GBIF Taxonomic Backbone, ITIS, NCBI Taxonomy, Catalogue of Life, Parasite Tracker Taxonomy, and DiscoverLife. The top 5 names that for some reason, did not match some or any of our taxonomic resources are:</span>
-</p>
-$(cat indexed-names-resolved.tsv.gz | gunzip | tail -n+2 | grep NONE | cut -f2 | sort | uniq -c | sort -nr | head -n5 | sed 's+^+<p class="c1"><span class="c0">\&nbsp; \&nbsp;+g' | sed 's+$+</span></p>+g')
-<p class="c1"><span class="c0">Download the full list of names matches <a class="c12" href="https://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/indexed-names-resolved.csv">here</a>. Learn more about the structure of the name reports here or contact us by <a class="c12" href="mailto:info@globalbioticinteractions.org">email</a>.</span>
-</p>
-<p class="c1"><span class="c0">For additional review resources go <a class="c12" href="https://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/README.txt">here</a> . </span>
-</p>
-<p class="c1 c3"><span class="c0"></span></p>
-<p class="c1 c3"><span class="c0"></span></p>
-<p class="c1 c3"><span class="c0"></span></p>
-<p class="c1"><span class="c0">*⚠️ Disclaimer: The results in this review should be considered</span></p>
-<p class="c1"><span class="c0">friendly, yet naive, notes from an unsophisticated robot. </span></p>
-<p class="c1"><span class="c0">Please carefully review the results listed below and share issues/ideas</span></p>
-<p class="c1"><span class="c0">by <a class="c12" href="mailto:info@globalbioticinteractions.org>email</a> or by opening an <a class="c12" href="https://github.com/globalbioticinteractions/globalbioticinteractions/issues">issue</a>. at </span></p>
-<p class="c1 c3"><span class="c0"></span></p>
-<p class="c3 c11"><span class="c8"></span></p></body>
-</html>
+function generate_md_report {
+
+  numberOfInteractions="$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | tail -n+2 | sort | uniq | wc -l))"
+  numberOfInteractionTypes="$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f interactionTypeName | tail -n+2 | sort | uniq | wc -l)"
+  mostFrequentInteractionTypes="$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} count-distinct -f interactionTypeName then sort -nr count then cut -f interactionTypeName | tail -n+2 | head -n1 | tr -d '\n')"
+  uniqueSourceTaxa="$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f sourceTaxonName | tail -n+2 | sort | uniq | wc -l))"
+  mostFrequentSourceTaxa="$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} count-distinct -f sourceTaxonName then sort -nr count then cut -f sourceTaxonName | tail -n+2 | head -n1 | tr -d '\n')"
+  uniqueTargetTaxa="$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f targetTaxonName | tail -n+2 | sort | uniq | wc -l))"
+  mostFrequentTargetTaxa="$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} count-distinct -f targetTaxonName then sort -nr count then cut -f targetTaxonName | tail -n+2 | head -n1 | tr -d '\n')"
+
+  cat <<_EOF_
+---
+title: Review of ${REPO_NAME}
+date: $(date --iso-8601)
+author: Elton, a naive review bot.
+abstract: |
+  According to GloBI's review process, $REPO_NAME contains ${numberOfInteractions} interactions with ${numberOfInteractionTypes} (e.g., ${mostFrequentInteractionTypes}) unique types of associations between ${uniqueSourceTaxa} primary taxa (e.g., ${mostFrequentSourceTaxa}) and ${uniqueTargetTaxa} (e.g., ${mostFrequentTargetTaxa}). This review report describes the automated review process as well as the provenance (or origin) of the data. Also, the reports includes detailed summaries of interactions data as well as a taxonomic review from multiple perspectives.
+
+---
+
+# Introduction
+
+Data review can be a time consuming process, especially when done manually. This review report aims to help facilitate data reviews by providing basic statistics and observations about the dataset under review. 
+
+
+# Methods
+
+The review is performed through programmatic scripts that leverage tools like Preston, Elton, Nomer combined with third-party tools like grep, mlr, tail and head. 
+
+ | tool name | version | 
+ | --- | --- | 
+ | [elton](https://github.com/globalbioticinteractions/elton) | ${ELTON_VERSION} | 
+ | [nomer](https://github.com/globalbioticinteractions/nomer) | ${NOMER_VERSION} |  
+: Tools used in this review process
+
+The review process can be summarized using the following bash script
+
+~~~~~~~
+# get versioned copy of the dataset under review 
+elton pull ${REPO_NAME}
+
+# generate review notes
+elton review ${REPO_NAME}\\
+ > review.tsv
+
+# export indexed interaction records
+elton interactions ${REPO_NAME}\\
+ > interactions.tsv
+
+# export names and align them with the Catalogue of Life using Nomer 
+elton names ${REPO_NAME}\\
+ | nomer append col\\
+ > name-alignment.tsv
+~~~~~~~
+
+You can find the full review script at [check-data.sh](https://github.com/globalbioticinteractions/globinizer/blob/master/check-dataset.sh). 
+
+# Results
+
+In the following sections, the results of the review are summarized [^1]. Then, links to the detailed review reports are provided.
+
+$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-distinct -f interactionTypeName then sort -nr count | head -n6)
+: Top 5 Interaction Types
+
+$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-distinct -f sourceTaxonName then sort -nr count | head -n6)
+: Top 5 Primary Taxa
+
+$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-distinct -f targetTaxonName then sort -nr count | head -n6)
+: Top 5 Associate Taxa
+
+You can download the indexed dataset under review at [indexed-interactions.csv](indexed-interactions.csv). A tab-seperated file can be found at [indexed-interactions.tsv](indexed-interactions.tsv) 
+
+Learn more about the structure of this download at [GloBI website](https://globalbioticinteractions.org), by opening a [GitHub issue](https://github.com/globalbioticinteractions/globalbioticinteractions/issues/new), or by sending an [email](mailto:info@globalbioticinteractions.org).
+
+Another way to discover the dataset under review is by searching for it on the [GloBI website](https://www.globalbioticinteractions.org/?accordingTo=globi%3A$(echo ${REPO_NAME} | sed 's+/+%2F+g')).
+
+As part of the review, all names are matched against GBIF Taxonomic Backbone, ITIS, NCBI Taxonomy, Catalogue of Life, Parasite Tracker Taxonomy, and DiscoverLife. The top 5 names that, for some reason, did not match some or any of our taxonomic resources are:
+
+$(cat indexed-names-resolved.tsv.gz | gunzip | mlr ${MLR_TSV_INPUT_OPTS} --omd filter '$alignRelation == "NONE"' then count-distinct -f providedName then sort -nr count)
+: Top 5 names with fewest name alignments.  
+
+
+Download the [full list of names matches](indexed-names-resolved.csv). 
+
+ | review resource | description |
+ | --- | --- |
+ | [indexed-names-resolved.csv](indexed-names-resolved.csv) | a full list of name alignments |
+ | [indexed-interactions.csv](indexed-interactions.csv) | a full list of name alignments |
+ | [review-report.csv](review-report.csv) | a full list of name alignments |
+: List of detailed review reports.
+
+
+[^1]: ⚠️ Disclaimer: The results in this review should be considered friendly, yet naive, notes from an unsophisticated robot. Please keep that in mind when considering the review results. 
 _EOF_
 }
 
@@ -369,7 +411,10 @@ echo_reproduce >> ${README}
 
 save_readme
 
-save_html_report
+generate_md_report\
+ | tee index.md\
+ | pandoc --embed-resources --standalone -t html5 -o -\
+ > index.html
 
 #
 # publish review artifacts
