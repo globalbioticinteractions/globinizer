@@ -284,6 +284,9 @@ Another way to discover the dataset under review is by searching for it on the [
 
 As part of the review, all names are aligned against various name catalogs (e.g., ${TAXONOMIES}). These alignments may serve as a way to review name usage or aid in selecting of a suitable taxonomic name resource to use. 
 
+$(cat indexed-names-resolved.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd cut -f providedName,relationName,resolvedCatalogName | head -n6) 
+: Sample of Name Alignments
+
 $(cat indexed-names-resolved.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-distinct -f resolvedCatalogName,relationName then sort -nr count | head -n6) 
 : Alignment types per catalog
 
