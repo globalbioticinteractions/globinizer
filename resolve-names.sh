@@ -102,15 +102,15 @@ function generate_process_diagram {
 digraph review {
       origin [label="dataset origin"];
       elton [label="Elton (a naive review bot)"];
-      elton -> origin [label="pull"];
+      elton -> origin [label="pull (1)"];
       interactions [label="indexed interactions"];
-      elton -> interactions [label="generates"];
+      elton -> interactions [label="generates (2)"];
       alignment [label="name alignments"];
       nomer [label="Nomer (a naive review bot)"];
       catalog [label="name catalog"];
-      nomer -> interactions [label="extract names"];
-      nomer -> catalog [label="uses"];
-      nomer -> alignment [label="generates"];
+      nomer -> interactions [label="extract names (3)"];
+      nomer -> catalog [label="uses (4)"];
+      nomer -> alignment [label="generates (5)"];
 }
 _EOF_
 }
