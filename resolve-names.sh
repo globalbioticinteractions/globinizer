@@ -291,7 +291,7 @@ As part of the review, all names are aligned against various name catalogs (e.g.
 $(cat indexed-names-resolved.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f providedName,relationName,resolvedCatalogName,resolvedName | mlr ${MLR_TSV_INPUT_OPTS} --omd uniq -f providedName,relationName,resolvedCatalogName,resolvedName | head -n6) 
 : Sample of Name Alignments
 
-$(cat indexed-names-resolved.tsv.gz | gunzip | mlr ${MLR_TSV_INPUT_OPTS} --omd count-distinct -f resolvedCatalogName,relationName then sort -nr count | head -n 
+$(cat indexed-names-resolved.tsv.gz | gunzip | mlr ${MLR_TSV_INPUT_OPTS} --omd count-distinct -f resolvedCatalogName,relationName then sort -nr count)
 : Alignment types per catalog
 
 | catalog name | alignment results |
