@@ -282,10 +282,10 @@ Another way to discover the dataset under review is by searching for it on the [
 
 As part of the review, all names are aligned against various name catalogs (e.g., ${TAXONOMIES}). These alignments may serve as a way to review name usage or aid in selecting of a suitable taxonomic name resource to use. 
 
-$(cat indexed-names-resolved.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f providedName,relationName,resolvedCatalogName,resolvedName | mlr ${MLR_TSV_OPTS} --omd uniq -f providedName,relationName,resolvedCatalogName,resolvedName | head -n6) 
+$(cat indexed-names-resolved.tsv.gz | gunzip | mlr ${MLR_TSV_INPUT_OPTS} cut -f providedName,relationName,resolvedCatalogName,resolvedName | mlr ${MLR_TSV_INPUT_OPTS} --omd uniq -f providedName,relationName,resolvedCatalogName,resolvedName | head -n6) 
 : Sample of Name Alignments
 
-$(cat indexed-names-resolved.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-distinct -f resolvedCatalogName,relationName then sort -nr count | head -n6) 
+$(cat indexed-names-resolved.tsv.gz | gunzip | mlr ${MLR_TSV_INPUT_OPTS} --omd count-distinct -f resolvedCatalogName,relationName then sort -nr count | head -n6) 
 : Alignment types per catalog
 
 | catalog name | alignment results |
@@ -500,7 +500,7 @@ for taxonomy in ${TAXONOMIES}; do resolve_names indexed-names.tsv.gz ${taxonomy}
 
 # concatenate all name alignments
 echo ${TAXONOMIES} | tr ' ' '\n' | awk '{ print "indexed-names-resolved-" $1 ".tsv.gz" }' | xargs mlr --prepipe gunzip ${MLR_TSV_OPTS} cat | mlr ${MLR_TSV_OPTS} sort -f providedName | uniq | gzip > indexed-names-resolved.tsv.gz
-mlr ${MLR_TSV_OPTS} --ocsv --prepipe gunzip cat indexed-names-resolved.tsv.gz | gzip > indexed-names-resolved.csv.gz
+mlr ${MLR_TSV_INPUT_OPTS} --ocsv --prepipe gunzip cat indexed-names-resolved.tsv.gz | gzip > indexed-names-resolved.csv.gz
 
 cat indexed-interactions.tsv.gz | gunzip | head -n501 > indexed-interactions-sample.tsv
 cat indexed-interactions-sample.tsv | tsv2csv > indexed-interactions-sample.csv
