@@ -72,6 +72,10 @@ _EOF_
 )"
 }
 
+function version_of {
+  head -n1\
+  | grep -o -E "([0-9]+[.]{0,1})+"
+}
 
 function echo_review_badge {
   local number_of_review_notes=$1
@@ -218,8 +222,11 @@ The review is performed through programmatic scripts that leverage tools like Pr
 
  | tool name | version | 
  | --- | --- | 
- | [elton](httpsmisc://github.com/globalbioticinteractions/elton) | ${ELTON_VERSION} | 
- | [nomer](https://github.com/globalbioticinteractions/nomer) | ${NOMER_VERSION} |  
+ | [elton](httpsmisc://github.com/globalbioticinteractions/elton) | $(echo ${ELTON_VERSION} | version_of) | 
+ | [nomer](https://github.com/globalbioticinteractions/nomer) | $(echo ${NOMER_VERSION} | version_of) |  
+ | [mlr](https://miller.readthedocs.io/en/6.8.0/) | $(mlr --version | version_of) |  
+ | [dot](https://graphviz.org/docs/layouts/dot/) | $(dot -V | version_of) |  
+ | [pandoc](https://pandoc.org/) | $(pandoc --version | version_of) |  
 : Tools used in this review process
 
 The review process can be describe in the form of a script:
