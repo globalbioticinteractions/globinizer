@@ -433,8 +433,8 @@ function resolve_names {
     | ${NOMER_CMD} replace ${NOMER_OPTS} globi-correct\
     | ${NOMER_CMD} replace ${NOMER_OPTS} gn-parse\
     | ${NOMER_CMD} append ${NOMER_OPTS} $2 --include-header\
-    | mlr --tsvlite put -s catalogName="${2}" '$resolvedCatalogName = @catalogName'\
-    | mlr --tsvlite reorder -f resolvedCatalogName -a relationName\
+    | mlr ${MLR_TSV_OPTS} put -s catalogName="${2}" '$resolvedCatalogName = @catalogName'\
+    | mlr ${MLR_TSV_OPTS} reorder -f resolvedCatalogName -a relationName\
     | gzip > ${RESOLVED}
   cat ${RESOLVED}\
     | gunzip\
