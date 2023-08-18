@@ -36,8 +36,7 @@ export MLR_TSV_INPUT_OPTS="--icsvlite --ifs tab"
 export MLR_TSV_OUTPUT_OPTS="--ocsvlite --ofs tab"
 export MLR_TSV_OPTS="${MLR_TSV_INPUT_OPTS} ${MLR_TSV_OUTPUT_OPTS}"
 
-#export TAXONOMIES="col ncbi discoverlife gbif itis globi tpt"
-export TAXONOMIES="globalnames"
+export TAXONOMIES="col ncbi discoverlife gbif itis globi tpt"
 
 function echo_logo {
   echo "$(cat <<_EOF_
@@ -98,6 +97,94 @@ function echo_reproduce {
   echo -e "\nPlease email info@globalbioticinteractions.org for questions/ comments."
 }
 
+function generate_process_diagram {
+ cat << _EOF_
+digraph pairwise {
+      a1 [label="dataset origin"];
+      b1 [label="Elton (a naive review bot)"];
+      b1 -> a1 [label="pull"];
+      d1 [label="indexed interactions"];
+      b1 -> d1 [label="generates"];
+      e1 [label="name alignments"];
+      c1 [label="Nomer (a naive review bot)"];
+      f1 [label="name catalog"];
+      c1 -> d1 [label="extract names"];
+      c1 -> f1 [label="uses"];
+      c1 -> e1 [label="generates"];
+}
+_EOF_
+}
+
+function generate_model_diagram {
+ cat << _EOF_
+digraph pairwise {
+    #rankdir=LR;
+    #labelloc="t";
+    a1 [label="Primary Taxon"];
+    b1 [label="Associate Taxon"];
+    { 
+      rank=same;
+      a2 [label="Primary Organism"];
+      b2 [label="Associate Organism"];
+      a2 -> b2 [label="interactsWith"];
+    }
+    a2 -> a1 [label="classifiedAs"];
+    b2 -> b1 [label="classifiedAs"];
+}
+_EOF_
+}
+
+
+function generate_bibliography {
+  cat << _EOF_
+@article{Poelen_2014,
+	doi = {10.1016/j.ecoinf.2014.08.005},
+	url = {https://doi.org/10.1016%2Fj.ecoinf.2014.08.005},
+	year = 2014,
+	month = {nov},
+	publisher = {Elsevier {BV}},
+	volume = {24},
+	pages = {148--159},
+	author = {Jorrit H. Poelen and James D. Simons and Chris J. Mungall},
+	title = {Global biotic interactions: An open infrastructure to share and analyze species-interaction datasets},
+	journal = {Ecological Informatics}}
+
+@article{Wilkinson_2016,
+	doi = {10.1038/sdata.2016.18},
+	url = {https://doi.org/10.1038%2Fsdata.2016.18},
+	year = 2016,
+	month = {mar},
+	publisher = {Springer Science and Business Media {LLC}},
+	volume = {3},
+	number = {1},
+	author = {Mark D. Wilkinson and Michel Dumontier and IJsbrand Jan Aalbersberg and Gabrielle Appleton and Myles Axton and Arie Baak and Niklas Blomberg and Jan-Willem Boiten and Luiz Bonino da Silva Santos and Philip E. Bourne and Jildau Bouwman and Anthony J. Brookes and Tim Clark and Merc{\`{e}} Crosas and Ingrid Dillo and Olivier Dumon and Scott Edmunds and Chris T. Evelo and Richard Finkers and Alejandra Gonzalez-Beltran and Alasdair J.G. Gray and Paul Groth and Carole Goble and Jeffrey S. Grethe and Jaap Heringa and Peter A.C 't Hoen and Rob Hooft and Tobias Kuhn and Ruben Kok and Joost Kok and Scott J. Lusher and Maryann E. Martone and Albert Mons and Abel L. Packer and Bengt Persson and Philippe Rocca-Serra and Marco Roos and Rene van Schaik and Susanna-Assunta Sansone and Erik Schultes and Thierry Sengstag and Ted Slater and George Strawn and Morris A. Swertz and Mark Thompson and Johan van der Lei and Erik van Mulligen and Jan Velterop and Andra Waagmeester and Peter Wittenburg and Katherine Wolstencroft and Jun Zhao and Barend Mons},
+	title = {The {FAIR} Guiding Principles for scientific data management and stewardship},
+	journal = {Scientific Data}
+}
+
+@misc{trekels_maarten_2023_8176978,
+  author       = {Trekels, Maarten and
+                  Pignatari Drucker, Debora and
+                  Salim, José Augusto and
+                  Ollerton, Jeff and
+                  Poelen, Jorrit and
+                  Miranda Soares, Filipi and
+                  Rünzel, Max and
+                  Kasina, Muo and
+                  Groom, Quentin and
+                  Devoto, Mariano},
+  title        = {{WorldFAIR Project (D10.1) Agriculture-related 
+                   pollinator data standards use cases report}},
+  month        = jul,
+  year         = 2023,
+  publisher    = {Zenodo},
+  version      = 1,
+  doi          = {10.5281/zenodo.8176978},
+  url          = {https://doi.org/10.5281/zenodo.8176978}
+}
+_EOF_
+}
+
 function generate_md_report {
 
   numberOfInteractions="$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | tail -n+2 | sort | uniq | wc -l))"
@@ -107,21 +194,25 @@ function generate_md_report {
   mostFrequentSourceTaxa="$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} count-distinct -f sourceTaxonName then sort -nr count then cut -f sourceTaxonName | tail -n+2 | head -n1 | tr -d '\n')"
   uniqueTargetTaxa="$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f targetTaxonName | tail -n+2 | sort | uniq | wc -l))"
   mostFrequentTargetTaxa="$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} count-distinct -f targetTaxonName then sort -nr count then cut -f targetTaxonName | tail -n+2 | head -n1 | tr -d '\n')"
-
+  summaryPhrase="The dataset under review (aka $REPO_NAME) contains ${numberOfInteractions} interactions with ${numberOfInteractionTypes} (e.g., ${mostFrequentInteractionTypes}) unique types of associations between ${uniqueSourceTaxa} primary taxa (e.g., ${mostFrequentSourceTaxa}) and ${uniqueTargetTaxa} (e.g., ${mostFrequentTargetTaxa})."
   cat <<_EOF_
 ---
 title: Review of ${REPO_NAME}
 date: $(date --iso-8601)
-author: Elton, a naive review bot.
+author: By Nomer and Elton, naive review bots.
 abstract: |
-  According to GloBI's review process, $REPO_NAME contains ${numberOfInteractions} interactions with ${numberOfInteractionTypes} (e.g., ${mostFrequentInteractionTypes}) unique types of associations between ${uniqueSourceTaxa} primary taxa (e.g., ${mostFrequentSourceTaxa}) and ${uniqueTargetTaxa} (e.g., ${mostFrequentTargetTaxa}). This review report describes the automated review process as well as the provenance (or origin) of the data. Also, the reports includes detailed summaries of interactions data as well as a taxonomic review from multiple perspectives.
-
+  According to GloBI's review process, ${summaryPhrase} This review report describes the automated review process as well as the provenance (or origin) of the data. Also, the reports includes detailed summaries of interactions data as well as a taxonomic review from multiple perspectives.
+bibliography: biblio.bib
+reference-section-title: References
 ---
 
 # Introduction
 
-Data review can be a time consuming process, especially when done manually. This review report aims to help facilitate data reviews by providing basic statistics and observations about the dataset under review. 
+Data review can be a time consuming process, especially when done manually. This review report aims to help facilitate data review of species interaction claims made in datasets indexed by Global Biotic Interactions [@Poelen_2014]. The review includes summary statistics of, and observations about, the dataset under review:
 
+~~~
+$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f citation,archiveURI,lastSeenAt,contentHash | tail -n2 | sort | uniq | tr '\t' ' ')
+~~~
 
 # Methods
 
@@ -129,13 +220,13 @@ The review is performed through programmatic scripts that leverage tools like Pr
 
  | tool name | version | 
  | --- | --- | 
- | [elton](https://github.com/globalbioticinteractions/elton) | ${ELTON_VERSION} | 
+ | [elton](httpsmisc://github.com/globalbioticinteractions/elton) | ${ELTON_VERSION} | 
  | [nomer](https://github.com/globalbioticinteractions/nomer) | ${NOMER_VERSION} |  
 : Tools used in this review process
 
-The review process can be summarized using the following bash script
+The review process can be describe in the form of a script:
 
-~~~~~~~
+~~~
 # get versioned copy of the dataset under review 
 elton pull ${REPO_NAME}
 
@@ -151,22 +242,37 @@ elton interactions ${REPO_NAME}\\
 elton names ${REPO_NAME}\\
  | nomer append col\\
  > name-alignment.tsv
-~~~~~~~
+~~~
 
-You can find the full review script at [check-data.sh](https://github.com/globalbioticinteractions/globinizer/blob/master/check-dataset.sh). 
+or visually, in a kind of process diagram.
+
+![Review Process Overview](process.svg)
+
+You can find a recent copy of the full review script at [check-data.sh](https://github.com/globalbioticinteractions/globinizer/blob/master/check-dataset.sh). 
 
 # Results
 
 In the following sections, the results of the review are summarized [^1]. Then, links to the detailed review reports are provided.
 
+![A crude description of how interactions are modeled](interaction.svg)
+
+In this review, biotic interactions (or biotic associations) are modeled as a primary (aka subject, source) organism interacting with an associate (aka object, target) organism. The dataset under review classified the primary/associate organisms with specific taxa. The primary and associate organisms The kind of interaction is documented as an interaction type. 
+
+${summaryPhrase}
+ 
+$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd cut -r -f sourceTaxonName,interactionTypeName,targetTaxonName,referenceCitation | head -n6)
+: Sample of Indexed Interaction Claims
+
+An exhaustive list of indexed interaction claims can be found at [indexed-interactions](indexed-interactions.html) ([csv](indexed-interactions.csv)/[tsv](indexed-interactions.tsv)/[html](indexed-interactions.html)). 
+
 $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-distinct -f interactionTypeName then sort -nr count | head -n6)
-: Top 5 Interaction Types
+: Most Frequently Mentioned Interaction Types
 
 $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-distinct -f sourceTaxonName then sort -nr count | head -n6)
-: Top 5 Primary Taxa
+: Most Frequently Mentioned Primary Taxa
 
 $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-distinct -f targetTaxonName then sort -nr count | head -n6)
-: Top 5 Associate Taxa
+: Most Frequently Mentioned Associate Taxa
 
 You can download the indexed dataset under review at [indexed-interactions.csv](indexed-interactions.csv). A tab-seperated file can be found at [indexed-interactions.tsv](indexed-interactions.tsv) 
 
@@ -174,23 +280,25 @@ Learn more about the structure of this download at [GloBI website](https://globa
 
 Another way to discover the dataset under review is by searching for it on the [GloBI website](https://www.globalbioticinteractions.org/?accordingTo=globi%3A$(echo ${REPO_NAME} | sed 's+/+%2F+g')).
 
-As part of the review, all names are matched against GBIF Taxonomic Backbone, ITIS, NCBI Taxonomy, Catalogue of Life, Parasite Tracker Taxonomy, and DiscoverLife. The top 5 names that, for some reason, did not match some or any of our taxonomic resources are:
+## Taxonomic Alignment
 
-$(cat indexed-names-resolved.tsv.gz | gunzip | mlr ${MLR_TSV_INPUT_OPTS} --omd filter '$alignRelation == "NONE"' then count-distinct -f providedName then sort -nr count)
-: Top 5 names with fewest name alignments.  
+As part of the review, all names are aligned against various name catalogs (e.g., ${TAXONOMIES}). These alignments may serve as a way to review name usage or aid in selecting of a suitable taxonomic name resource to use. 
 
+$(cat indexed-names-resolved.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-distinct -f relationName,resolvedCatalogName then sort -nr count | head -n6) 
+: Most frequently occurring alignment relations by catalog
 
-Download the [full list of names matches](indexed-names-resolved.csv). 
+| alignment source | alignment results |
+| --- | --- |
+$(echo "${TAXONOMIES}" | tr ' ' '\n' | awk '{ print "| " $1 " | [associated names alignments](indexed-names-resolved-" $1 ".html) ([csv](indexed-names-resolved-" $1 ".tsv)/[tsv](indexed-names-resolved-" $1 ".tsv)/[html](indexed-names-resolved-" $1 ".html) |"}') 
+: List of Available Name Alignment Reports
 
- | review resource | description |
- | --- | --- |
- | [indexed-names-resolved.csv](indexed-names-resolved.csv) | a full list of name alignments |
- | [indexed-interactions.csv](indexed-interactions.csv) | a full list of name alignments |
- | [review-report.csv](review-report.csv) | a full list of name alignments |
-: List of detailed review reports.
+# Discussion
+
+This review is intended to provide a perspective on the dataset under review to aid understanding of species interaction claims discovered. However, this review should *not* be considered as fitness of use or other kind of quality assessment. Instead, the review may be used as in indication of the open-ness[^2] and FAIRness [@Wilkinson_2016; @trekels_maarten_2023_8176978] of the dataset: in order to perform this review, the data was likely openly available, **F**indable, **A**ccessible, **I**nteroperable and **R**eusable. Currently, this Open-FAIR assessment is qualitative, and with measurement units specified, a more quantitative approach can be implemented. 
 
 
 [^1]: ⚠️ Disclaimer: The results in this review should be considered friendly, yet naive, notes from an unsophisticated robot. Please keep that in mind when considering the review results. 
+[^2]: According to http://opendefinition.org/: "Open data is data that can be freely used, re-used and redistributed by anyone - subject only, at most, to the requirement to attribute and sharealike."
 _EOF_
 }
 
@@ -216,6 +324,8 @@ function install_deps {
     sudo apt -q update &> /dev/null
     sudo apt -q install miller jq -y &> /dev/null
     curl --silent -L https://github.com/jgm/pandoc/releases/download/3.1.6.1/pandoc-3.1.6.1-1-amd64.deb > pandoc.deb && sudo apt install -q ./pandoc.deb &> /dev/null
+    sudo apt -q install pandoc-citeproc
+    sudo apt -q install graphviz
     sudo pip install s3cmd &> /dev/null   
   fi
 
@@ -293,11 +403,15 @@ function tsv2csv {
   mlr ${MLR_TSV_INPUT_OPTS} --ocsv cat
 }
 
-function tsv2html {
+function generate_styling {
   # from http://b.enjam.info/panam/styling.css
-  cat > styling.css <<_EOF_ 
+  cat <<_EOF_ 
 @import url(//fonts.googleapis.com/css?family=Libre+Baskerville:400,400italic,700);@import url(//fonts.googleapis.com/css?family=Source+Code+Pro:400,400italic,700,700italic);/* normalize.css v3.0.0 | MIT License | git.io/normalize */html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}body{margin:0}article,aside,details,figcaption,figure,footer,header,hgroup,main,nav,section,summary{display:block}audio,canvas,progress,video{display:inline-block;vertical-align:baseline}audio:not([controls]){display:none;height:0}[hidden],template{display:none}a{background:transparent}a:active,a:hover{outline:0}abbr[title]{border-bottom:1px dotted}b,strong{font-weight:bold}dfn{font-style:italic}h1{font-size:2em;margin:0.67em 0}mark{background:#ff0;color:#000}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sup{top:-0.5em}sub{bottom:-0.25em}img{border:0}svg:not(:root){overflow:hidden}figure{margin:1em 40px}hr{-moz-box-sizing:content-box;box-sizing:content-box;height:0}pre{overflow:auto}code,kbd,pre,samp{font-family:monospace, monospace;font-size:1em}button,input,optgroup,select,textarea{color:inherit;font:inherit;margin:0}button{overflow:visible}button,select{text-transform:none}button,html input[type="button"],input[type="reset"],input[type="submit"]{-webkit-appearance:button;cursor:pointer}button[disabled],html input[disabled]{cursor:default}button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0}input{line-height:normal}input[type="checkbox"],input[type="radio"]{box-sizing:border-box;padding:0}input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{height:auto}input[type="search"]{-webkit-appearance:textfield;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;box-sizing:content-box}input[type="search"]::-webkit-search-cancel-button,input[type="search"]::-webkit-search-decoration{-webkit-appearance:none}fieldset{border:1px solid #c0c0c0;margin:0 2px;padding:0.35em 0.625em 0.75em}legend{border:0;padding:0}textarea{overflow:auto}optgroup{font-weight:bold}table{border-collapse:collapse;border-spacing:0}td,th{padding:0}body,code,tr.odd,tr.even,figure{background-image:url("data:image/png;base64,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")}body{font-family:"Libre Baskerville",Baskerville,Georgia,serif;background-color:#f8f8f8;color:#111;line-height:1.3;text-align:justify;-moz-hyphens:auto;-ms-hyphens:auto;-webkit-hyphens:auto;hyphens:auto}@media (max-width: 400px){body{font-size:12px;margin-left:10px;margin-right:10px;margin-top:10px;margin-bottom:15px}}@media (min-width: 401px) and (max-width: 600px){body{font-size:14px;margin-left:10px;margin-right:10px;margin-top:10px;margin-bottom:15px}}@media (min-width: 601px) and (max-width: 900px){body{font-size:15px;margin-left:100px;margin-right:100px;margin-top:20px;margin-bottom:25px}}@media (min-width: 901px) and (max-width: 1800px){body{font-size:17px;margin-left:200px;margin-right:200px;margin-top:30px;margin-bottom:25px;max-width:800px}}@media (min-width: 1801px){body{font-size:18px;margin-left:20%;margin-right:20%;margin-top:30px;margin-bottom:25px;max-width:1000px}}p{margin-top:10px;margin-bottom:18px}em{font-style:italic}strong{font-weight:bold}h1,h2,h3,h4,h5,h6{font-weight:bold;padding-top:0.25em;margin-bottom:0.15em}header{line-height:2.475em;padding-bottom:0.7em;border-bottom:1px solid #bbb;margin-bottom:1.2em}header>h1{border:none;padding:0;margin:0;font-size:225%}header>h2{border:none;padding:0;margin:0;font-style:normal;font-size:175%}header>h3{padding:0;margin:0;font-size:125%;font-style:italic}header+h1{border-top:none;padding-top:0px}h1{border-top:1px solid #bbb;padding-top:15px;font-size:150%;margin-bottom:10px}h1:first-of-type{border:none}h2{font-size:125%;font-style:italic}h3{font-size:105%;font-style:italic}hr{border:0px;border-top:1px solid #bbb;width:100%;height:0px}hr+h1{border-top:none;padding-top:0px}ul,ol{font-size:90%;margin-top:10px;margin-bottom:15px;padding-left:30px}ul{list-style:circle}ol{list-style:decimal}ul ul,ol ol,ul ol,ol ul{font-size:inherit}li{margin-top:5px;margin-bottom:7px}q,blockquote,dd{font-style:italic;font-size:90%}blockquote,dd{quotes:none;border-left:0.35em #bbb solid;padding-left:1.15em;margin:0 1.5em 0 0}blockquote blockquote,dd blockquote,blockquote dd,dd dd,ol blockquote,ol dd,ul blockquote,ul dd,blockquote ol,dd ol,blockquote ul,dd ul{font-size:inherit}a,a:link,a:visited,a:hover{color:inherit;text-decoration:none;border-bottom:1px dashed #111}a:hover,a:link:hover,a:visited:hover,a:hover:hover{border-bottom-style:solid}a.footnoteRef,a:link.footnoteRef,a:visited.footnoteRef,a:hover.footnoteRef{border-bottom:none;color:#666}code{font-family:"Source Code Pro","Consolas","Monaco",monospace;font-size:85%;background-color:#ddd;border:1px solid #bbb;padding:0px 0.15em 0px 0.15em;-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px}pre{margin-right:1.5em;display:block}pre>code{display:block;font-size:70%;padding:10px;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;overflow-x:auto}blockquote pre,dd pre,ul pre,ol pre{margin-left:0;margin-right:0}blockquote pre>code,dd pre>code,ul pre>code,ol pre>code{font-size:77.77778%}caption,figcaption{font-size:80%;font-style:italic;text-align:right;margin-bottom:5px}caption:empty,figcaption:empty{display:none}table{width:100%;margin-top:1em;margin-bottom:1em}table+h1{border-top:none}tr td,tr th{padding:0.2em 0.7em}tr.header{border-top:1px solid #222;border-bottom:1px solid #222;font-weight:700}tr.odd{background-color:#eee}tr.even{background-color:#ccc}tbody:last-child{border-bottom:1px solid #222}dt{font-weight:700}dt:after{font-weight:normal;content:":"}dd{margin-bottom:10px}figure{margin:1.3em 0 1.3em 0;text-align:center;padding:0px;width:100%;background-color:#ddd;border:1px solid #bbb;-webkit-border-radius:8px;-moz-border-radius:8px;border-radius:8px;overflow:hidden}img{display:block;margin:0px auto;padding:0px;max-width:100%}figcaption{margin:5px 10px 5px 30px}.footnotes{color:#666;font-size:70%;font-style:italic}.footnotes li p:last-child a:last-child{border-bottom:none}
 _EOF_
+}
+
+function tsv2html {
+  generate_styling > styling.css
   pandoc --embed-resources --standalone --metadata title=${REPO_NAME} --css=styling.css --to=html5 --from=tsv -o -
 }
 
@@ -318,6 +432,8 @@ function resolve_names {
     | ${NOMER_CMD} replace ${NOMER_OPTS} globi-correct\
     | ${NOMER_CMD} replace ${NOMER_OPTS} gn-parse\
     | ${NOMER_CMD} append ${NOMER_OPTS} $2 --include-header\
+    | mlr --tsvlite put -s catalogName="${2}" '$resolvedCatalogName = @catalogName'\
+    | mlr --tsvlite reorder -f resolvedCatalogName -a relationName\
     | gzip > ${RESOLVED}
   cat ${RESOLVED}\
     | gunzip\
@@ -326,7 +442,7 @@ function resolve_names {
     > ${RESOLVED_CSV}
   cat ${RESOLVED}\
     | gunzip\
-    | mlr ${MLR_TSV_OPTS} cut -f providedExternalId,providedName,relationName,resolvedExternalUrl,resolvedName,resolvedAuthorship,resolvedRank\
+    | mlr ${MLR_TSV_OPTS} cut -f providedExternalId,providedName,relationName,resolveCatalogName,resolvedExternalUrl,resolvedName,resolvedAuthorship,resolvedRank\
     | tsv2html\
     | gzip\
     > ${RESOLVED_HTML}
@@ -411,9 +527,24 @@ echo_reproduce >> ${README}
 
 save_readme
 
+generate_model_diagram\
+ | dot -Tsvg\
+ > interaction.svg
+
+generate_process_diagram\
+ | dot -Tsvg\
+ > process.svg
+
+generate_bibliography\
+ > biblio.bib
+
+generate_styling\
+ > styling.css
+
+
 generate_md_report\
  | tee index.md\
- | pandoc --embed-resources --standalone -t html5 -o -\
+ | pandoc --embed-resources --standalone --citeproc -t html5 -o -\
  > index.html
 
 #
@@ -450,8 +581,17 @@ function upload_package {
   upload $1.html $2
 }
 
+if [[ -n ${TRAVIS_REPO_SLUG} || -n ${GITHUB_REPOSITORY} ]]
+then 
+  gunzip -f *.gz
+else
+  mkdir -p review
+  cp -R README.txt *.html datasets/* indexed-* review* review/
+  cd review && gunzip -f *.gz && zip -R ../review.zip *
+fi
 
-# atttempt to use s3cmd tool if available and configured
+
+# attempt to use s3cmd tool if available and configured
 if [[ -n $(which s3cmd) ]] && [[ -n ${S3CMD_CONFIG} ]]
 then
   echo -e "\nThis review generated the following resources:" | tee_readme
@@ -489,8 +629,7 @@ then
     tar c datasets/* | gzip > datasets.tar.gz
     upload datasets.tar.gz "cached dataset archive"
   fi
-
-  zip -r review.zip README.txt datasets/* indexed-* review*
+  
   upload review.zip "review archive"
   
   save_readme
