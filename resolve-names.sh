@@ -192,14 +192,14 @@ function generate_md_report {
   mostFrequentSourceTaxa="$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} count-distinct -f sourceTaxonName then sort -nr count then cut -f sourceTaxonName | tail -n+2 | head -n1 | tr -d '\n')"
   uniqueTargetTaxa="$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f targetTaxonName | tail -n+2 | sort | uniq | wc -l))"
   mostFrequentTargetTaxa="$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} count-distinct -f targetTaxonName then sort -nr count then cut -f targetTaxonName | tail -n+2 | head -n1 | tr -d '\n')"
-  summaryPhrase="The dataset under review (aka $REPO_NAME) contains ${numberOfInteractions} interactions with ${numberOfInteractionTypes} (e.g., ${mostFrequentInteractionTypes}) unique types of associations between ${uniqueSourceTaxa} primary taxa (e.g., ${mostFrequentSourceTaxa}) and ${uniqueTargetTaxa} (e.g., ${mostFrequentTargetTaxa})."
+  summaryPhrase="dataset under review (aka $REPO_NAME) contains ${numberOfInteractions} interactions with ${numberOfInteractionTypes} (e.g., ${mostFrequentInteractionTypes}) unique types of associations between ${uniqueSourceTaxa} primary taxa (e.g., ${mostFrequentSourceTaxa}) and ${uniqueTargetTaxa} associated taxa (e.g., ${mostFrequentTargetTaxa})."
   cat <<_EOF_
 ---
 title: Review of ${REPO_NAME}
 date: $(date --iso-8601)
 author: By Nomer and Elton, naive review bots.
 abstract: |
-  According to GloBI's review process, ${summaryPhrase} This review report describes the automated review process as well as the provenance (or origin) of the data. Also, the reports includes detailed summaries of interactions data as well as a taxonomic review from multiple perspectives.
+  According to GloBI's review process, the ${summaryPhrase} This review report describes the automated review process as well as the provenance (or origin) of the data. Also, the reports includes detailed summaries of interactions data as well as a taxonomic review from multiple perspectives.
 bibliography: biblio.bib
 reference-section-title: References
 ---
@@ -256,7 +256,7 @@ In the following sections, the results of the review are summarized [^1]. Then, 
 
 In this review, biotic interactions (or biotic associations) are modeled as a primary (aka subject, source) organism interacting with an associate (aka object, target) organism. The dataset under review classified the primary/associate organisms with specific taxa. The primary and associate organisms The kind of interaction is documented as an interaction type. 
 
-${summaryPhrase}
+The ${summaryPhrase}
  
 $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd cut -r -f sourceTaxonName,interactionTypeName,targetTaxonName,referenceCitation | head -n6)
 : Sample of Indexed Interaction Claims
