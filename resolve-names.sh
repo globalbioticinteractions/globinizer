@@ -397,7 +397,7 @@ function configure_nomer {
         
   fi
 
-  export NOMER_VERSION=$(${NOMER_CMD} version)
+  export NOMER_VERSION=$(${NOMER_CMD} version | sed 's/@.*//g')
 
   echo nomer version "${NOMER_VERSION}"
 }
