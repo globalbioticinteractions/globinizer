@@ -284,12 +284,12 @@ Another way to discover the dataset under review is by searching for it on the [
 
 As part of the review, all names are aligned against various name catalogs (e.g., ${TAXONOMIES}). These alignments may serve as a way to review name usage or aid in selecting of a suitable taxonomic name resource to use. 
 
-$(cat indexed-names-resolved.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-distinct -f relationName,resolvedCatalogName then sort -nr count | head -n6) 
-: Most frequently occurring alignment relations by catalog
+$(cat indexed-names-resolved.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-distinct -f resolvedCatalogName,relationName then sort -nr count | head -n6) 
+: Alignment types per catalog
 
-| alignment source | alignment results |
+| catalog name | alignment results |
 | --- | --- |
-$(echo "${TAXONOMIES}" | tr ' ' '\n' | awk '{ print "| " $1 " | [associated names alignments](indexed-names-resolved-" $1 ".html) ([csv](indexed-names-resolved-" $1 ".tsv)/[tsv](indexed-names-resolved-" $1 ".tsv)/[html](indexed-names-resolved-" $1 ".html) |"}') 
+$(echo "${TAXONOMIES}" | tr ' ' '\n' | awk '{ print "| " $1 " | [associated names alignments](indexed-names-resolved-" $1 ".html) ([csv](indexed-names-resolved-" $1 ".tsv)/[tsv](indexed-names-resolved-" $1 ".tsv)/[html](indexed-names-resolved-" $1 ".html)) |"}') 
 : List of Available Name Alignment Reports
 
 # Discussion
@@ -297,7 +297,7 @@ $(echo "${TAXONOMIES}" | tr ' ' '\n' | awk '{ print "| " $1 " | [associated name
 This review is intended to provide a perspective on the dataset under review to aid understanding of species interaction claims discovered. However, this review should *not* be considered as fitness of use or other kind of quality assessment. Instead, the review may be used as in indication of the open-ness[^2] and FAIRness [@Wilkinson_2016; @trekels_maarten_2023_8176978] of the dataset: in order to perform this review, the data was likely openly available, **F**indable, **A**ccessible, **I**nteroperable and **R**eusable. Currently, this Open-FAIR assessment is qualitative, and with measurement units specified, a more quantitative approach can be implemented. 
 
 
-[^1]: ⚠️ Disclaimer: The results in this review should be considered friendly, yet naive, notes from an unsophisticated robot. Please keep that in mind when considering the review results. 
+[^1]: Disclaimer: The results in this review should be considered friendly, yet naive, notes from an unsophisticated robot. Please keep that in mind when considering the review results. 
 [^2]: According to http://opendefinition.org/: "Open data is data that can be freely used, re-used and redistributed by anyone - subject only, at most, to the requirement to attribute and sharealike."
 _EOF_
 }
