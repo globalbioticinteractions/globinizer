@@ -544,6 +544,7 @@ generate_styling\
 
 generate_md_report\
  | tee index.md\
+ | tee review.md\
  | pandoc --embed-resources --standalone --citeproc -t html5 -o -\
  | tee review.html\
  > index.html
