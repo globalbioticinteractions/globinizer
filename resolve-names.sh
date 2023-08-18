@@ -99,37 +99,35 @@ function echo_reproduce {
 
 function generate_process_diagram {
  cat << _EOF_
-digraph pairwise {
-      a1 [label="dataset origin"];
-      b1 [label="Elton (a naive review bot)"];
-      b1 -> a1 [label="pull"];
-      d1 [label="indexed interactions"];
-      b1 -> d1 [label="generates"];
-      e1 [label="name alignments"];
-      c1 [label="Nomer (a naive review bot)"];
-      f1 [label="name catalog"];
-      c1 -> d1 [label="extract names"];
-      c1 -> f1 [label="uses"];
-      c1 -> e1 [label="generates"];
+digraph review {
+      origin [label="dataset origin"];
+      elton [label="Elton (a naive review bot)"];
+      elton -> origin [label="pull"];
+      interactions [label="indexed interactions"];
+      elton -> interactions [label="generates"];
+      alignment [label="name alignments"];
+      nomer [label="Nomer (a naive review bot)"];
+      catalog [label="name catalog"];
+      nomer -> interactions [label="extract names"];
+      nomer -> catalog [label="uses"];
+      nomer -> alignment [label="generates"];
 }
 _EOF_
 }
 
 function generate_model_diagram {
  cat << _EOF_
-digraph pairwise {
-    #rankdir=LR;
-    #labelloc="t";
-    a1 [label="Primary Taxon"];
-    b1 [label="Associate Taxon"];
+digraph model {
+    primaryTaxon [label="Primary Taxon"];
+    associatedTaxon [label="Associated Taxon"];
     { 
       rank=same;
-      a2 [label="Primary Organism"];
-      b2 [label="Associate Organism"];
-      a2 -> b2 [label="interactsWith"];
+      primaryOrganism [label="Primary Organism"];
+      associatedOrganism [label="Associated Organism"];
+      primaryOrganism -> associatedOrganism [label="interactsWith"];
     }
-    a2 -> a1 [label="classifiedAs"];
-    b2 -> b1 [label="classifiedAs"];
+    primaryOrganism -> primaryTaxon [label="classifiedAs"];
+    associatedOrganism -> associatedTaxon [label="classifiedAs"];
 }
 _EOF_
 }
