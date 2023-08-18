@@ -248,7 +248,7 @@ elton names ${REPO_NAME}\\
  > name-alignment.tsv
 ~~~
 
-or visually, in a kind of process diagram.
+or visually, in a process diagram.
 
 ![Review Process Overview](process.svg)
 
@@ -258,7 +258,7 @@ You can find a recent copy of the full review script at [check-data.sh](https://
 
 In the following sections, the results of the review are summarized [^1]. Then, links to the detailed review reports are provided.
 
-![A crude description of how interactions are modeled](interaction.svg)
+![Biotic Interaction Data Model](interaction.svg)
 
 In this review, biotic interactions (or biotic associations) are modeled as a primary (aka subject, source) organism interacting with an associate (aka object, target) organism. The dataset under review classified the primary/associate organisms with specific taxa. The primary and associate organisms The kind of interaction is documented as an interaction type. 
 
