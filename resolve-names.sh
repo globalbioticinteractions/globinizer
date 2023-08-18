@@ -325,6 +325,7 @@ function install_deps {
     sudo apt -q install miller jq -y &> /dev/null
     curl --silent -L https://github.com/jgm/pandoc/releases/download/3.1.6.1/pandoc-3.1.6.1-1-amd64.deb > pandoc.deb && sudo apt install -q ./pandoc.deb &> /dev/null
     sudo apt -q install pandoc-citeproc
+    sudo apt -q install graphviz
     sudo pip install s3cmd &> /dev/null   
   fi
 
@@ -583,12 +584,11 @@ function upload_package {
 if [[ -n ${TRAVIS_REPO_SLUG} || -n ${GITHUB_REPOSITORY} ]]
 then 
   gunzip -f *.gz
-else
-  mkdir -p review
-  cp -R README.txt *.html datasets/* indexed-* review* review/
-  cd review && gunzip -f *.gz && zip -R ../review.zip *
 fi
 
+mkdir -p review
+cp -R README.txt index.* datasets/* indexed-* review* review/
+cd review && gunzip -f *.gz && zip -R ../review.zip *
 
 # attempt to use s3cmd tool if available and configured
 if [[ -n $(which s3cmd) ]] && [[ -n ${S3CMD_CONFIG} ]]
@@ -633,13 +633,6 @@ then
   
   save_readme
   upload README.txt "review summary"
-else
-  if [[ -n ${TRAVIS_REPO_SLUG} || -n ${GITHUB_REPOSITORY} ]]
-  then
-    upload_file_io
-  else
-    echo -e "\nFor detailed review results please see files in [$PWD].\n" | tee_readme
-  fi
 fi
 
 echo_reproduce

@@ -584,12 +584,11 @@ function upload_package {
 if [[ -n ${TRAVIS_REPO_SLUG} || -n ${GITHUB_REPOSITORY} ]]
 then 
   gunzip -f *.gz
-else
-  mkdir -p review
-  cp -R README.txt *.html datasets/* indexed-* review* review/
-  cd review && gunzip -f *.gz && zip -R ../review.zip *
 fi
 
+mkdir -p review
+cp -R README.txt index.* datasets/* indexed-* review* review/
+cd review && gunzip -f *.gz && zip -R ../review.zip *
 
 # attempt to use s3cmd tool if available and configured
 if [[ -n $(which s3cmd) ]] && [[ -n ${S3CMD_CONFIG} ]]
@@ -634,13 +633,6 @@ then
   
   save_readme
   upload README.txt "review summary"
-else
-  if [[ -n ${TRAVIS_REPO_SLUG} || -n ${GITHUB_REPOSITORY} ]]
-  then
-    upload_file_io
-  else
-    echo -e "\nFor detailed review results please see files in [$PWD].\n" | tee_readme
-  fi
 fi
 
 echo_reproduce
