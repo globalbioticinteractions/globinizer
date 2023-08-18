@@ -289,10 +289,10 @@ Another way to discover the dataset under review is by searching for it on the [
 
 As part of the review, all names are aligned against various name catalogs (e.g., ${TAXONOMIES}). These alignments may serve as a way to review name usage or aid in selecting of a suitable taxonomic name resource to use. 
 
-$(cat indexed-names-resolved.tsv.gz | gunzip | mlr ${MLR_TSV_INPUT_OPTS} cut -f providedName,relationName,resolvedCatalogName,resolvedName | mlr ${MLR_TSV_INPUT_OPTS} --omd uniq -f providedName,relationName,resolvedCatalogName,resolvedName | head -n6) 
+$(cat indexed-names-resolved.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f providedName,relationName,resolvedCatalogName,resolvedName | mlr ${MLR_TSV_INPUT_OPTS} --omd uniq -f providedName,relationName,resolvedCatalogName,resolvedName | head -n6) 
 : Sample of Name Alignments
 
-$(cat indexed-names-resolved.tsv.gz | gunzip | mlr ${MLR_TSV_INPUT_OPTS} --omd count-distinct -f resolvedCatalogName,relationName then sort -nr count | head -n6) 
+$(cat indexed-names-resolved.tsv.gz | gunzip | mlr ${MLR_TSV_INPUT_OPTS} --omd count-distinct -f resolvedCatalogName,relationName then sort -nr count | head -n 
 : Alignment types per catalog
 
 | catalog name | alignment results |
