@@ -315,7 +315,7 @@ $(cat review.tsv.gz | gunzip | mlr ${MLR_TSV_INPUT_OPTS} --omd cut -f reviewComm
 
 For more exhaustive list of review notes, please have a look at the [Review Notes](review.html) ([csv](review.csv)/[tsv](review.tsv)/[html](review.html)).
 
-## Review Status
+## Review Status Badge
 
 As part of the review, a review badge is generated. This review badge can be included in webpages to indicate the review status of the dataset under review. You can find the badge at:
 
@@ -588,7 +588,7 @@ generate_styling\
 generate_md_report\
  | tee index.md\
  | tee review.md\
- | pandoc --embed-resources --standalone --citeproc -t html5 -o -\
+ | pandoc --embed-resources --standalone --toc --citeproc -t html5 -o -\
  > index.html
 
 function upload {
