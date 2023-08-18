@@ -201,7 +201,7 @@ function generate_md_report {
 ---
 title: Review of ${REPO_NAME}
 date: $(date --iso-8601)
-author: By Nomer and Elton, naive review bots.
+author: By Nomer and Elton, two naive review bots.
 abstract: |
   According to GloBI's review process, the ${summaryPhrase} This review report describes the automated review process as well as the provenance (or origin) of the data. Also, the reports includes detailed summaries of interactions data as well as a taxonomic review from multiple perspectives.
 bibliography: biblio.bib
@@ -258,6 +258,8 @@ You can find a recent copy of the full review script at [check-data.sh](https://
 
 In the following sections, the results of the review are summarized [^1]. Then, links to the detailed review reports are provided.
 
+## Biotic Interactions
+
 ![Biotic Interaction Data Model](interaction.svg)
 
 In this review, biotic interactions (or biotic associations) are modeled as a primary (aka subject, source) organism interacting with an associate (aka object, target) organism. The dataset under review classified the primary/associate organisms with specific taxa. The primary and associate organisms The kind of interaction is documented as an interaction type. 
@@ -278,7 +280,7 @@ $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-dis
 $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-distinct -f targetTaxonName then sort -nr count | head -n6)
 : Most Frequently Mentioned Associate Taxa
 
-You can download the indexed dataset under review at [indexed-interactions.csv](indexed-interactions.csv). A tab-seperated file can be found at [indexed-interactions.tsv](indexed-interactions.tsv) 
+You can download the indexed dataset under review at [indexed-interactions.csv](indexed-interactions.csv). A tab-separated file can be found at [indexed-interactions.tsv](indexed-interactions.tsv) 
 
 Learn more about the structure of this download at [GloBI website](https://globalbioticinteractions.org), by opening a [GitHub issue](https://github.com/globalbioticinteractions/globalbioticinteractions/issues/new), or by sending an [email](mailto:info@globalbioticinteractions.org).
 
@@ -298,6 +300,40 @@ $(cat indexed-names-resolved.tsv.gz | gunzip | mlr ${MLR_TSV_INPUT_OPTS} --omd c
 | --- | --- |
 $(echo "${TAXONOMIES}" | tr ' ' '\n' | awk '{ print "| " $1 " | [associated names alignments](indexed-names-resolved-" $1 ".html) ([csv](indexed-names-resolved-" $1 ".tsv)/[tsv](indexed-names-resolved-" $1 ".tsv)/[html](indexed-names-resolved-" $1 ".html)) |"}') 
 : List of Available Name Alignment Reports
+
+## Additional Reviews
+
+Elton, Nomer, and other tools used sometimes do not have the capacity to interpret existing species interaction datasets. Or, they may mishave, or otherwise show unexpected behavior. As part of the review process, detailed review notes are kept that include these detailed, sometimes (overly) technical notes. An sample of review notes associated with this review can be found below.
+
+$(cat review.tsv.gz | gunzip | mlr ${MLR_TSV_INPUT_OPTS} --omd cut -f reviewDate,reviewCommentType,reviewComment | head -n6)
+: First few lines in the review notes.
+
+In addtion, you can find the most frequently occurring notes in the table below.
+
+$(cat review.tsv.gz | gunzip | mlr ${MLR_TSV_INPUT_OPTS} --omd cut -f reviewCommentType,reviewComment then filter '$reviewCommentType == "note"' then count-distinct -f reviewComment then sort -nr count | head -n6)
+: Most frequently occurring review notes, if any.
+
+For more exhaustive list of review notes, please have a look at the [Review Notes](review.html) ([csv](review.csv)/[tsv](review.tsv)/[html](review.html)).
+
+## Review Status
+
+As part of the review, a review badge is generated. This review badge can be included in webpages to indicate the review status of the dataset under review. You can find the badge at:
+
+[review.svg](review.svg)
+
+At time of writing, the review badge looks like:
+
+[![review badge](review.svg)](index.html) .
+
+~~~
+
+~~~
+
+
+~~~
+
+~~~
+
 
 # Discussion
 
@@ -470,8 +506,8 @@ else
 fi
 
 ${ELTON_CMD} review ${ELTON_OPTS} ${ELTON_NAMESPACE} --type note --type summary | gzip > review.tsv.gz
-cat review.tsv.gz | gunzip | tsv2csv | gzip > review-sample.csv.gz
-cat review.tsv.gz | gunzip | tsv2html | gzip > review-sample.html.gz
+cat review.tsv.gz | gunzip | tsv2csv | gzip > review.csv.gz
+cat review.tsv.gz | gunzip | tsv2html | gzip > review.html.gz
 cat review.tsv.gz | gunzip | head -n501 > review-sample.tsv
 cat review-sample.tsv | tsv2csv > review-sample.csv
 cat review-sample.tsv | tsv2html > review-sample.html
@@ -553,17 +589,7 @@ generate_md_report\
  | tee index.md\
  | tee review.md\
  | pandoc --embed-resources --standalone --citeproc -t html5 -o -\
- | tee review.html\
  > index.html
-
-#
-# publish review artifacts
-#
-
-function upload_file_io {
-  echo -e "\nDownload the full review report with the single-use, and expiring, file.io link at:"
-  curl --silent -F "file=@review.tsv.gz" https://file.io 
-}
 
 function upload {
 
