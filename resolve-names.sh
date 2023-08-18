@@ -597,6 +597,8 @@ cd tmp-review && gunzip -f *.gz && zip -R ../review.zip * && rm -rf tmp-review
 if [[ -n $(which s3cmd) ]] && [[ -n ${S3CMD_CONFIG} ]]
 then
   echo -e "\nThis review generated the following resources:" | tee_readme
+  upload index.html "review summary web page"
+  upload index.md "review pandoc page"
   upload review.html "review summary web page"
   upload review.svg "review badge"
   upload review.tsv.gz "data review"
