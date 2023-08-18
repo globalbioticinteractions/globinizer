@@ -631,11 +631,10 @@ then
   echo -e "\nThis review generated the following resources:" | tee_readme
   upload index.html "review summary web page"
   upload index.md "review pandoc page"
-  upload review.html "review summary web page"
   upload review.svg "review badge"
-  upload review.tsv.gz "data review"
   
   upload_package review-sample "data review sample"
+  upload_package_gz review "review notes"
   
   upload_package_gz indexed-interactions "indexed interactions"
   
