@@ -284,7 +284,7 @@ Another way to discover the dataset under review is by searching for it on the [
 
 As part of the review, all names are aligned against various name catalogs (e.g., ${TAXONOMIES}). These alignments may serve as a way to review name usage or aid in selecting of a suitable taxonomic name resource to use. 
 
-$(cat indexed-names-resolved.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f providedName,relationName,resolvedCatalogName | mlr ${MLR_TSV_OPTS} --omd uniq -f providedName,relationName,resolvedCatalogName | head -n6) 
+$(cat indexed-names-resolved.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f providedName,relationName,resolvedCatalogName,resolvedName | mlr ${MLR_TSV_OPTS} --omd uniq -f providedName,relationName,resolvedCatalogName,resolvedName | head -n6) 
 : Sample of Name Alignments
 
 $(cat indexed-names-resolved.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-distinct -f resolvedCatalogName,relationName then sort -nr count | head -n6) 
@@ -445,7 +445,7 @@ function resolve_names {
     > ${RESOLVED_CSV}
   cat ${RESOLVED}\
     | gunzip\
-    | mlr ${MLR_TSV_OPTS} cut -f providedExternalId,providedName,relationName,resolveCatalogName,resolvedExternalUrl,resolvedName,resolvedAuthorship,resolvedRank\
+    | mlr ${MLR_TSV_OPTS} cut -f providedExternalId,providedName,relationName,resolvedCatalogName,resolvedExternalUrl,resolvedName,resolvedAuthorship,resolvedRank\
     | tsv2html\
     | gzip\
     > ${RESOLVED_HTML}
@@ -593,7 +593,7 @@ fi
 
 mkdir -p review
 cp -R README.txt index.* datasets/* indexed-* review* review/
-cd review && gunzip -f *.gz && zip -R ../review.zip *
+cd review && gunzip -f *.gz && zip -R ../review.zip * && rm -rf review
 
 # attempt to use s3cmd tool if available and configured
 if [[ -n $(which s3cmd) ]] && [[ -n ${S3CMD_CONFIG} ]]
