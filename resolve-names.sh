@@ -29,7 +29,7 @@ export NOMER_OPTS=""
 
 export REVIEW_REPO_HOST="blob.globalbioticinteractions.org"
 export README=$(mktemp)
-export REVIEW_DIR="review/${REPO_NAME}"
+export REVIEW_DIR="${PWD}/review/${REPO_NAME}"
 
 export MLR_TSV_OPTS="--csvlite --fs tab"
 export MLR_TSV_INPUT_OPTS="--icsvlite --ifs tab"
@@ -338,9 +338,12 @@ _EOF_
 }
 
 
+function clean_review_dir {
+  rm -rf ${REVIEW_DIR}
+}
 
 function use_review_dir {
-  rm -rf ${REVIEW_DIR}
+  clean_review_dir
   mkdir -p ${REVIEW_DIR}
   cd ${REVIEW_DIR}
 }
@@ -586,8 +589,8 @@ generate_md_report\
 function upload {
 
   s3cmd --config "${S3CMD_CONFIG}" put "$1" "s3://${ARTIFACTS_BUCKET}/reviews/${REPO_NAME}/$1" &> upload.log
-
-  if [[ $? -ne 0 ]] ; then
+  LAST_UPLOAD_RESULT=$?
+  if [[ ${LAST_UPLOAD_RESULT} -ne 0 ]] ; then
      echo -e "\nfailed to upload $2, please check following upload log"
      cat upload.log
   else
@@ -662,6 +665,10 @@ then
   
   save_readme
   upload README.txt "review summary"
+  if [[ ${LAST_UPLOAD_RESULT} -eq 0 ]]
+  then
+    clean_review_dir
+  fi
 fi
 
 echo_reproduce
