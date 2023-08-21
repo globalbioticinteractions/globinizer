@@ -200,7 +200,7 @@ function generate_md_report {
   summaryPhrase="dataset under review (aka $REPO_NAME) contains ${numberOfInteractions} interactions with ${numberOfInteractionTypes} (e.g., ${mostFrequentInteractionTypes}) unique types of associations between ${uniqueSourceTaxa} primary taxa (e.g., ${mostFrequentSourceTaxa}) and ${uniqueTargetTaxa} associated taxa (e.g., ${mostFrequentTargetTaxa})."
   cat <<_EOF_
 ---
-title: Review of ${REPO_NAME}
+title: A Review of Biotic Interactions Found in ${REPO_NAME} 
 date: $(date --iso-8601)
 author: By Nomer and Elton, two naive review bots.
 abstract: |
