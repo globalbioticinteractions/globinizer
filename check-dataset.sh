@@ -36,7 +36,8 @@ export MLR_TSV_INPUT_OPTS="--icsvlite --ifs tab"
 export MLR_TSV_OUTPUT_OPTS="--ocsvlite --ofs tab"
 export MLR_TSV_OPTS="${MLR_TSV_INPUT_OPTS} ${MLR_TSV_OUTPUT_OPTS}"
 
-export TAXONOMIES="col ncbi discoverlife gbif itis globi tpt"
+#export TAXONOMIES="col ncbi discoverlife gbif itis globi tpt"
+export TAXONOMIES="globalnames"
 
 function echo_logo {
   echo "$(cat <<_EOF_
@@ -579,12 +580,19 @@ generate_bibliography\
 generate_styling\
  > styling.css
 
+function export_report_as {
+  pandoc --embed-resources --standalone --toc --citeproc -t $1 -o -\
+ > index.$2
+}
 
 generate_md_report\
  | tee index.md\
  | tee review.md\
- | pandoc --embed-resources --standalone --toc --citeproc -t html5 -o -\
+ | export_report_as html5 html\
  > index.html
+ cat index.md\
+ | export_report_as docx docx\
+ > index.docx
 
 function upload {
 
@@ -627,6 +635,7 @@ then
   echo -e "\nThis review generated the following resources:" | tee_readme
   upload index.html "review summary web page"
   upload index.md "review pandoc page"
+  upload index.docx "review pandoc word document"
   upload review.svg "review badge"
   
   upload_package review-sample "data review sample"
