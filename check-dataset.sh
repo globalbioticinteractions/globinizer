@@ -210,7 +210,7 @@ reference-section-title: References
 
 # Introduction
 
-Data review can be a time consuming process, especially when done manually. This review report aims to help facilitate data review of species interaction claims made in datasets indexed by Global Biotic Interactions [@Poelen_2014]. The review includes summary statistics of, and observations about, the dataset under review:
+Data review can be a time consuming process, especially when done manually. This review report aims to help facilitate data review of species interaction claims made in datasets registered with Global Biotic Interactions [@Poelen_2014]. The review includes summary statistics of, and observations about, the dataset under review:
 
 ~~~
 $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f citation,archiveURI,lastSeenAt,contentHash | tail -n2 | sort | uniq | tr '\t' ' ')
@@ -303,7 +303,7 @@ $(echo "${TAXONOMIES}" | tr ' ' '\n' | awk '{ print "| " $1 " | [associated name
 
 ## Additional Reviews
 
-Elton, Nomer, and other tools used sometimes do not have the capacity to interpret existing species interaction datasets. Or, they may mishave, or otherwise show unexpected behavior. As part of the review process, detailed review notes are kept that include these detailed, sometimes (overly) technical notes. An sample of review notes associated with this review can be found below.
+Elton, Nomer, and other tools may have difficulties interpreting existing species interaction datasets. Or, they may mishave, or otherwise show unexpected behavior. As part of the review process, detailed review notes are kept that document possibly misbehaving, or confused, review bots. An sample of review notes associated with this review can be found below.
 
 $(cat review.tsv.gz | gunzip | mlr ${MLR_TSV_INPUT_OPTS} --omd cut -f reviewDate,reviewCommentType,reviewComment | head -n6)
 : First few lines in the review notes.
