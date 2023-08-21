@@ -229,7 +229,7 @@ The review is performed through programmatic scripts that leverage tools like Pr
  | [pandoc](https://pandoc.org/) | $(pandoc --version | version_of) |  
 : Tools used in this review process
 
-The review process can be describe in the form of a script:
+The review process can be described in the form of a script:
 
 ~~~
 # get versioned copy of the dataset under review 
