@@ -204,7 +204,7 @@ title: Review of ${REPO_NAME}
 date: $(date --iso-8601)
 author: By Nomer and Elton, two naive review bots.
 abstract: |
-  According to GloBI's review process, the ${summaryPhrase} This review report describes the automated review process as well as the provenance (or origin) of the data. Also, the reports includes detailed summaries of interactions data as well as a taxonomic review from multiple perspectives.
+  Life on earth is sustained by complex interactions between organisms and their environment. These biotic interactions can be captured in datasets and published digitally. We describe a review process of such an openly accessible digital interaction datasets of known origin, and discuss their outcome. The ${summaryPhrase} The report includes detailed summaries of interactions data as well as a taxonomic review from multiple perspectives.
 bibliography: biblio.bib
 reference-section-title: References
 ---
