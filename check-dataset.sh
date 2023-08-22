@@ -598,10 +598,10 @@ generate_md_report\
 
 function upload {
 
-  s3cmd --config "${S3CMD_CONFIG}" put "$1" "s3://${ARTIFACTS_BUCKET}/reviews/${REPO_NAME}/$1" &> upload.log
+  s3cmd --config "${S3CMD_CONFIG}" put "$PWD/$1" "s3://${ARTIFACTS_BUCKET}/reviews/${REPO_NAME}/$1" &> upload.log
   LAST_UPLOAD_RESULT=$?
   if [[ ${LAST_UPLOAD_RESULT} -ne 0 ]] ; then
-     echo -e "\nfailed to upload $2, please check following upload log"
+     echo -e "\nfailed to upload [$1], please check following upload log"
      cat upload.log
   else
      echo "https://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/$1" | tee_readme
