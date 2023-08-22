@@ -56,6 +56,7 @@ function echo_logo {
         |___/                                                   
 ⚠️ Disclaimer: The results in this review should be considered
 friendly, yet naive, notes from an unsophisticated robot. 
+    sudo apt -q install graphviz
 Please carefully review the results listed below and share issues/ideas
 by email info at globalbioticinteractions.org or by opening an issue at 
 https://github.com/globalbioticinteractions/globalbioticinteractions/issues .
@@ -627,7 +628,9 @@ fi
 
 mkdir -p tmp-review
 cp -R README.txt index.* datasets/* indexed-* review* tmp-review/
+OLD_DIR="${PWD}"
 cd tmp-review && gunzip -f *.gz && zip -R ../review.zip *
+cd ${OLD_DIR}
 rm -rf tmp-review
 
 # attempt to use s3cmd tool if available and configured
