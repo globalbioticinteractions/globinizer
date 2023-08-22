@@ -340,7 +340,7 @@ _EOF_
 
 
 function clean_review_dir {
-  rm -rf ${REVIEW_DIR}
+  #rm -rf ${REVIEW_DIR}
 }
 
 function use_review_dir {
