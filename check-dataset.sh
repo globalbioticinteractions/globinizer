@@ -365,6 +365,7 @@ function install_deps {
     curl --silent -L https://github.com/jgm/pandoc/releases/download/3.1.6.1/pandoc-3.1.6.1-1-amd64.deb > pandoc.deb && sudo apt install -q ./pandoc.deb &> /dev/null
     sudo apt -q install pandoc-citeproc
     sudo apt -q install graphviz
+    sudo apt -q install librsvg2-bin
     sudo pip install s3cmd &> /dev/null   
   fi
 
