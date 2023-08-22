@@ -341,7 +341,7 @@ _EOF_
 
 
 function clean_review_dir {
-  echo rm -rf ${REVIEW_DIR}
+  rm -rf ${REVIEW_DIR}
 }
 
 function use_review_dir {
@@ -541,6 +541,7 @@ for taxonomy in ${TAXONOMIES}; do resolve_names indexed-names.tsv.gz ${taxonomy}
 # concatenate all name alignments
 echo ${TAXONOMIES} | tr ' ' '\n' | awk '{ print "indexed-names-resolved-" $1 ".tsv.gz" }' | xargs mlr --prepipe gunzip ${MLR_TSV_OPTS} cat | mlr ${MLR_TSV_OPTS} sort -f providedName | uniq | gzip > indexed-names-resolved.tsv.gz
 mlr ${MLR_TSV_INPUT_OPTS} --ocsv --prepipe gunzip cat indexed-names-resolved.tsv.gz | gzip > indexed-names-resolved.csv.gz
+cat indexed-names-resolved.tsv.gz | gunzip | tsv2html | gzip > indexed-names-resolved.html.gz
 
 cat indexed-interactions.tsv.gz | gunzip | head -n501 > indexed-interactions-sample.tsv
 cat indexed-interactions-sample.tsv | tsv2csv > indexed-interactions-sample.csv
@@ -662,7 +663,7 @@ then
 
   upload_package indexed-names-sample "indexed names sample"
  
-  upload_package indexed-citations "indexed citations"
+  upload_package_gz indexed-citations "indexed citations"
 
   upload nanopub.trig.gz "interactions nanopubs"
   
