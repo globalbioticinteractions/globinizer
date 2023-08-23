@@ -365,6 +365,7 @@ function install_deps {
     sudo apt -q install miller jq -y &> /dev/null
     curl --silent -L https://github.com/jgm/pandoc/releases/download/3.1.6.1/pandoc-3.1.6.1-1-amd64.deb > pandoc.deb && sudo apt install -q ./pandoc.deb &> /dev/null
     sudo apt -q install pandoc-citeproc
+    sudo apt -q install texlive
     sudo apt -q install graphviz
     sudo apt -q install librsvg2-bin
     sudo pip install s3cmd &> /dev/null   
@@ -593,9 +594,14 @@ generate_md_report\
  | tee review.md\
  | export_report_as html5 html\
  > index.html
- cat index.md\
+ 
+cat index.md\
  | export_report_as docx docx\
  > index.docx
+
+cat index.md\
+ | export_report_as pdf pdf\
+ > index.pdf
 
 function upload {
 
@@ -628,7 +634,7 @@ then
 fi
 
 mkdir -p tmp-review
-cp -R README.txt index.* datasets/* indexed-* review* tmp-review/
+cp -R README.txt index.* datasets/* indexed-* review* *.css *.svg *.bib tmp-review/
 OLD_DIR="${PWD}"
 cd tmp-review && gunzip -f *.gz && zip -R ../review.zip *
 cd ${OLD_DIR}
@@ -641,7 +647,11 @@ then
   upload index.html "review summary web page"
   upload index.md "review pandoc page"
   upload index.docx "review pandoc word document"
+  upload index.pdf "review pandoc pdf document"
   upload review.svg "review badge"
+  upload process.svg "review process diagram"
+  upload interaction.svg "interaction data model diagram"
+  upload biblio.bib "bibliography"
   
   upload_package review-sample "data review sample"
   upload_package_gz review "review notes"
