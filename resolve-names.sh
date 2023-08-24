@@ -603,6 +603,11 @@ cat index.md\
  | export_report_as pdf pdf\
  > index.pdf
 
+cat index.md\
+ | export_report_as jats jats\
+ > index.xml
+
+
 function upload {
 
   s3cmd --config "${S3CMD_CONFIG}" put "$PWD/$1" "s3://${ARTIFACTS_BUCKET}/reviews/${REPO_NAME}/$1" &> upload.log
