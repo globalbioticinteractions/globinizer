@@ -705,4 +705,4 @@ fi
 
 echo_reproduce
 
-exit ${NUMBER_OF_NOTES}
+#exit ${NUMBER_OF_NOTES}
