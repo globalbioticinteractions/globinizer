@@ -305,7 +305,7 @@ $(echo "${TAXONOMIES}" | tr ' ' '\n' | awk '{ print "| " $1 " | [associated name
 
 ## Additional Reviews
 
-Elton, Nomer, and other tools may have difficulties interpreting existing species interaction datasets. Or, they may mishave, or otherwise show unexpected behavior. As part of the review process, detailed review notes are kept that document possibly misbehaving, or confused, review bots. An sample of review notes associated with this review can be found below.
+Elton, Nomer, and other tools may have difficulties interpreting existing species interaction datasets. Or, they may misbehave, or otherwise show unexpected behavior. As part of the review process, detailed review notes are kept that document possibly misbehaving, or confused, review bots. An sample of review notes associated with this review can be found below.
 
 $(cat review.tsv.gz | gunzip | mlr ${MLR_TSV_INPUT_OPTS} --omd cut -f reviewDate,reviewCommentType,reviewComment | head -n6)
 : First few lines in the review notes.
