@@ -36,8 +36,7 @@ export MLR_TSV_INPUT_OPTS="--icsvlite --ifs tab"
 export MLR_TSV_OUTPUT_OPTS="--ocsvlite --ofs tab"
 export MLR_TSV_OPTS="${MLR_TSV_INPUT_OPTS} ${MLR_TSV_OUTPUT_OPTS}"
 
-export TAXONOMIES="col ncbi discoverlife gbif itis globi tpt"
-#export TAXONOMIES="globalnames"
+export TAXONOMIES="col ncbi discoverlife gbif itis globi mdd tpt"
 
 function echo_logo {
   echo "$(cat <<_EOF_
@@ -189,6 +188,42 @@ function generate_bibliography {
 _EOF_
 }
 
+function get_eml {
+  echo $(find datasets/ -type f | grep -E "[a-f0-9]{64}$" | awk '{ print "-p " $1 " eml.xml" }' | xargs -L1 unzip)
+}
+
+function generate_title {
+  eml="$(get_eml)"
+  if [[ ! -z "${eml}" ]]
+  then
+    collectionName=$(echo "${eml}" | xmllint --xpath '//collectionName' - | head -n1)
+    echo "Versioned archive of datasets shared by the ${collectionName}, including a Review of Biotic Interactions and Taxon Names Found within the Darwin Core Archive."
+  else
+    echo "A Review of Biotic Interactions and Taxon Names Found in ${REPO_NAME}"
+  fi
+}
+
+function generate_dataset_section {
+  eml="$(get_eml)"
+  if [[ ! -z "${eml}" ]]
+  then
+    datasetInfoUrl=$(echo "${eml}" | xmllint --xpath '//alternateIdentifier/text()' - | head -n1)
+    licenseUrl=$(echo "${eml}" | xmllint --xpath '//intellectualRights/text()' - | head -n1)
+    cat <<_EOF_
+## Dataset
+
+![dataset logo]($(echo "${eml}" | xmllint --xpath '//resourceLogoUrl/text()' - | head -n1))
+
+$(echo "${eml}" | xmllint --xpath '//dataset/abstract//text()' -)
+
+The dataset darwin core archive was published on $(echo "${eml}" | xmllint --xpath '//pubDate/text()' -) and provided by $(echo "${eml}" | xmllint --xpath '//organizationName/text()' -). This dataset is published under a ${licenseUrl} license. 
+
+**For more information**, see [${datasetInfoUrl}](${datasetInfoUrl}). 
+
+_EOF_
+ fi
+}
+
 function generate_md_report {
 
   numberOfInteractions="$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | tail -n+2 | sort | uniq | wc -l))"
@@ -198,11 +233,10 @@ function generate_md_report {
   mostFrequentSourceTaxa="$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} count-distinct -f sourceTaxonName then sort -nr count then cut -f sourceTaxonName | tail -n+2 | head -n1 | tr -d '\n')"
   uniqueTargetTaxa="$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f targetTaxonName | tail -n+2 | sort | uniq | wc -l))"
   mostFrequentTargetTaxa="$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} count-distinct -f targetTaxonName then sort -nr count then cut -f targetTaxonName | tail -n+2 | head -n1 | tr -d '\n')"
-  datasetMetadata="$(find datasets/ -type f | grep -E "[a-f0-9]{64}$" | awk '{ print "-p " $1 " eml.xml" }' | xargs -L1 unzip)"
   summaryPhrase="dataset under review (aka $REPO_NAME) contains ${numberOfInteractions} interactions with ${numberOfInteractionTypes} (e.g., ${mostFrequentInteractionTypes}) unique types of associations between ${uniqueSourceTaxa} primary taxa (e.g., ${mostFrequentSourceTaxa}) and ${uniqueTargetTaxa} associated taxa (e.g., ${mostFrequentTargetTaxa})."
   cat <<_EOF_
 ---
-title: A Review of Biotic Interactions Found in ${REPO_NAME} 
+title: $(generate_title)
 date: $(date --iso-8601)
 author: By Nomer and Elton, two naive review bots.
 abstract: |
@@ -213,9 +247,7 @@ reference-section-title: References
 
 # Introduction
 
-## Dataset
-
-$(echo "$(datasetMetadata)" | xmllint --xpath '//dataset/abstract//text()' -)
+$(generate_dataset_section)
 
 ## Data Review
 
