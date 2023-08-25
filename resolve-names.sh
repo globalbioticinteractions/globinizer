@@ -208,11 +208,12 @@ function generate_dataset_section {
   if [[ ! -z "${eml}" ]]
   then
     datasetInfoUrl=$(echo "${eml}" | xmllint --xpath '//alternateIdentifier/text()' - | head -n1)
+    collectionName=$(echo "${eml}" | xmllint --xpath '//collectionName' - | head -n1)
     licenseUrl=$(echo "${eml}" | xmllint --xpath '//intellectualRights/text()' - | head -n1)
     cat <<_EOF_
 ## Dataset
 
-![dataset logo]($(echo "${eml}" | xmllint --xpath '//resourceLogoUrl/text()' - | head -n1))
+![logo of ${collectionName}]($(echo "${eml}" | xmllint --xpath '//resourceLogoUrl/text()' - | head -n1))
 
 $(echo "${eml}" | xmllint --xpath '//dataset/abstract//text()' -)
 
