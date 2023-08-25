@@ -215,7 +215,7 @@ reference-section-title: References
 
 ## Dataset
 
-$(echo "$(datasetMetadata)" | xmllint --xpath '//dataset/abstract//text()')
+$(echo "$(datasetMetadata)" | xmllint --xpath '//dataset/abstract//text()' -)
 
 ## Data Review
 
