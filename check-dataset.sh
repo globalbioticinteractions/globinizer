@@ -198,6 +198,7 @@ function generate_md_report {
   mostFrequentSourceTaxa="$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} count-distinct -f sourceTaxonName then sort -nr count then cut -f sourceTaxonName | tail -n+2 | head -n1 | tr -d '\n')"
   uniqueTargetTaxa="$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f targetTaxonName | tail -n+2 | sort | uniq | wc -l))"
   mostFrequentTargetTaxa="$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} count-distinct -f targetTaxonName then sort -nr count then cut -f targetTaxonName | tail -n+2 | head -n1 | tr -d '\n')"
+  datasetMetadata="$(find datasets/ -type f | grep -E "[a-f0-9]{64}$" | awk '{ print "-p " $1 " eml.xml" }' | xargs -L1 unzip)"
   summaryPhrase="dataset under review (aka $REPO_NAME) contains ${numberOfInteractions} interactions with ${numberOfInteractionTypes} (e.g., ${mostFrequentInteractionTypes}) unique types of associations between ${uniqueSourceTaxa} primary taxa (e.g., ${mostFrequentSourceTaxa}) and ${uniqueTargetTaxa} associated taxa (e.g., ${mostFrequentTargetTaxa})."
   cat <<_EOF_
 ---
@@ -211,6 +212,12 @@ reference-section-title: References
 ---
 
 # Introduction
+
+## Dataset
+
+$(echo "$(datasetMetadata)" | xmllint --xpath '//dataset/abstract//text()')
+
+## Data Review
 
 Data review can be a time consuming process, especially when done manually. This review report aims to help facilitate data review of species interaction claims made in datasets registered with Global Biotic Interactions [@Poelen_2014]. The review includes summary statistics of, and observations about, the dataset under review:
 
@@ -371,6 +378,7 @@ function install_deps {
     sudo apt -q install texlive
     sudo apt -q install graphviz
     sudo apt -q install librsvg2-bin
+    sudo apt -q install libxml2-utils
     sudo pip install s3cmd &> /dev/null   
   fi
 
