@@ -253,9 +253,7 @@ $(generate_dataset_section)
 
 Data review can be a time consuming process, especially when done manually. This review report aims to help facilitate data review of species interaction claims made in datasets registered with Global Biotic Interactions [@Poelen_2014]. The review includes summary statistics of, and observations about, the dataset under review:
 
-~~~
-$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f citation,archiveURI,lastSeenAt,contentHash | tail -n2 | sort | uniq | tr '\t' ' ')
-~~~
+> $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f citation,archiveURI,lastSeenAt,contentHash | tail -n2 | sort | uniq | tr '\t' ' ')
 
 # Methods
 
