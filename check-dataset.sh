@@ -320,6 +320,9 @@ $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-dis
 $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-distinct -f targetTaxonName then sort -nr count | head -n6)
 : Most Frequently Mentioned Associate Taxa
 
+$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-distinct -f sourceTaxonName,interactionTypeName,targetTaxonName then sort -nr count | head -n6)
+: Most Frequent Interactions between Primary and Associate Taxa
+
 You can download the indexed dataset under review at [indexed-interactions.csv](indexed-interactions.csv). A tab-separated file can be found at [indexed-interactions.tsv](indexed-interactions.tsv) 
 
 Learn more about the structure of this download at [GloBI website](https://globalbioticinteractions.org), by opening a [GitHub issue](https://github.com/globalbioticinteractions/globalbioticinteractions/issues/new), or by sending an [email](mailto:info@globalbioticinteractions.org).
