@@ -36,7 +36,7 @@ export MLR_TSV_INPUT_OPTS="--icsvlite --ifs tab"
 export MLR_TSV_OUTPUT_OPTS="--ocsvlite --ofs tab"
 export MLR_TSV_OPTS="${MLR_TSV_INPUT_OPTS} ${MLR_TSV_OUTPUT_OPTS}"
 
-export TAXONOMIES="col ncbi discoverlife gbif itis globi mdd tpt"
+export TAXONOMIES="col"
 
 function echo_logo {
   echo "$(cat <<_EOF_
@@ -66,7 +66,6 @@ _EOF_
 function echo_nomer_schema {
   # ignore authorship for now
   echo "$(cat <<_EOF_
-nomer.cache.dir=${NOMER_CACHE_DIR}
 nomer.schema.input=[{"column":0,"type":"externalId"},{"column": 1,"type":"name"}]
 nomer.schema.output=[{"column":0,"type":"externalId"},{"column": 1,"type":"name"}]
 _EOF_
@@ -410,7 +409,7 @@ function install_deps {
     sudo apt -q install miller jq -y &> /dev/null
     curl --silent -L https://github.com/jgm/pandoc/releases/download/3.1.6.1/pandoc-3.1.6.1-1-amd64.deb > pandoc.deb && sudo apt install -q ./pandoc.deb &> /dev/null
     sudo apt -q install pandoc-citeproc
-    sudo apt -q install texlive
+    #sudo apt -q install texlive
     sudo apt -q install graphviz
     sudo apt -q install librsvg2-bin
     sudo apt -q install libxml2-utils
@@ -645,9 +644,15 @@ cat index.md\
  | export_report_as docx docx\
  > index.docx
 
-cat index.md\
- | export_report_as pdf pdf\
- > index.pdf
+# only generate pdf outside of github
+# to make the review process less computationally
+# expensive
+if [[ -n ${TRAVIS_REPO_SLUG} || -n ${GITHUB_REPOSITORY} ]]
+then
+  cat index.md\
+  | export_report_as pdf pdf\
+  > index.pdf
+fi
 
 cat index.md\
  | export_report_as jats jats\
