@@ -413,6 +413,7 @@ function install_deps {
     sudo apt -q install graphviz
     sudo apt -q install librsvg2-bin
     sudo apt -q install libxml2-utils
+    sudo apt -q install pv
     sudo pip install s3cmd &> /dev/null   
   fi
 
@@ -499,7 +500,7 @@ _EOF_
 
 function tsv2html {
   generate_styling > styling.css
-  pandoc --embed-resources --standalone --metadata title=${REPO_NAME} --css=styling.css --to=html5 --from=tsv -o -
+  pandoc --embed-resources --standalone --metadata title=${REPO_NAME} --css=styling.css --to=html5 --from=tsv -o - | pv -l
 }
 
 echo_logo | tee_readme 
