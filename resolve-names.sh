@@ -311,17 +311,17 @@ $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd cut -r -f
 
 An exhaustive list of indexed interaction claims can be found at [indexed-interactions](indexed-interactions.html) ([csv](indexed-interactions.csv)/[tsv](indexed-interactions.tsv)/[html](indexed-interactions.html)). 
 
-$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-distinct -f interactionTypeName then sort -nr count | head -n6)
-: Most Frequently Mentioned Interaction Types
+$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-distinct -f interactionTypeName then sort -nr count | head -n31)
+: Most Frequently Mentioned Interaction Types (up to 30 most frequent)
 
-$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-distinct -f sourceTaxonName then sort -nr count | head -n6)
-: Most Frequently Mentioned Primary Taxa
+$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-distinct -f sourceTaxonName then sort -nr count | head -n31)
+: Most Frequently Mentioned Primary Taxa (up to 30 most frequent)
 
-$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-distinct -f targetTaxonName then sort -nr count | head -n6)
-: Most Frequently Mentioned Associate Taxa
+$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-distinct -f targetTaxonName then sort -nr count | head -n31)
+: Most Frequently Mentioned Associate Taxa (up to 30 most frequent)
 
-$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-distinct -f sourceTaxonName,interactionTypeName,targetTaxonName then sort -nr count | head -n6)
-: Most Frequent Interactions between Primary and Associate Taxa
+$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-distinct -f sourceTaxonName,interactionTypeName,targetTaxonName then sort -nr count | head -n31)
+: Most Frequent Interactions between Primary and Associate Taxa (up to 30 most frequent)
 
 You can download the indexed dataset under review at [indexed-interactions.csv](indexed-interactions.csv). A tab-separated file can be found at [indexed-interactions.tsv](indexed-interactions.tsv) 
 
