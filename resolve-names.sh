@@ -188,12 +188,12 @@ _EOF_
 }
 
 function get_eml {
-  echo $(find datasets/ -type f | grep -E "[a-f0-9]{64}$" | awk '{ print "-p " $1 " eml.xml" }' | xargs -L1 unzip)
+  echo $(find datasets/ -type f | grep -E "[a-f0-9]{64}$" | awk '{ print "-p " $1 " eml.xml" }' | xargs -L1 unzip | xmllint -)
 }
 
 function generate_title {
   eml="$(get_eml)"
-  if [[ ! -z "${eml}" ]]
+  if [[ $? -eq 0 ]]
   then
     collectionName=$(echo "${eml}" | xmllint --xpath '//collectionName' - | head -n1)
     echo "Versioned archive of datasets shared by the ${collectionName}, including a Review of Biotic Interactions and Taxon Names Found within the Darwin Core Archive."
@@ -204,7 +204,7 @@ function generate_title {
 
 function generate_dataset_section {
   eml="$(get_eml)"
-  if [[ ! -z "${eml}" ]]
+  if [[ $? -eq 0 ]]
   then
     datasetInfoUrl=$(echo "${eml}" | xmllint --xpath '//alternateIdentifier/text()' - | head -n1)
     collectionName=$(echo "${eml}" | xmllint --xpath '//collectionName' - | head -n1)
