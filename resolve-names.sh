@@ -226,7 +226,8 @@ _EOF_
 }
 
 function generate_md_report {
-
+  headCount=21
+  headCountWithoutHeader=20
   numberOfInteractions="$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | tail -n+2 | sort | uniq | wc -l))"
   numberOfInteractionTypes="$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f interactionTypeName | tail -n+2 | sort | uniq | wc -l)"
   mostFrequentInteractionTypes="$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} count-distinct -f interactionTypeName then sort -nr count then cut -f interactionTypeName | tail -n+2 | head -n1 | tr -d '\n')"
@@ -311,17 +312,17 @@ $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd cut -r -f
 
 An exhaustive list of indexed interaction claims can be found at [indexed-interactions](indexed-interactions.html) ([csv](indexed-interactions.csv)/[tsv](indexed-interactions.tsv)/[html](indexed-interactions.html)). 
 
-$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-distinct -f interactionTypeName then sort -nr count | head -n31)
-: Most Frequently Mentioned Interaction Types (up to 30 most frequent)
+$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-distinct -f interactionTypeName then sort -nr count | head -n${headCount})
+: Most Frequently Mentioned Interaction Types (up to ${headCountWithoutHeader} most frequent)
 
-$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-distinct -f sourceTaxonName then sort -nr count | head -n31)
-: Most Frequently Mentioned Primary Taxa (up to 30 most frequent)
+$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-distinct -f sourceTaxonName then sort -nr count | head -n${headCount})
+: Most Frequently Mentioned Primary Taxa (up to ${headCountWithoutHeader} most frequent)
 
-$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-distinct -f targetTaxonName then sort -nr count | head -n31)
-: Most Frequently Mentioned Associate Taxa (up to 30 most frequent)
+$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-distinct -f targetTaxonName then sort -nr count | head -n${headCount})
+: Most Frequently Mentioned Associate Taxa (up to ${headCountWithoutHeader} most frequent)
 
-$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-distinct -f sourceTaxonName,interactionTypeName,targetTaxonName then sort -nr count | head -n31)
-: Most Frequent Interactions between Primary and Associate Taxa (up to 30 most frequent)
+$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-distinct -f sourceTaxonName,interactionTypeName,targetTaxonName then sort -nr count | head -n${headCount})
+: Most Frequent Interactions between Primary and Associate Taxa (up to ${headCountWithoutHeader} most frequent)
 
 You can download the indexed dataset under review at [indexed-interactions.csv](indexed-interactions.csv). A tab-separated file can be found at [indexed-interactions.tsv](indexed-interactions.tsv) 
 
