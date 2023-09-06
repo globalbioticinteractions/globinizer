@@ -66,6 +66,7 @@ _EOF_
 function echo_nomer_schema {
   # ignore authorship for now
   echo "$(cat <<_EOF_
+nomer.cache.dir=${NOMER_CACHE_DIR}
 nomer.schema.input=[{"column":0,"type":"externalId"},{"column": 1,"type":"name"}]
 nomer.schema.output=[{"column":0,"type":"externalId"},{"column": 1,"type":"name"}]
 _EOF_
