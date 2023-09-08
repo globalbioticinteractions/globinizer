@@ -14,7 +14,7 @@
 
 export REPO_NAME=$1
 
-export NOMER_VERSION=0.5.3
+export NOMER_VERSION=0.5.4
 export NOMER_JAR="$PWD/nomer.jar"
 export NOMER_MATCHERS="col ncbi gbif itis wfo"
 export NOMER_CACHE_DIR=${NOMER_CACHE_DIR:-~/.cache/nomer}

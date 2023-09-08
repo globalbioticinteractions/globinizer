@@ -21,7 +21,7 @@ export ELTON_DATA_REPO_MAIN="https://raw.githubusercontent.com/${REPO_NAME}/main
 export ELTON_JAR="$PWD/elton.jar"
 export ELTON_OPTS=""
 
-export NOMER_VERSION=0.5.3
+export NOMER_VERSION=0.5.4
 export NOMER_JAR="$PWD/nomer.jar"
 export NOMER_PROPERTIES="$(mktemp)"
 export NOMER_CACHE_DIR="${NOMER_CACHE_DIR:-~/.cache/nomer}"
