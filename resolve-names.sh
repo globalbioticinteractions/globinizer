@@ -67,6 +67,7 @@ function echo_nomer_schema {
   # ignore authorship for now
   echo "$(cat <<_EOF_
 nomer.cache.dir=${NOMER_CACHE_DIR}
+nomer.preston.remotes=https://linker.bio,https://zenodo.org/record/8326175/files,https://zenodo.org/record/8327611/files
 nomer.schema.input=[{"column":0,"type":"externalId"},{"column": 1,"type":"name"}]
 nomer.schema.output=[{"column":0,"type":"externalId"},{"column": 1,"type":"name"}]
 _EOF_
