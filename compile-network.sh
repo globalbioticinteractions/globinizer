@@ -63,7 +63,7 @@ _EOF_
 
 HEADER=$(cat <<_EOF_
 digraph interactions {
-  edge [width=0.05 label="" color="#eeee0088"]
+  edge [width=0.05 label="" color="#cc990088"]
   node [shape=circle width=0.1 style=filled color="#0000ff11"]
 _EOF_
 )
