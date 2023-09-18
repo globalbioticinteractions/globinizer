@@ -31,6 +31,9 @@ export NOMER_OPTS=""
 
 export NETWORK_COMPILER_SCRIPT="$(echo "$REVIEW_SCRIPT" | sed -E 's+/[^/]{1,}$++g')/compile-network.sh"
 export NETWORK_COMPILER_PRESENT=""
+export NETWORK_CATALOG="col"
+export NETWORK_CATALOG="globalnames"
+export NETWORK_CATALOG_DESCRIPTION="Name Resolver by https://globalnames.org"
 
 export REVIEW_REPO_HOST="blob.globalbioticinteractions.org"
 export README=$(mktemp)
@@ -42,6 +45,7 @@ export MLR_TSV_OUTPUT_OPTS="--ocsvlite --ofs tab"
 export MLR_TSV_OPTS="${MLR_TSV_INPUT_OPTS} ${MLR_TSV_OUTPUT_OPTS}"
 
 export TAXONOMIES="col ncbi discoverlife gbif itis globi mdd tpt"
+export TAXONOMIES="globalnames"
 
 function echo_logo {
   echo "$(cat <<_EOF_
@@ -335,11 +339,14 @@ $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-dis
 $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-distinct -f sourceTaxonName,interactionTypeName,targetTaxonName then sort -nr count | head -n${headCount})
 : Most Frequent Interactions between Primary and Associate Taxa (up to ${headCountWithoutHeader} most frequent)
 
+$(generate_network_graphs)
+
 You can download the indexed dataset under review at [indexed-interactions.csv](indexed-interactions.csv). A tab-separated file can be found at [indexed-interactions.tsv](indexed-interactions.tsv) 
 
 Learn more about the structure of this download at [GloBI website](https://globalbioticinteractions.org), by opening a [GitHub issue](https://github.com/globalbioticinteractions/globalbioticinteractions/issues/new), or by sending an [email](mailto:info@globalbioticinteractions.org).
 
 Another way to discover the dataset under review is by searching for it on the [GloBI website](https://www.globalbioticinteractions.org/?accordingTo=globi%3A$(echo ${REPO_NAME} | sed 's+/+%2F+g')).
+
 
 ## Taxonomic Alignment
 
@@ -443,15 +450,30 @@ function configure_network_compiler {
   fi
 }
 
-function generate_network_graphs { 
+function generate_network_graphs {
+ 
+  echo -e "\n### Interaction Networks"
+
   if [[ ! -z "${NETWORK_COMPILER_PRESENT}" ]]
   then
-    source_target_args=("col-kingdom-col-kingdom" "col-family-col-family")
+    source_target_args=("${NETWORK_CATALOG}-kingdom-${NETWORK_CATALOG}-kingdom" "${NETWORK_CATALOG}-family-${NETWORK_CATALOG}-family")
 
     for source_target in ${source_target_args[@]}
     do 
       cat indexed-interactions.tsv.gz | gunzip | ${NETWORK_COMPILER_SCRIPT} $(echo "${source_target}" | tr '-' ' ') | tee indexed-interactions-${source_target}.dot | sfdp -Tsvg > indexed-interactions-${source_target}.svg
-    done
+    done 
+    echo "$(cat <<_EOF_
+
+The figures below provide a graph view on the dataset under review. The first shows a summary network on the kingdom level, and the second shows how interactions on the family level. Note that both network graphs were first aligned taxonomically via the ${NETWORK_CATALOGUE_DESCRIPTION}. Please refer to the original (or verbatim) taxonomic names for a more original view on the interaction data.  
+
+![Network graph on the kingdom rank as interpreted by the ${NETWORK_CATALOG_DESCRIPTION}](indexed-interactions-${NETWORK_CATALOG}-kingdom-${NETWORK_CATALOG}-kingdom.svg)
+
+![Network graph on the family rank as interpreted by the ${NETWORK_CATALOG_DESCRIPTION}](indexed-interactions-${NETWORK_CATALOG}-family-${NETWORK_CATALOG}-family.svg)
+
+_EOF_
+)"
+  else 
+echo -e "\nNo interaction network graphs were generated at this time. If you'd like to include network diagrams, please make sure that ${NETWORK_COMPILER_SCRIPT} is available and executable.\n"
   fi
 }
 
@@ -637,7 +659,6 @@ NUMBER_OF_NOTES=$(cat review.tsv.gz | gunzip | cut -f5 | grep "^note$" | wc -l)
 
 echo_review_badge $NUMBER_OF_NOTES > review.svg
 
-generate_network_graphs
 
 
 
