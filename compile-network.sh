@@ -48,9 +48,11 @@ TARGET_CATALOG=${3:-col}
 SOURCE_RANK=${2:-genus}
 TARGET_RANK=${4:-kingdom}
 
-NOMER_CMD=${NOMER_CMD:-nomer}
+NOMER_CMD="${NOMER_CMD:-nomer}"
+NOMER_CACHE_DIR="${NOMER_CACHE_DIR:-~/.cache/nomer}"
 
 cat > "${REPLACE_SCHEMA_SOURCE}" <<_EOF_
+nomer.cache.dir=${NOMER_CACHE_DIR}
 nomer.schema.input=[{"column": 0,"type":"name"}]
 nomer.schema.output=[{"column": 0,"type":"path.${SOURCE_RANK}.name"}]
 _EOF_
@@ -58,6 +60,7 @@ _EOF_
 REPLACE_SCHEMA_TARGET=$(mktemp)
 
 cat > "${REPLACE_SCHEMA_TARGET}" <<_EOF_
+nomer.cache.dir=${NOMER_CACHE_DIR}
 nomer.schema.input=[{"column": 2,"type":"name"}]
 nomer.schema.output=[{"column": 2,"type":"path.${TARGET_RANK}.name"}]
 _EOF_
