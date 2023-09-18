@@ -32,8 +32,7 @@ export NOMER_OPTS=""
 export NETWORK_COMPILER_SCRIPT="$(echo "$REVIEW_SCRIPT" | sed -E 's+/[^/]{1,}$++g')/compile-network.sh"
 export NETWORK_COMPILER_PRESENT=""
 export NETWORK_CATALOG="col"
-export NETWORK_CATALOG="globalnames"
-export NETWORK_CATALOG_DESCRIPTION="Name Resolver by https://globalnames.org"
+export NETWORK_CATALOG_DESCRIPTION="Catalogue of Life"
 
 export REVIEW_REPO_HOST="blob.globalbioticinteractions.org"
 export README=$(mktemp)
@@ -45,7 +44,6 @@ export MLR_TSV_OUTPUT_OPTS="--ocsvlite --ofs tab"
 export MLR_TSV_OPTS="${MLR_TSV_INPUT_OPTS} ${MLR_TSV_OUTPUT_OPTS}"
 
 export TAXONOMIES="col ncbi discoverlife gbif itis globi mdd tpt"
-export TAXONOMIES="globalnames"
 
 function echo_logo {
   echo "$(cat <<_EOF_
