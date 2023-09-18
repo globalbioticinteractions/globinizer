@@ -20,9 +20,11 @@ export ELTON_UPDATE_DISABLED=$2
 export ELTON_DATASETS_DIR=${2:-./datasets}
 export ELTON_VERSION=0.12.7
 export ELTON_DATA_REPO_MAIN="https://raw.githubusercontent.com/${REPO_NAME}/main"
+export ELTON_JAR="$PWD/elton.jar"
 export ELTON_OPTS=""
 
 export NOMER_VERSION=0.5.5
+export NOMER_JAR="$PWD/nomer.jar"
 export NOMER_PROPERTIES="$(mktemp)"
 export NOMER_CACHE_DIR="${NOMER_CACHE_DIR:-~/.cache/nomer}"
 export NOMER_OPTS=""
@@ -481,10 +483,10 @@ function configure_elton {
     echo using local elton found at [$(which elton)]
     export ELTON_CMD="elton"
   else
-    local ELTON_DOWNLOAD_URL="https://github.com/globalbioticinteractions/elton/releases/download/${ELTON_VERSION}/elton.deb"
+    local ELTON_DOWNLOAD_URL="https://github.com/globalbioticinteractions/elton/releases/download/${ELTON_VERSION}/elton.jar"
     echo elton not found... installing from [${ELTON_DOWNLOAD_URL}]
-    curl --silent -L "${ELTON_DOWNLOAD_URL}" > elton.deb
-    sudo apt install ./elton.deb
+    curl --silent -L "${ELTON_DOWNLOAD_URL}" > "${ELTON_JAR}"
+    export ELTON_CMD="java -Xmx4G -jar ${ELTON_JAR}"
   fi
 
   export ELTON_VERSION=$(${ELTON_CMD} version)
@@ -519,10 +521,10 @@ function configure_nomer {
     echo using local nomer found at [$(which nomer)]
     export NOMER_CMD="nomer"
   else
-    local NOMER_DOWNLOAD_URL="https://github.com/globalbioticinteractions/nomer/releases/download/${NOMER_VERSION}/nomer.deb"
+    local NOMER_DOWNLOAD_URL="https://github.com/globalbioticinteractions/nomer/releases/download/${NOMER_VERSION}/nomer.jar"
     echo nomer not found... installing from [${NOMER_DOWNLOAD_URL}]
-    curl --silent -L "${NOMER_DOWNLOAD_URL}" > nomer.deb
-    sudo apt install ./nomer.deb
+    curl --silent -L "${NOMER_DOWNLOAD_URL}" > "${NOMER_JAR}"
+    export NOMER_CMD="java -Xmx4G -jar ${NOMER_JAR}"
    
     for taxonomy in ${TAXONOMIES}; do configure_taxonomy ${taxonomy}; done; 
         
