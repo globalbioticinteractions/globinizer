@@ -48,6 +48,8 @@ TARGET_CATALOG=${3:-col}
 SOURCE_RANK=${2:-genus}
 TARGET_RANK=${4:-kingdom}
 
+NOMER_CMD=${NOMER_CMD:-nomer}
+
 cat > "${REPLACE_SCHEMA_SOURCE}" <<_EOF_
 nomer.schema.input=[{"column": 0,"type":"name"}]
 nomer.schema.output=[{"column": 0,"type":"path.${SOURCE_RANK}.name"}]
@@ -77,8 +79,8 @@ cat <(echo ${HEADER})\
  <(cat /dev/stdin\
   | mlr --tsvlite cut -f sourceTaxonName,interactionTypeName,targetTaxonName\
   | tail -n+2\
-  | nomer replace --properties ${REPLACE_SCHEMA_SOURCE} ${SOURCE_CATALOG}\
-  | nomer replace --properties ${REPLACE_SCHEMA_TARGET} ${TARGET_CATALOG}\
+  | ${NOMER_CMD} replace --properties ${REPLACE_SCHEMA_SOURCE} ${SOURCE_CATALOG}\
+  | ${NOMER_CMD} replace --properties ${REPLACE_SCHEMA_TARGET} ${TARGET_CATALOG}\
   | grep -P "^[A-Za-z ]+\t[A-Za-z ]+\t[A-Za-z ]+$"\
   | sort | uniq\
   | sed -E "s/^([^\t]+)(\t)([^\t]+)(\t)(.*)$/\"\1\" -> \"\5\" ${LABEL};/g"\
