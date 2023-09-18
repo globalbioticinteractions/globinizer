@@ -13,7 +13,7 @@
 
 set -x
 
-export REVIEW_SCRIPT=$0
+export REVIEW_SCRIPT=$(readlink -f "$0")
 
 export REPO_NAME=$1
 export ELTON_UPDATE_DISABLED=$2
