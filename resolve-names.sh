@@ -13,6 +13,8 @@
 
 set -x
 
+export REVIEW_SCRIPT=$0
+
 export REPO_NAME=$1
 export ELTON_UPDATE_DISABLED=$2
 export ELTON_DATASETS_DIR=${2:-./datasets}
@@ -26,6 +28,9 @@ export NOMER_JAR="$PWD/nomer.jar"
 export NOMER_PROPERTIES="$(mktemp)"
 export NOMER_CACHE_DIR="${NOMER_CACHE_DIR:-~/.cache/nomer}"
 export NOMER_OPTS=""
+
+export NETWORK_COMPILER_SCRIPT="$(echo "$REVIEW_SCRIPT" | sed -E 's+/[^/]{1,}$++g')/compile-network.sh"
+export NETWORK_COMPILER_PRESENT=""
 
 export REVIEW_REPO_HOST="blob.globalbioticinteractions.org"
 export README=$(mktemp)
@@ -241,6 +246,7 @@ function generate_md_report {
   uniqueTargetTaxa="$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f targetTaxonName | tail -n+2 | sort | uniq | wc -l))"
   mostFrequentTargetTaxa="$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} count-distinct -f targetTaxonName then sort -nr count then cut -f targetTaxonName | tail -n+2 | head -n1 | tr -d '\n')"
   summaryPhrase="dataset under review (aka $REPO_NAME) contains ${numberOfInteractions} interactions with ${numberOfInteractionTypes} (e.g., ${mostFrequentInteractionTypes}) unique types of associations between ${uniqueSourceTaxa} primary taxa (e.g., ${mostFrequentSourceTaxa}) and ${uniqueTargetTaxa} associated taxa (e.g., ${mostFrequentTargetTaxa})."
+  
   cat <<_EOF_
 ---
 title: $(generate_title)
@@ -429,6 +435,26 @@ function install_deps {
   pandoc --version
 }
 
+function configure_network_compiler {
+  if [[ -x "${NETWORK_COMPILER_SCRIPT}" ]]
+  then
+    NETWORK_COMPILER_PRESENT=true
+    echo found network compile script at [${NETWORK_COMPILER_SCRIPT}]
+  fi
+}
+
+function generate_network_graphs { 
+  if [[ ! -z "${NETWORK_COMPILER_PRESENT}" ]]
+  then
+    source_target_args=("col-kingdom-col-kingdom" "col-family-col-family")
+
+    for source_target in ${source_target_args[@]}
+    do 
+      cat indexed-interactions.tsv.gz | gunzip | ${NETWORK_COMPILER_SCRIPT} $(echo "${source_target}" | tr '-' ' ') | tee indexed-interactions-${source_target}.dot | sfdp -Tsvg > indexed-interactions-${source_target}.svg
+    done
+  fi
+}
+
 function configure_elton {
   ELTON_OPTS=" --cache-dir=${ELTON_DATASETS_DIR}"
 
@@ -515,6 +541,7 @@ install_deps
 
 configure_elton
 configure_nomer
+configure_network_compiler
 
 function resolve_names {
   local RESOLVED_STEM=indexed-names-resolved-$2
@@ -609,6 +636,10 @@ cat review.tsv.gz | gunzip | tail -n3 | cut -f6 | sed s/^/\ \ -\ /g | tee_readme
 NUMBER_OF_NOTES=$(cat review.tsv.gz | gunzip | cut -f5 | grep "^note$" | wc -l)
 
 echo_review_badge $NUMBER_OF_NOTES > review.svg
+
+generate_network_graphs
+
+
 
 if [ ${NUMBER_OF_NOTES} -gt 0 ]
 then
