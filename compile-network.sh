@@ -49,7 +49,7 @@ SOURCE_RANK=${2:-genus}
 TARGET_RANK=${4:-kingdom}
 
 NOMER_CMD="${NOMER_CMD:-nomer}"
-NOMER_CACHE_DIR="${NOMER_CACHE_DIR:-~/.cache/nomer}"
+NOMER_CACHE_DIR="${NOMER_CACHE_DIR:-${HOME}/.cache/nomer}"
 
 cat > "${REPLACE_SCHEMA_SOURCE}" <<_EOF_
 nomer.cache.dir=${NOMER_CACHE_DIR}

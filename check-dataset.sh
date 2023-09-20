@@ -353,6 +353,10 @@ As part of the review, all names are aligned against various name catalogs (e.g.
 $(cat indexed-names-resolved.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f providedName,relationName,resolvedCatalogName,resolvedName | mlr ${MLR_TSV_INPUT_OPTS} --omd uniq -f providedName,relationName,resolvedCatalogName,resolvedName | head -n6) 
 : Sample of Name Alignments
 
+$(cat indexed-names-resolved.tsv.gz | gunzip | mlr --tsvlite uniq -f providedName,resolvedCatalogName,resolvedRank |  sed 's/\t$/\tNA/g' | mlr --itsvlite --omd count-distinct -f resolvedCatalogName,resolvedRank then sort -nr resolvedCatalogName,count)
+: Distribution of Taxonomic Ranks of Aligned Names by Catalogs
+
+
 $(cat indexed-names-resolved.tsv.gz | gunzip | mlr ${MLR_TSV_INPUT_OPTS} --omd count-distinct -f resolvedCatalogName,relationName then sort -f resolvedCatalogName)
 : Alignment types per catalog
 
