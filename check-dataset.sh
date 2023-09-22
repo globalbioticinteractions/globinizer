@@ -319,11 +319,13 @@ In the following sections, the results of the review are summarized [^1]. Then, 
 In this review, biotic interactions (or biotic associations) are modeled as a primary (aka subject, source) organism interacting with an associate (aka object, target) organism. The dataset under review classified the primary/associate organisms with specific taxa. The primary and associate organisms The kind of interaction is documented as an interaction type. 
 
 The ${summaryPhrase}
+
+An exhaustive list of indexed interaction claims can be found at [indexed-interactions](indexed-interactions.html) ([csv](indexed-interactions.csv)/[tsv](indexed-interactions.tsv)/[html](indexed-interactions.html)).
+The list was used to create the following data summaries. 
+
  
 $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd cut -r -f sourceTaxonName,interactionTypeName,targetTaxonName,referenceCitation | head -n6)
 : Sample of Indexed Interaction Claims
-
-An exhaustive list of indexed interaction claims can be found at [indexed-interactions](indexed-interactions.html) ([csv](indexed-interactions.csv)/[tsv](indexed-interactions.tsv)/[html](indexed-interactions.html)). 
 
 $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-distinct -f interactionTypeName then sort -nr count | head -n${headCount})
 : Most Frequently Mentioned Interaction Types (up to ${headCountWithoutHeader} most frequent)
