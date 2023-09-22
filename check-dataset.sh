@@ -397,35 +397,19 @@ For more exhaustive list of review notes, please have a look at the [Review Note
 
 As part of the review, a review badge is generated. This review badge can be included in webpages to indicate the review status of the dataset under review. 
 
-![GloBI Review Badge retrieved at time of writing ($(date --iso-8601))](review.svg) .
+![Sample of a GloBI Review Badge ^[GloBI Review Badge was retrieved from https://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/review.svg at time of writing ($(date --iso-8601))]](review.svg) 
 
 Note that if the badge is green, no review notes were generated. If the badge is yellow, the review bots may need some help with interpreting the species interaction data.
-
-You can include this badge and link to this report using the following html snippet:
-
-~~~
-<a href="https://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/index.pdf"><img src="https://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/review.svg" alt="GloBI Review Status"></a>
-~~~
-
-
-
-or, alternatively, in [markdown](https://en.wikipedia.org/wiki/Markdown):
-
-
-~~~
-[![GloBI Review Status](https://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/review.svg)](https://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/index.pdf)
-~~~
 
 ## GloBI Index Badge
 
 If the dataset under review has been [registered with GloBI](https://globalbioticinteractions.org/contribute), and has been succesfully indexed by GloBI, the GloBI Index Status Badge will turn green. This means that the dataset under review was indexed by GloBI and is available through GloBI services and derived data products. 
 
-![GloBI Index Badge retrieved at time of writing ($(date --iso-8601))](https://api.globalbioticinteractions.org/interaction.svg?interactionType=ecologicallyRelatedTo&accordingTo=globi:${REPO_NAME}&refutes=true&refutes=false)
+![Sample of a GloBI Index Badge ^[retrieved from https://api.globalbioticinteractions.org/interaction.svg?interactionType=ecologicallyRelatedTo&accordingTo=globi:${REPO_NAME}&refutes=true&refutes=false> at time of writing ($(date --iso-8601))]](https://api.globalbioticinteractions.org/interaction.svg?interactionType=ecologicallyRelatedTo&accordingTo=globi:${REPO_NAME}&refutes=true&refutes=false)
 
-If you'd like to keep track of the index status of the dataset under review, you include the following html snippet in some webpage:
+If you'd like to keep track of the index status of the dataset under review, please visit [GloBI's Badge Generator](https://api.globalbioticinteractions.org/badge?accordingTo=globi:${REPO_NAME}) for code snippets to integrate them in web pages.
 
 ~~~
-<a href="https://globalbioticinteractions.org/accordingTo=globi:${REPO_NAME}"><img src="https://api.globalbioticinteractions.org/interaction.svg?interactionType=ecologicallyRelatedTo&accordingTo=globi:${REPO_NAME}&refutes=true&refutes=false" alt="GloBI Index Status"></a>
 ~~~
 
 or, alternatively, in [markdown](https://en.wikipedia.org/wiki/Markdown):
