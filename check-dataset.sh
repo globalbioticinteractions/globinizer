@@ -403,16 +403,15 @@ Note that if the badge is green, no review notes were generated. If the badge is
 
 You can include this badge and link to this report using the following html snippet:
 
-~~~
-<a href="https://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/index.pdf"><img src="https://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/review.svg" alt="GloBI Review Status"></a>
-~~~
+
+> ```<a href="https://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/index.pdf"><img src="https://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/review.svg" alt="GloBI Review Status"></a>```
+
 
 
 or, alternatively, in [markdown](https://en.wikipedia.org/wiki/Markdown):
 
-~~~
-[![GloBI Review Status](https://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/review.svg)](https://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/index.pdf)
-~~~
+
+> ```[![GloBI Review Status](https://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/review.svg)](https://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/index.pdf)```
 
 ## GloBI Index Badge
 
@@ -422,16 +421,12 @@ If the dataset under review has been [registered with GloBI](https://globalbioti
 
 If you'd like to keep track of the index status of the dataset under review, you include the following html snippet in some webpage:
 
-~~~
-<a href="https://globalbioticinteractions.org/accordingTo=globi:${REPO_NAME}"><img src="https://api.globalbioticinteractions.org/interaction.svg?interactionType=ecologicallyRelatedTo&accordingTo=globi:${REPO_NAME}&refutes=true&refutes=false" alt="GloBI Index Status"></a>
-~~~
+
+> ```<a href="https://globalbioticinteractions.org/accordingTo=globi:${REPO_NAME}"><img src="https://api.globalbioticinteractions.org/interaction.svg?interactionType=ecologicallyRelatedTo&accordingTo=globi:${REPO_NAME}&refutes=true&refutes=false" alt="GloBI Index Status"></a>```
 
 or, alternatively, in [markdown](https://en.wikipedia.org/wiki/Markdown):
  
-~~~
-[![GloBI Index Status](https://api.globalbioticinteractions.org/interaction.svg?interactionType=ecologicallyRelatedTo&accordingTo=globi:${REPO_NAME}&refutes=true&refutes=false)](https://globalbioticinteractions.org/accordingTo=globi:${REPO_NAME})
-~~~
-
+> ```[![GloBI Index Status](https://api.globalbioticinteractions.org/interaction.svg?interactionType=ecologicallyRelatedTo&accordingTo=globi:${REPO_NAME}&refutes=true&refutes=false)](https://globalbioticinteractions.org/accordingTo=globi:${REPO_NAME})```
 
 # Discussion
 
