@@ -193,6 +193,18 @@ function generate_bibliography {
   doi          = {10.5281/zenodo.8176978},
   url          = {https://doi.org/10.5281/zenodo.8176978}
 }
+
+
+@misc{ICZN_1999,
+  author       = {ICZN},
+  title        = {International Code of Zoological Nomenclature},
+  year         = 1999,
+  publisher    = {The International Trust for Zoological Nomenclature, London, UK.},
+  version      = {Fourth Edition},
+  isbn         = {0853010064},
+  url          = {https://www.iczn.org/the-code/the-code-online/}
+}
+
 _EOF_
 }
 
@@ -360,7 +372,7 @@ $(cat indexed-names-resolved.tsv.gz | gunzip | mlr --tsvlite uniq -f providedNam
 
 
 $(cat indexed-names-resolved.tsv.gz | gunzip | mlr ${MLR_TSV_INPUT_OPTS} --omd count-distinct -f resolvedCatalogName,relationName then sort -f resolvedCatalogName)
-: Alignment types per catalog
+: Name relationship types per catalog. Name relationship type "NONE" means that a name was not recognized by the associated catalog. "SAME_AS" indicates either a "HAS_ACCEPTED_NAME" or "SYNONYM_OF" name relationship type. We recognize that "SYNONYM_OF" encompasses many types of nomenclatural synonymies [@ICZN_1999] (e.g., junior synonym, senior synonyms). 
 
 | catalog name | alignment results |
 | --- | --- |
