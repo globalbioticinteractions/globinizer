@@ -356,7 +356,7 @@ $(cat indexed-names-resolved.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f provid
 : Sample of Name Alignments
 
 $(cat indexed-names-resolved.tsv.gz | gunzip | mlr --tsvlite uniq -f providedName,resolvedCatalogName,resolvedRank |  sed 's/\t$/\tNA/g' | mlr --itsvlite --omd count-distinct -f resolvedCatalogName,resolvedRank then sort -nr resolvedCatalogName,count)
-: Distribution of Taxonomic Ranks of Aligned Names by Catalogs
+: Distribution of Taxonomic Ranks of Aligned Names by Catalog. Names that were not aligned with a catalog are counted as NAs. So, the total number of unaligned names for a catalog will be listed in their NA row. 
 
 
 $(cat indexed-names-resolved.tsv.gz | gunzip | mlr ${MLR_TSV_INPUT_OPTS} --omd count-distinct -f resolvedCatalogName,relationName then sort -f resolvedCatalogName)
