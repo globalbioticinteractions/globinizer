@@ -397,9 +397,7 @@ For more exhaustive list of review notes, please have a look at the [Review Note
 
 As part of the review, a review badge is generated. This review badge can be included in webpages to indicate the review status of the dataset under review. 
 
-At time of writing, the review badge looks like:
-
-[![review badge](review.svg)](index.html) .
+![GloBI Review Badge retrieved at time of writing ($(date --iso-8601))](review.svg) .
 
 Note that if the badge is green, no review notes were generated. If the badge is yellow, the review bots may need some help with interpreting the species interaction data.
 
@@ -416,13 +414,11 @@ or, alternatively, in [markdown](https://en.wikipedia.org/wiki/Markdown):
 [![GloBI Review Status](https://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/review.svg)](https://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/index.pdf)
 ~~~
 
-## Index Status Badge
+## GloBI Index Badge
 
 If the dataset under review has been [registered with GloBI](https://globalbioticinteractions.org/contribute), and has been succesfully indexed by GloBI, the GloBI Index Status Badge will turn green. This means that the dataset under review was indexed by GloBI and is available through GloBI services and derived data products. 
 
-At time of writing ($(date --iso-8601)), the GloBI Index Status badge looked like:
-
-![GloBI Status Badge](https://api.globalbioticinteractions.org/interaction.svg?interactionType=ecologicallyRelatedTo&accordingTo=globi:${REPO_NAME}&refutes=true&refutes=false)
+![GloBI Index Badge retrieved at time of writing ($(date --iso-8601))](https://api.globalbioticinteractions.org/interaction.svg?interactionType=ecologicallyRelatedTo&accordingTo=globi:${REPO_NAME}&refutes=true&refutes=false)
 
 If you'd like to keep track of the index status of the dataset under review, you include the following html snippet in some webpage:
 
