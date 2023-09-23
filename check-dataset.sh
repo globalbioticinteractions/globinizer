@@ -487,9 +487,9 @@ function generate_network_graphs {
 
 The figures below provide a graph view on the dataset under review. The first shows a summary network on the kingdom level, and the second shows how interactions on the family level. Note that both network graphs were first aligned taxonomically via the ${NETWORK_CATALOG_DESCRIPTION}. Please refer to the original (or verbatim) taxonomic names for a more original view on the interaction data.  
 
-![Interactions on taxonomic kingdom rank as interpreted by the ${NETWORK_CATALOG_DESCRIPTION}](indexed-interactions-${NETWORK_CATALOG}-kingdom-${NETWORK_CATALOG}-kingdom.svg)
+![Interactions on taxonomic kingdom rank as interpreted by the ${NETWORK_CATALOG_DESCRIPTION}](indexed-interactions-${NETWORK_CATALOG}-kingdom-${NETWORK_CATALOG}-kingdom.svg){ width=100% }
 
-![Interactions on the taxonomic family rank as interpreted by the ${NETWORK_CATALOG_DESCRIPTION}](indexed-interactions-${NETWORK_CATALOG}-family-${NETWORK_CATALOG}-family.svg)
+![Interactions on the taxonomic family rank as interpreted by the ${NETWORK_CATALOG_DESCRIPTION}](indexed-interactions-${NETWORK_CATALOG}-family-${NETWORK_CATALOG}-family.svg){ width=100% }
 
 _EOF_
 )"
