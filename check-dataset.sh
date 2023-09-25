@@ -497,7 +497,7 @@ function generate_network_graphs {
 
 The figures below provide a graph view on the dataset under review. The first shows a summary network on the ${taxon_category_1} level, and the second shows how interactions on the ${taxon_category_2} level. Note that both network graphs were first aligned taxonomically via the ${NETWORK_CATALOG_DESCRIPTION}. Please refer to the original (or verbatim) taxonomic names for a more original view on the interaction data.  
 
-![Interactions on taxonomic ${taxon_category_1} rank as interpreted by the ${NETWORK_CATALOG_DESCRIPTION} [download svg]((indexed-interactions-${NETWORK_CATALOG}-${taxon_category_1}-${NETWORK_CATALOG}-${taxon_category_1}.svg)](indexed-interactions-${NETWORK_CATALOG}-${taxon_category_1}-${NETWORK_CATALOG}-${taxon_category_1}.svg)
+![Interactions on taxonomic ${taxon_category_1} rank as interpreted by the ${NETWORK_CATALOG_DESCRIPTION} [download svg](indexed-interactions-${NETWORK_CATALOG}-${taxon_category_1}-${NETWORK_CATALOG}-${taxon_category_1}.svg)](indexed-interactions-${NETWORK_CATALOG}-${taxon_category_1}-${NETWORK_CATALOG}-${taxon_category_1}.svg)
 
 ![Interactions on the taxonomic ${taxon_category_2} rank as interpreted by the ${NETWORK_CATALOG_DESCRIPTION}. [download svg](indexed-interactions-${NETWORK_CATALOG}-${taxon_category_2}-${NETWORK_CATALOG}-${taxon_category_2}.svg)](indexed-interactions-${NETWORK_CATALOG}-${taxon_category_2}-${NETWORK_CATALOG}-${taxon_category_2}.svg)
 
