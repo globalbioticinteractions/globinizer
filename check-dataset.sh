@@ -471,6 +471,12 @@ function configure_network_compiler {
   fi
 }
 
+function patch_svg_width {
+  # replace graphviz's dot absolute svg width/height with relative
+  sed -E 's/^<svg width=\"[^\"]+\" height=\"[^\"]+\"/<svg width=\"100%\"/g'
+}
+
+
 function generate_network_graphs {
  
   echo -e "\n### Interaction Networks"
@@ -481,7 +487,7 @@ function generate_network_graphs {
 
     for source_target in ${source_target_args[@]}
     do 
-      cat indexed-interactions.tsv.gz | gunzip | ${NETWORK_COMPILER_SCRIPT} $(echo "${source_target}" | tr '-' ' ') | tee indexed-interactions-${source_target}.dot | sfdp -Tsvg > indexed-interactions-${source_target}.svg
+      cat indexed-interactions.tsv.gz | gunzip | ${NETWORK_COMPILER_SCRIPT} $(echo "${source_target}" | tr '-' ' ') | tee indexed-interactions-${source_target}.dot | sfdp -Tsvg | patch_svg_width > indexed-interactions-${source_target}.svg
     done 
     echo "$(cat <<_EOF_
 
