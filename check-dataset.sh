@@ -473,7 +473,7 @@ function configure_network_compiler {
 
 function patch_svg_width {
   # replace graphviz's dot absolute svg width/height with relative
-  sed -E 's/^<svg width=\"[^\"]+\" height=\"[^\"]+\"/<svg width=\"100%\"/g'
+  sed -E 's/^<svg width=\"[^\"]+\" height=\"[^\"]+\"/<svg width=\"100%\" height=\"auto\"/g'
 }
 
 
