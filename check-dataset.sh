@@ -487,15 +487,15 @@ function generate_network_graphs {
 
     for source_target in ${source_target_args[@]}
     do 
-      cat indexed-interactions.tsv.gz | gunzip | ${NETWORK_COMPILER_SCRIPT} $(echo "${source_target}" | tr '-' ' ') | tee indexed-interactions-${source_target}.dot | sfdp -Tsvg | patch_svg_width > indexed-interactions-${source_target}.svg
+      cat indexed-interactions.tsv.gz | gunzip | ${NETWORK_COMPILER_SCRIPT} $(echo "${source_target}" | tr '-' ' ') | tee indexed-interactions-${source_target}.dot | sfdp -Tpng > indexed-interactions-${source_target}.png
     done 
     echo "$(cat <<_EOF_
 
 The figures below provide a graph view on the dataset under review. The first shows a summary network on the kingdom level, and the second shows how interactions on the family level. Note that both network graphs were first aligned taxonomically via the ${NETWORK_CATALOG_DESCRIPTION}. Please refer to the original (or verbatim) taxonomic names for a more original view on the interaction data.  
 
-![Interactions on taxonomic kingdom rank as interpreted by the ${NETWORK_CATALOG_DESCRIPTION}](indexed-interactions-${NETWORK_CATALOG}-kingdom-${NETWORK_CATALOG}-kingdom.svg)
+![Interactions on taxonomic kingdom rank as interpreted by the ${NETWORK_CATALOG_DESCRIPTION}](indexed-interactions-${NETWORK_CATALOG}-kingdom-${NETWORK_CATALOG}-kingdom.png)
 
-![Interactions on the taxonomic family rank as interpreted by the ${NETWORK_CATALOG_DESCRIPTION}](indexed-interactions-${NETWORK_CATALOG}-family-${NETWORK_CATALOG}-family.svg)
+![Interactions on the taxonomic family rank as interpreted by the ${NETWORK_CATALOG_DESCRIPTION}](indexed-interactions-${NETWORK_CATALOG}-family-${NETWORK_CATALOG}-family.png)
 
 _EOF_
 )"
@@ -770,7 +770,7 @@ then
 fi
 
 mkdir -p tmp-review
-cp -R README.txt index.* datasets/* indexed-* review* *.css *.svg *.bib tmp-review/
+cp -R README.txt index.* datasets/* indexed-* review* *.css *.svg *.png *.bib tmp-review/
 OLD_DIR="${PWD}"
 cd tmp-review && gunzip -f *.gz && zip -R ../review.zip *
 cd ${OLD_DIR}
