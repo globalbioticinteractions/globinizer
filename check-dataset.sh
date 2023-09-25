@@ -484,10 +484,11 @@ function generate_network_graphs {
   if [[ ! -z "${NETWORK_COMPILER_PRESENT}" ]]
   then
     source_target_args=("${NETWORK_CATALOG}-kingdom-${NETWORK_CATALOG}-kingdom" "${NETWORK_CATALOG}-family-${NETWORK_CATALOG}-family")
-
     for source_target in ${source_target_args[@]}
-    do 
-      cat indexed-interactions.tsv.gz | gunzip | ${NETWORK_COMPILER_SCRIPT} $(echo "${source_target}" | tr '-' ' ') | tee indexed-interactions-${source_target}.dot | sfdp -Tsvg > indexed-interactions-${source_target}.svg
+    do
+      local network_graph_name="indexed-interactions-${source_target}.svg" 
+      cat indexed-interactions.tsv.gz | gunzip | ${NETWORK_COMPILER_SCRIPT} $(echo "${source_target}" | tr '-' ' ') | tee indexed-interactions-${source_target}.dot | sfdp -Tsvg > "$network_graph_name"
+      echo "${network_graph_name}" >> network-graph-names.txt
     done 
     echo "$(cat <<_EOF_
 
@@ -798,6 +799,11 @@ then
   upload review.svg "review badge"
   upload process.svg "review process diagram"
   upload interaction.svg "interaction data model diagram"
+
+  for networkgraph in $(cat network-graph-names.txt)
+  do
+    upload ${networkgraph} "summary network graph ${networkgraph}"
+  done
   upload biblio.bib "bibliography"
   
   upload_package review-sample "data review sample"
