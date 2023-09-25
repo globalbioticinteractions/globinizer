@@ -745,11 +745,10 @@ for figure in $(cat network-graph-names.txt)
 do
   cat "$figure"\
   | patch_svg_width\
-  > "$(basename $figure .svg).patched.svg"
+  > "$(basename $figure .svg).svg"
 done
 
 cat index.md\
- | sed -E 's/(indexed-interactions[a-z-]+).svg[)]/\1.patched.svg)/g'\
  | export_report_as html5 html\
  > index.html
 
