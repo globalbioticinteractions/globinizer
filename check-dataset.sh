@@ -488,6 +488,7 @@ function generate_network_graphs {
     for source_target in ${source_target_args[@]}
     do 
       cat indexed-interactions.tsv.gz | gunzip | ${NETWORK_COMPILER_SCRIPT} $(echo "${source_target}" | tr '-' ' ') | tee indexed-interactions-${source_target}.dot | sfdp -Tpng > indexed-interactions-${source_target}.png
+      cat indexed-interactions.tsv.gz | gunzip | ${NETWORK_COMPILER_SCRIPT} $(echo "${source_target}" | tr '-' ' ') | tee indexed-interactions-${source_target}.dot | sfdp -Tsvg > indexed-interactions-${source_target}.svg
     done 
     echo "$(cat <<_EOF_
 
@@ -722,9 +723,8 @@ function export_report_as {
 
 generate_md_report\
  | tee index.md\
- | tee review.md\
- | export_report_as html5 html\
- > index.html
+ > review.md
+ 
  
 cat index.md\
  | export_report_as docx docx\
@@ -737,6 +737,18 @@ cat index.md\
 cat index.md\
  | export_report_as jats jats\
  > index.xml
+
+for figure in *.svg
+do
+  cat "$figure"\
+  | patch_svg_width\
+  > "$(basename "$figure" .svg).patched.svg"
+done
+
+cat index.md\
+ | sed -E 's/.svg[)]/.patched.svg)/g'\
+ | export_report_as html5 html\
+ > index.html
 
 
 function upload {
