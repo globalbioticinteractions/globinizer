@@ -397,7 +397,7 @@ For more exhaustive list of review notes, please have a look at the [Review Note
 
 As part of the review, a review badge is generated. This review badge can be included in webpages to indicate the review status of the dataset under review. 
 
-![Sample of a GloBI Review Badge ^[GloBI Review Badge examples can be retrieved from the [GloBI Review Depot](https://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/review.svg)]](review.svg) 
+![Sample of a GloBI Review Badge ^[Up-to-date status of the GloBI Review Badge can be retrieved from the [GloBI Review Depot](https://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/review.svg)]](review.svg) 
 
 Note that if the badge is green, no review notes were generated. If the badge is yellow, the review bots may need some help with interpreting the species interaction data.
 
@@ -405,7 +405,7 @@ Note that if the badge is green, no review notes were generated. If the badge is
 
 If the dataset under review has been [registered with GloBI](https://globalbioticinteractions.org/contribute), and has been succesfully indexed by GloBI, the GloBI Index Status Badge will turn green. This means that the dataset under review was indexed by GloBI and is available through GloBI services and derived data products. 
 
-![Sample of a GloBI Index Badge ^[GloBI Index Badge examples can be retrieved from retrieved via [GloBI's API](https://api.globalbioticinteractions.org/interaction.svg?interactionType=ecologicallyRelatedTo&accordingTo=globi:${REPO_NAME}&refutes=true&refutes=false)]](https://api.globalbioticinteractions.org/interaction.svg?interactionType=ecologicallyRelatedTo&accordingTo=globi:${REPO_NAME}&refutes=true&refutes=false)
+![Sample of a GloBI Index Badge ^[Up-to-date status of the GloBI Index Badge can be retrieved from [GloBI's API](https://api.globalbioticinteractions.org/interaction.svg?interactionType=ecologicallyRelatedTo&accordingTo=globi:${REPO_NAME}&refutes=true&refutes=false)]](https://api.globalbioticinteractions.org/interaction.svg?interactionType=ecologicallyRelatedTo&accordingTo=globi:${REPO_NAME}&refutes=true&refutes=false)
 
 If you'd like to keep track of reviews or index status of the dataset under review, please visit [GloBI's dataset index ^[At time of writing ($(date --iso-8601)) the version of the GloBI dataset index was available at https://globalbioticinteractions.org/datasets]](https://globalbioticinteractions.org/datasets) for badge examples. 
 
