@@ -743,7 +743,7 @@ cat index.md\
 
 for figure in $(cat network-graph-names.txt)
 do
-  local figurePatched="echo $(basename $figure .svg).patched.svg"
+  local figurePatched="$(basename $figure .svg).patched.svg"
   cat "${figure}"\
   | patch_svg_width\
   > "${figurePatched}"
