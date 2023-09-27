@@ -741,14 +741,18 @@ cat index.md\
  | export_report_as jats jats\
  > index.xml
 
-for figure in $(cat network-graph-names.txt)
-do
-  local figurePatched="$(basename $figure .svg).patched.svg"
-  cat "${figure}"\
-  | patch_svg_width\
-  > "${figurePatched}"
-  mv "${figurePatched}" "${figure}"
-done
+function patch_network_graphs {
+  for figure in $(cat network-graph-names.txt)
+  do
+    local figurePatched="$(basename $figure .svg).patched.svg"
+    cat "${figure}"\
+    | patch_svg_width\
+    > "${figurePatched}"
+    mv "${figurePatched}" "${figure}"
+  done
+}
+
+patch_network_graphs
 
 cat index.md\
  | export_report_as html5 html\
