@@ -269,6 +269,15 @@ author: By Nomer and Elton, two naive review bots.
 abstract: |
   Life on earth is sustained by complex interactions between organisms and their environment. These biotic interactions can be captured in datasets and published digitally. We describe a review process of such an openly accessible digital interaction datasets of known origin, and discuss their outcome. The ${summaryPhrase} The report includes detailed summaries of interactions data as well as a taxonomic review from multiple perspectives.
 bibliography: biblio.bib
+keywords:
+  - biodiversity informatics
+  - ecology
+  - species interactions
+  - biotic interactions
+  - automated manuscripts
+  - taxonomic names
+  - taxonomic name alignment
+  - biology
 reference-section-title: References
 ---
 
@@ -804,6 +813,7 @@ then
   upload index.md "review pandoc page"
   upload index.docx "review pandoc word document"
   upload index.pdf "review pandoc pdf document"
+  upload index.jats "review pandoc jats document"
   upload review.svg "review badge"
   upload process.svg "review process diagram"
   upload interaction.svg "interaction data model diagram"
