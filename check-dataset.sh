@@ -834,13 +834,10 @@ then
   upload_package_gz indexed-names "indexed names"
 
   upload_package_gz indexed-names-resolved "indexed names resolved across taxonomies [${TAXONOMIES}]"  
-  upload_package_gz indexed-names-resolved-col "indexed names resolved against Catalogue of Life"  
-  upload_package_gz indexed-names-resolved-ncbi "indexed names resolved against NCBI Taxonomy"  
-  upload_package_gz indexed-names-resolved-discoverlife "indexed names resolved against DiscoverLife Bee Checklist"  
-  upload_package_gz indexed-names-resolved-gbif "indexed names resolved against GBIF backbone taxonomy"  
-  upload_package_gz indexed-names-resolved-itis "indexed names resolved against Integrated Taxonomic Information System"  
-  upload_package_gz indexed-names-resolved-globi "indexed names resolved against GloBI Taxon Graph"  
-  upload_package_gz indexed-names-resolved-tpt "indexed names resolved against Terrestrial Parasite Tracker Taxonomy"  
+  
+  for taxonomy in ${TAXONOMIES}; do 
+    upload_package_gz "indexed-names-resolved-${taxonomy}" "indexed names resolved against [${taxonomy}" ; 
+  done;
 
   upload_package indexed-names-sample "indexed names sample"
  
