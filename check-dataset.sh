@@ -340,8 +340,9 @@ In this review, biotic interactions (or biotic associations) are modeled as a pr
 
 The ${summaryPhrase}
 
-An exhaustive list of indexed interaction claims can be found at [indexed-interactions](indexed-interactions.html) ([csv](indexed-interactions.csv)/[tsv](indexed-interactions.tsv)/[html](indexed-interactions.html)).
-The list was used to create the following data summaries. 
+An exhaustive list of indexed interaction claims can be found in ([csv](indexed-interactions.csv) and [tsv](indexed-interactions.tsv) archives. To facilitate discovery, the first 500 claims available on the html page at [indexed-interactions](indexed-interactions.html).
+
+The exhaustive list was used to create the following data summaries below.
 
  
 $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd cut -r -f sourceTaxonName,interactionTypeName,targetTaxonName,referenceCitation | head -n6)
@@ -384,7 +385,7 @@ $(cat indexed-names-resolved.tsv.gz | gunzip | mlr ${MLR_TSV_INPUT_OPTS} --omd c
 
 | catalog name | alignment results |
 | --- | --- |
-$(echo "${TAXONOMIES}" | tr ' ' '\n' | awk '{ print "| " $1 " | [associated names alignments](indexed-names-resolved-" $1 ".html) ([csv](indexed-names-resolved-" $1 ".tsv)/[tsv](indexed-names-resolved-" $1 ".tsv)/[html](indexed-names-resolved-" $1 ".html)) |"}') 
+$(echo "${TAXONOMIES}" | tr ' ' '\n' | awk '{ print "| " $1 " | [associated names alignments (first 500)](indexed-names-resolved-" $1 ".html) ([full csv](indexed-names-resolved-" $1 ".tsv)/[full tsv](indexed-names-resolved-" $1 ".tsv)) |"}') 
 : List of Available Name Alignment Reports
 
 ## Additional Reviews
@@ -399,7 +400,7 @@ In addtion, you can find the most frequently occurring notes in the table below.
 $(cat review.tsv.gz | gunzip | mlr ${MLR_TSV_INPUT_OPTS} --omd cut -f reviewCommentType,reviewComment then filter '$reviewCommentType == "note"' then count-distinct -f reviewComment then sort -nr count | head -n6)
 : Most frequently occurring review notes, if any.
 
-For more exhaustive list of review notes, please have a look at the [Review Notes](review.html) ([csv](review.csv)/[tsv](review.tsv)/[html](review.html)).
+For addition information on review notes, please have a look at the first 500 [Review Notes](review.html) or the download full [csv](review.csv) or [tsv](review.tsv) archives.
 
 ## GloBI Review Badge
 
