@@ -593,7 +593,7 @@ _EOF_
 
 function tsv2html {
   generate_styling > styling.css
-  pandoc --embed-resources --standalone --metadata title=${REPO_NAME} --css=styling.css --to=html5 --from=tsv -o - | pv -l
+  head -n501 | pandoc --embed-resources --standalone --metadata title=${REPO_NAME} --css=styling.css --to=html5 --from=tsv -o - | pv -l
 }
 
 echo_logo | tee_readme 
