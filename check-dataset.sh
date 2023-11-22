@@ -266,8 +266,9 @@ function generate_md_report {
 title: $(generate_title)
 date: $(date --iso-8601)
 author: 
-  - Nomer, a naive review bot^[corresponding author: review@globalbioticinteractions.org or https://review.globalbioticinteractions.org]
+  - Nomer, a naive review bot
   - Elton, another naive review bot
+  - Feedback via review@globalbioticinteractions.org or https://globalbioticinteractions.org/contribute 
 abstract: |
   Life on earth is sustained by complex interactions between organisms and their environment. These biotic interactions can be captured in datasets and published digitally. We describe a review process of such an openly accessible digital interaction datasets of known origin, and discuss their outcome. The ${summaryPhrase} The report includes detailed summaries of interactions data as well as a taxonomic review from multiple perspectives.
 bibliography: biblio.bib
