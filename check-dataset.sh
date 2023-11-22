@@ -266,7 +266,7 @@ function generate_md_report {
 title: $(generate_title)
 date: $(date --iso-8601)
 author: 
-  - Nomer and Elton, two naive review bots
+  - by Nomer and Elton, two naive review bots
   - review@globalbioticinteractions.org
   - https://globalbioticinteractions.org/contribute 
   - https://github.com/${REPO_NAME}/issues 
