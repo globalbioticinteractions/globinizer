@@ -307,7 +307,7 @@ The review is performed through programmatic scripts that leverage tools like Pr
  | [pandoc](https://pandoc.org/) | $(pandoc --version | version_of) |  
 : Tools used in this review process
 
-The review process can be described in the form of the script below. Note that you have to run `elton pull ...` first before being able to generate reviews (e.g., `elton review ...`), extract interaction claims (e.g., `elton interactions ...`), or list taxonomic names (e.g., `elton names ...`).
+The review process can be described in the form of the script below ^[Note that you have to first get the data (e.g., via elton pull ${REPO_NAME}) before being able to generate reviews (e.g., elton review ${REPO_NAME}), extract interaction claims (e.g., elton interactions ${REPO_NAME}), or list taxonomic names (e.g., elton names ${REPO_NAME})].
 
 ~~~
 # get versioned copy of the dataset (size approx. ${datasetVolume}) under review 
