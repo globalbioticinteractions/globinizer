@@ -259,16 +259,17 @@ function generate_md_report {
   uniqueTargetTaxa="$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f targetTaxonName | tail -n+2 | sort | uniq | wc -l))"
   mostFrequentTargetTaxa="$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} count-distinct -f targetTaxonName then sort -nr count then cut -f targetTaxonName | tail -n+2 | head -n1 | tr -d '\n')"
   datasetVolume="$(printf "%siB" $(du -d0 -h ./datasets | cut -f1))"
-  summaryPhrase="dataset under review (aka $REPO_NAME) is of size ${datasetVolume} and contains ${numberOfInteractions} interactions with ${numberOfInteractionTypes} (e.g., ${mostFrequentInteractionTypes}) unique types of associations between ${uniqueSourceTaxa} primary taxa (e.g., ${mostFrequentSourceTaxa}) and ${uniqueTargetTaxa} associated taxa (e.g., ${mostFrequentTargetTaxa})."
+  summaryPhrase="dataset under review (aka $REPO_NAME) has size ${datasetVolume} and contains ${numberOfInteractions} interactions with ${numberOfInteractionTypes} (e.g., ${mostFrequentInteractionTypes}) unique types of associations between ${uniqueSourceTaxa} primary taxa (e.g., ${mostFrequentSourceTaxa}) and ${uniqueTargetTaxa} associated taxa (e.g., ${mostFrequentTargetTaxa})."
   
   cat <<_EOF_
 ---
 title: $(generate_title)
 date: $(date --iso-8601)
 author: 
-  - Nomer and Elton, two naive review bot
+  - Nomer and Elton, two naive review bots
   - review@globalbioticinteractions.org
   - https://globalbioticinteractions.org/contribute 
+  - https://github.com/${REPO_NAME}/issues 
 abstract: |
   Life on earth is sustained by complex interactions between organisms and their environment. These biotic interactions can be captured in datasets and published digitally. We describe a review process of such an openly accessible digital interaction datasets of known origin, and discuss their outcome. The ${summaryPhrase} The report includes detailed summaries of interactions data as well as a taxonomic review from multiple perspectives.
 bibliography: biblio.bib
