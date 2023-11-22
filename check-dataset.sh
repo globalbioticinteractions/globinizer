@@ -258,13 +258,16 @@ function generate_md_report {
   mostFrequentSourceTaxa="$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} count-distinct -f sourceTaxonName then sort -nr count then cut -f sourceTaxonName | tail -n+2 | head -n1 | tr -d '\n')"
   uniqueTargetTaxa="$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f targetTaxonName | tail -n+2 | sort | uniq | wc -l))"
   mostFrequentTargetTaxa="$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} count-distinct -f targetTaxonName then sort -nr count then cut -f targetTaxonName | tail -n+2 | head -n1 | tr -d '\n')"
-  summaryPhrase="dataset under review (aka $REPO_NAME) contains ${numberOfInteractions} interactions with ${numberOfInteractionTypes} (e.g., ${mostFrequentInteractionTypes}) unique types of associations between ${uniqueSourceTaxa} primary taxa (e.g., ${mostFrequentSourceTaxa}) and ${uniqueTargetTaxa} associated taxa (e.g., ${mostFrequentTargetTaxa})."
+  datasetVolume="$(printf "%siB" $(du -d0 -h ./datasets | cut -f1))"
+  summaryPhrase="dataset under review (aka $REPO_NAME) is of size ${datasetVolume} and contains ${numberOfInteractions} interactions with ${numberOfInteractionTypes} (e.g., ${mostFrequentInteractionTypes}) unique types of associations between ${uniqueSourceTaxa} primary taxa (e.g., ${mostFrequentSourceTaxa}) and ${uniqueTargetTaxa} associated taxa (e.g., ${mostFrequentTargetTaxa})."
   
   cat <<_EOF_
 ---
 title: $(generate_title)
 date: $(date --iso-8601)
-author: By Nomer and Elton, two naive review bots.
+author: 
+  - Nomer, a naive review bot^[corresponding author: review@globalbioticinteractions.org or https://review.globalbioticinteractions.org]
+  - Elton, another naive review bot
 abstract: |
   Life on earth is sustained by complex interactions between organisms and their environment. These biotic interactions can be captured in datasets and published digitally. We describe a review process of such an openly accessible digital interaction datasets of known origin, and discuss their outcome. The ${summaryPhrase} The report includes detailed summaries of interactions data as well as a taxonomic review from multiple perspectives.
 bibliography: biblio.bib
@@ -305,7 +308,7 @@ The review is performed through programmatic scripts that leverage tools like Pr
 The review process can be described in the form of a script:
 
 ~~~
-# get versioned copy of the dataset under review 
+# get versioned copy of the dataset (size approx. ${datasetVolume}) under review 
 elton pull ${REPO_NAME}
 
 # generate review notes
