@@ -345,7 +345,7 @@ In this review, biotic interactions (or biotic associations) are modeled as a pr
 
 The ${summaryPhrase}
 
-An exhaustive list of indexed interaction claims can be found in ([csv](indexed-interactions.csv) and [tsv](indexed-interactions.tsv) archives. To facilitate discovery, the first 500 claims available on the html page at [indexed-interactions](indexed-interactions.html).
+An exhaustive list of indexed interaction claims can be found in [csv](indexed-interactions.csv) and [tsv](indexed-interactions.tsv) archives. To facilitate discovery, the first 500 claims available on the html page at [indexed-interactions.html](indexed-interactions.html).
 
 The exhaustive list was used to create the following data summaries below.
 
