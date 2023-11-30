@@ -258,7 +258,7 @@ function generate_md_report {
   mostFrequentSourceTaxa="$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} count-distinct -f sourceTaxonName then sort -nr count then cut -f sourceTaxonName | tail -n+2 | head -n1 | tr -d '\n')"
   uniqueTargetTaxa="$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f targetTaxonName | tail -n+2 | sort | uniq | wc -l))"
   mostFrequentTargetTaxa="$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} count-distinct -f targetTaxonName then sort -nr count then cut -f targetTaxonName | tail -n+2 | head -n1 | tr -d '\n')"
-  datasetVolume="$(${ELTON_CMD} log ${ELTON_OPTS} ${REPO_NAME} | ${ELTON_CMD} cat ${ELTON_OPTS} ${REPO_NAME} | pv -b > /dev/null)"
+  datasetVolume="$(${ELTON_CMD} log ${ELTON_OPTS} ${ELTON_NAMESPACE} | ${ELTON_CMD} cat ${ELTON_OPTS} ${ELTON_NAMESPACE} | pv -b > /dev/null)"
   summaryPhrase="dataset under review (aka $REPO_NAME) has size ${datasetVolume} and contains ${numberOfInteractions} interactions with ${numberOfInteractionTypes} (e.g., ${mostFrequentInteractionTypes}) unique types of associations between ${uniqueSourceTaxa} primary taxa (e.g., ${mostFrequentSourceTaxa}) and ${uniqueTargetTaxa} associated taxa (e.g., ${mostFrequentTargetTaxa})."
   
   cat <<_EOF_
