@@ -18,7 +18,7 @@ export REVIEW_SCRIPT=$(readlink -f "$0")
 export REPO_NAME=$1
 export ELTON_UPDATE_DISABLED=$2
 export ELTON_DATASETS_DIR=${2:-./datasets}
-export ELTON_VERSION=0.12.13
+export ELTON_VERSION=0.13.0
 export ELTON_DATA_REPO_MAIN="https://raw.githubusercontent.com/${REPO_NAME}/main"
 export ELTON_JAR="$PWD/elton.jar"
 export ELTON_OPTS=""
@@ -258,7 +258,7 @@ function generate_md_report {
   mostFrequentSourceTaxa="$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} count-distinct -f sourceTaxonName then sort -nr count then cut -f sourceTaxonName | tail -n+2 | head -n1 | tr -d '\n')"
   uniqueTargetTaxa="$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f targetTaxonName | tail -n+2 | sort | uniq | wc -l))"
   mostFrequentTargetTaxa="$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} count-distinct -f targetTaxonName then sort -nr count then cut -f targetTaxonName | tail -n+2 | head -n1 | tr -d '\n')"
-  datasetVolume="$(printf "%siB" $(du -d0 -h ./datasets | cut -f1))"
+  datasetVolume="$(printf "%siB" $(du -d0 -h ${ELTON_DATASETS_DIR}/${REPO_NAME} | cut -f1))"
   summaryPhrase="dataset under review (aka $REPO_NAME) has size ${datasetVolume} and contains ${numberOfInteractions} interactions with ${numberOfInteractionTypes} (e.g., ${mostFrequentInteractionTypes}) unique types of associations between ${uniqueSourceTaxa} primary taxa (e.g., ${mostFrequentSourceTaxa}) and ${uniqueTargetTaxa} associated taxa (e.g., ${mostFrequentTargetTaxa})."
   
   cat <<_EOF_
