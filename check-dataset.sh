@@ -295,7 +295,7 @@ Data review can be a time consuming process, especially when done manually. This
 
 > $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f citation,archiveURI,lastSeenAt,contentHash | tail -n+2 | sort | uniq | tr '\t' ' ')
 
-For additional metadata this dataset, please visit [https://github.com/${REPO_NAME}](https://github.com/${REPO_NAME}) and inspect associated file including, but not limited to, `README.md`, `eml.xml`, and/or `globi.json`.
+For additional metadata this dataset, please visit [https://github.com/${REPO_NAME}](https://github.com/${REPO_NAME}) and inspect associated file including, but not limited to, _README.md_, _eml.xml_, and/or _globi.json_.
 
 # Methods
 
