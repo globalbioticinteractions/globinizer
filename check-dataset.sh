@@ -734,8 +734,7 @@ generate_styling\
  > styling.css
 
 function export_report_as {
-  pandoc --embed-resources --standalone --toc --citeproc -t $1 -o -\
- > index.$2
+  pandoc --embed-resources --standalone --toc --citeproc -t $1 -o -
 }
 
 generate_md_report\
@@ -744,15 +743,15 @@ generate_md_report\
  
  
 cat index.md\
- | export_report_as docx docx\
+ | export_report_as docx\
  > index.docx
 
 cat index.md\
- | export_report_as pdf pdf\
+ | export_report_as pdf\
  > index.pdf
 
 cat index.md\
- | export_report_as jats jats\
+ | export_report_as jats\
  > index.xml
 
 function patch_network_graphs {
@@ -769,7 +768,7 @@ function patch_network_graphs {
 patch_network_graphs
 
 cat index.md\
- | export_report_as html5 html\
+ | export_report_as html5\
  > index.html
 
 
