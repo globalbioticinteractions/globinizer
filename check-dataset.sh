@@ -43,7 +43,7 @@ export MLR_TSV_INPUT_OPTS="--icsvlite --ifs tab"
 export MLR_TSV_OUTPUT_OPTS="--ocsvlite --ofs tab"
 export MLR_TSV_OPTS="${MLR_TSV_INPUT_OPTS} ${MLR_TSV_OUTPUT_OPTS}"
 
-export TAXONOMIES="col ncbi discoverlife gbif itis globi mdd pbdb"
+export TAXONOMIES="col ncbi discoverlife gbif itis globi mdd tpt pbdb"
 
 function echo_logo {
   echo "$(cat <<_EOF_
