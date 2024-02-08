@@ -259,7 +259,7 @@ function generate_md_report {
   uniqueTargetTaxa="$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f targetTaxonName | tail -n+2 | sort | uniq | wc -l))"
   mostFrequentTargetTaxa="$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} count-distinct -f targetTaxonName then sort -nr count then cut -f targetTaxonName | tail -n+2 | head -n1 | tr -d '\n')"
   datasetVolume="$(${ELTON_CMD} log ${ELTON_OPTS} ${ELTON_NAMESPACE} | sort | uniq | ${ELTON_CMD} cat ${ELTON_OPTS} ${ELTON_NAMESPACE} | pv -f -b 2>&1 1>/dev/null | tr '\r' '\n' | grep -E '[0-9]' | tail -n1)"
-  summaryPhrase="dataset under review (aka $REPO_NAME) has size ${datasetVolume} and contains ${numberOfInteractions} interactions with ${numberOfInteractionTypes} (e.g., ${mostFrequentInteractionTypes}) unique types of associations between ${uniqueSourceTaxa} primary taxa (e.g., ${mostFrequentSourceTaxa}) and ${uniqueTargetTaxa} associated taxa (e.g., ${mostFrequentTargetTaxa})."
+  summaryPhrase="dataset under review (aka $REPO_NAME) has size ${datasetVolume} and contains ${numberOfInteractions} interactions with ${numberOfInteractionTypes} unique types of associations (e.g., ${mostFrequentInteractionTypes}) between ${uniqueSourceTaxa} primary taxa (e.g., ${mostFrequentSourceTaxa}) and ${uniqueTargetTaxa} associated taxa (e.g., ${mostFrequentTargetTaxa})."
   
   cat <<_EOF_
 ---
@@ -271,7 +271,7 @@ author:
   - https://globalbioticinteractions.org/contribute 
   - https://github.com/${REPO_NAME}/issues 
 abstract: |
-  Life on earth is sustained by complex interactions between organisms and their environment. These biotic interactions can be captured in datasets and published digitally. We describe a review process of such an openly accessible digital interaction datasets of known origin, and discuss their outcome. The ${summaryPhrase} The report includes detailed summaries of interactions data as well as a taxonomic review from multiple perspectives.
+  Life on Earth is sustained by complex interactions between organisms and their environment. These biotic interactions can be captured in datasets and published digitally. We describe a review process of such an openly accessible digital interactions dataset of known origin, and discuss their outcome. The ${summaryPhrase} The report includes detailed summaries of interactions data as well as a taxonomic review from multiple perspectives.
 bibliography: biblio.bib
 keywords:
   - biodiversity informatics
@@ -378,7 +378,7 @@ Another way to discover the dataset under review is by searching for it on the [
 
 ## Taxonomic Alignment
 
-As part of the review, all names are aligned against various name catalogs (e.g., ${TAXONOMIES}). These alignments may serve as a way to review name usage or aid in selecting of a suitable taxonomic name resource to use. 
+As part of the review, all names are aligned against various name catalogs (e.g., $(echo ${TAXONOMIES} | sed 's/ /, /g' | sed -E 's/, ([a-z]+)$/, and \1/g')). These alignments may serve as a way to review name usage or aid in selecting of a suitable taxonomic name resource to use. 
 
 $(cat indexed-names-resolved.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f providedName,relationName,resolvedCatalogName,resolvedName | mlr ${MLR_TSV_INPUT_OPTS} --omd uniq -f providedName,relationName,resolvedCatalogName,resolvedName | head -n6) 
 : Sample of Name Alignments
@@ -429,6 +429,8 @@ If you'd like to keep track of reviews or index status of the dataset under revi
 # Discussion
 
 This review is intended to provide a perspective on the dataset to aid understanding of species interaction claims discovered. However, this review should *not* be considered as fitness of use or other kind of quality assessment. Instead, the review may be used as in indication of the open-ness[^2] and FAIRness [@Wilkinson_2016; @trekels_maarten_2023_8176978] of the dataset: in order to perform this review, the data was likely openly available, **F**indable, **A**ccessible, **I**nteroperable and **R**eusable. Currently, this Open-FAIR assessment is qualitative, and with measurement units specified, a more quantitative approach can be implemented. 
+
+This report also showcases the reuse of machine-actionable (meta)data, something highly recommended by the FAIR Data Principles [@Wilkinson_2016]. Making (meta)data machine-actionable means that it can be more precisely processed by computers, enabling even naive review bots like Nomer and Elton to interpret the data effectively. This capability is crucial for not just automating the generation of reports, but also to facilitate seamless data exchanges, i.e., interoperability. 
 
 # Acknowledgements
 
