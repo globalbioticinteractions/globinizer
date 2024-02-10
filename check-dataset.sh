@@ -689,8 +689,28 @@ cat indexed-names-sample.tsv | mlr ${MLR_TSV_OPTS} cut -r -f taxon* | tsv2html >
 # name resolving 
 for taxonomy in ${TAXONOMIES}; do resolve_names indexed-names.tsv.gz ${taxonomy}; done;
 
+# name alignment reports
+
+NAME_REPORT_FILENAMES=$(echo ${TAXONOMIES} | tr ' ' '\n' | sort | awk '{ print "indexed-names-resolved-" $1 ".tsv.gz" }')
+
+gzipped_name_header() {
+  cat\
+ $(echo ${NAME_REPORT_FILENAMES} | tr ' ' '\n' | head -n1)\
+ | gunzip\
+ | head -n1\
+ | gzip
+}
+
+gzipped_name_tails() {
+  echo ${NAME_REPORT_FILENAMES}\
+    | tr ' ' '\n'\
+    | awk -F ' ' '{ print "cat " $1 " | gunzip | tail -n+2 | gzip" }'\
+    | bash -s
+}
+
 # concatenate all name alignments
-echo ${TAXONOMIES} | tr ' ' '\n' | awk '{ print "indexed-names-resolved-" $1 ".tsv.gz" }' | xargs mlr --prepipe gunzip ${MLR_TSV_OPTS} cat | mlr ${MLR_TSV_OPTS} sort -f providedName | uniq | gzip > indexed-names-resolved.tsv.gz
+cat <(gzipped_name_header) <(gzipped_name_tails)  > indexed-names-resolved.tsv.gz
+
 mlr ${MLR_TSV_INPUT_OPTS} --ocsv --prepipe gunzip cat indexed-names-resolved.tsv.gz | gzip > indexed-names-resolved.csv.gz
 cat indexed-names-resolved.tsv.gz | gunzip | tsv2html | gzip > indexed-names-resolved.html.gz
 
