@@ -248,6 +248,22 @@ _EOF_
  fi
 }
 
+function pluralize {
+  if [ $1 -gt 1 ]
+  then 
+    echo -e s
+  fi    
+}
+
+function pluralize_taxon {
+  if [ $1 -gt 1 ]
+  then 
+    echo -e taxa
+  else
+    echo -e taxon
+  fi
+}
+
 function generate_md_report {
   headCount=21
   headCountWithoutHeader=20
@@ -259,7 +275,7 @@ function generate_md_report {
   uniqueTargetTaxa="$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f targetTaxonName | tail -n+2 | sort | uniq | wc -l))"
   mostFrequentTargetTaxa="$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} count-distinct -f targetTaxonName then sort -nr count then cut -f targetTaxonName | tail -n+2 | head -n1 | tr -d '\n')"
   datasetVolume="$(${ELTON_CMD} log ${ELTON_OPTS} ${ELTON_NAMESPACE} | sort | uniq | ${ELTON_CMD} cat ${ELTON_OPTS} ${ELTON_NAMESPACE} | pv -f -b 2>&1 1>/dev/null | tr '\r' '\n' | grep -E '[0-9]' | tail -n1)"
-  summaryPhrase="dataset under review (aka $REPO_NAME) has size ${datasetVolume} and contains ${numberOfInteractions} interactions with ${numberOfInteractionTypes} unique types of associations (e.g., ${mostFrequentInteractionTypes}) between ${uniqueSourceTaxa} primary taxa (e.g., ${mostFrequentSourceTaxa}) and ${uniqueTargetTaxa} associated taxa (e.g., ${mostFrequentTargetTaxa})."
+  summaryPhrase="dataset under review (aka $REPO_NAME) has size ${datasetVolume} and contains ${numberOfInteractions} interaction$(pluralize ${numberOfInteractions}) with ${numberOfInteractionTypes} unique type$(pluralize ${numberOfInteractionTypes}) of association$(pluralize ${numberOfInteractionTypes}) (e.g., ${mostFrequentInteractionTypes}) between ${uniqueSourceTaxa} primary $(pluralize_taxon ${uniqueSourceTaxa}) (e.g., ${mostFrequentSourceTaxa}) and ${uniqueTargetTaxa} associated $(pluralize_taxon ${uniqueTargetTaxa}) (e.g., ${mostFrequentTargetTaxa})."
   
   cat <<_EOF_
 ---
@@ -271,7 +287,7 @@ author:
   - https://globalbioticinteractions.org/contribute 
   - https://github.com/${REPO_NAME}/issues 
 abstract: |
-  Life on Earth is sustained by complex interactions between organisms and their environment. These biotic interactions can be captured in datasets and published digitally. We describe a review process of such an openly accessible digital interactions dataset of known origin, and discuss their outcome. The ${summaryPhrase} The report includes detailed summaries of interactions data as well as a taxonomic review from multiple perspectives.
+  Life on Earth is sustained by complex interactions between organisms and their environment. These biotic interactions can be captured in datasets and published digitally. We describe a review process of such an openly accessible digital interactions dataset of known origin, and discuss their outcome. The ${summaryPhrase} The report includes detailed summaries of interactions data as well as a taxonomic review from multiple catalogs.
 bibliography: biblio.bib
 keywords:
   - biodiversity informatics
