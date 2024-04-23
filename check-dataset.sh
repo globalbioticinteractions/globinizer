@@ -439,7 +439,7 @@ If the dataset under review has been [registered with GloBI](https://globalbioti
 
 ![Picture of a GloBI Index Badge ^[Up-to-date status of the GloBI Index Badge can be retrieved from [GloBI's API](https://api.globalbioticinteractions.org/interaction.svg?interactionType=ecologicallyRelatedTo&accordingTo=globi:${REPO_NAME}&refutes=true&refutes=false)]](https://api.globalbioticinteractions.org/interaction.svg?interactionType=ecologicallyRelatedTo&accordingTo=globi:${REPO_NAME}&refutes=true&refutes=false)
 
-If you'd like to keep track of reviews or index status of the dataset under review, please visit [GloBI's dataset index ^[At time of writing ($(date --iso-8601)) the version of the GloBI dataset index was available at [https://globalbioticinteractions.org/datasets](https://globalbioticinteractions.org/datasets)]](https://globalbioticinteractions.org/datasets) for badge examples. 
+If you'd like to keep track of reviews or index status of the dataset under review, please visit [GloBI's dataset index ^[At time of writing ($(date --iso-8601)) the version of the GloBI dataset index was available at [https://globalbioticinteractions.org/datasets](https://globalbioticinteractions.org/datasets) for badge examples. 
 
 
 # Discussion
