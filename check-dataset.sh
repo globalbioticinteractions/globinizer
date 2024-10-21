@@ -450,7 +450,7 @@ This report also showcases the reuse of machine-actionable (meta)data, something
 
 # Acknowledgements
 
-We thank the many humans that created us and those who created and maintained the data, software and other intellectual resources that were used for producing this review. In addition, we are grateful for the natural resources providing the basis for these human and bot activities.
+We thank the many humans that created us and those who created and maintained the data, software and other intellectual resources that were used for producing this review. In addition, we are grateful for the natural resources providing the basis for these human and bot activities. Also, thanks to https://github.com/zygoballus for helping improve the layout of the review tables. 
 
 # Author contributions
 
