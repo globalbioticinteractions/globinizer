@@ -267,7 +267,7 @@ function pluralize_taxon {
 function generate_md_report {
   headCount=21
   headCountWithoutHeader=20
-  numberOfInteractions="$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | tail -n+2 | sort | uniq | wc -l))"
+  numberOfInteractions="$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | tail -n+2 | wc -l))"
   numberOfInteractionTypes="$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f interactionTypeName | tail -n+2 | sort | uniq | wc -l)"
   mostFrequentInteractionTypes="$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} count-distinct -f interactionTypeName then sort -nr count then cut -f interactionTypeName | tail -n+2 | head -n1 | tr -d '\n')"
   uniqueSourceTaxa="$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f sourceTaxonName | tail -n+2 | sort | uniq | wc -l))"
