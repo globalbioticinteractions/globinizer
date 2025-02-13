@@ -843,15 +843,11 @@ function upload_package {
 
 if [[ -n ${TRAVIS_REPO_SLUG} || -n ${GITHUB_REPOSITORY} ]]
 then 
-  gunzip -f *.gz
+#  gunzip -f *.gz
 fi
 
 mkdir -p tmp-review
-cp -R README.txt index.* datasets/* indexed-* review* *.css *.svg *.png *.bib tmp-review/
-OLD_DIR="${PWD}"
-cd tmp-review && gunzip -f *.gz && zip -R ../review.zip *
-cd ${OLD_DIR}
-rm -rf tmp-review
+zip -R tmp-review/review.zip README.txt index.* datasets/* indexed-* review* *.css *.svg *.png *.bib 
 
 # attempt to use s3cmd tool if available and configured
 if [[ -n $(which s3cmd) ]] && [[ -n ${S3CMD_CONFIG} ]]
@@ -901,7 +897,7 @@ then
     upload datasets.tar.gz "cached dataset archive"
   fi
   
-  upload review.zip "review archive"
+  upload tmp-review/review.zip "review archive"
   
   save_readme
   upload README.txt "review summary"
