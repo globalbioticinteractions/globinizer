@@ -841,10 +841,10 @@ function upload_package {
   upload $1.html $2
 }
 
-if [[ -n ${TRAVIS_REPO_SLUG} || -n ${GITHUB_REPOSITORY} ]]
-then 
+#if [[ -n ${TRAVIS_REPO_SLUG} || -n ${GITHUB_REPOSITORY} ]]
+#then 
 #  gunzip -f *.gz
-fi
+#fi
 
 mkdir -p tmp-review
 zip -R tmp-review/review.zip README.txt index.* datasets/* indexed-* review* *.css *.svg *.png *.bib 
