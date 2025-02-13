@@ -841,16 +841,23 @@ function upload_package {
   upload $1.html $2
 }
 
-if [[ -n ${TRAVIS_REPO_SLUG} || -n ${GITHUB_REPOSITORY} ]]
-then 
-  gunzip -f *.gz
-fi
-
 mkdir -p tmp-review
 cp -R README.txt index.* datasets/* indexed-* review* *.css *.svg *.png *.bib tmp-review/
 OLD_DIR="${PWD}"
-cd tmp-review && gunzip -f *.gz && zip -R ../review.zip *
+cd tmp-review
+
+# avoid unpacking all gz files all at once
+for i in *.gz; do 
+    gunzip "$i"
+    local i_gunzip="$(echo "$i" | sed 's/.gz$//g')"
+    zip ../review.zip "$i_gunzip"
+    rm "$i_gunzip"
+done
+
+zip -R ../review.zip *
+
 cd ${OLD_DIR}
+
 rm -rf tmp-review
 
 # attempt to use s3cmd tool if available and configured
