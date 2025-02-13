@@ -849,7 +849,7 @@ cd tmp-review
 # avoid unpacking all gz files all at once
 for i in *.gz; do 
     gunzip "$i"
-    i_gunzip="$(echo "$i" | sed 's/.gz$//g')"
+    local i_gunzip="$(echo "$i" | sed 's/.gz$//g')"
     zip ../review.zip "$i_gunzip"
     rm "$i_gunzip"
 done
