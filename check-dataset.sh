@@ -570,10 +570,10 @@ function configure_elton {
 
   if [[ -n ${TRAVIS_REPO_SLUG} || -n ${GITHUB_REPOSITORY} ]]
     then
-      ELTON_UPDATE="${ELTON_CMD} update --prov-mode ${ELTON_OPTS} --registry local | ${ELTON_CMD} tee | ${PRESTON_CMD} append"
+      ELTON_UPDATE="${ELTON_CMD} update --prov-mode ${ELTON_OPTS} --registry local"
       ELTON_NAMESPACE="local"
   else
-    ELTON_UPDATE="${ELTON_CMD} update --prov-mode ${ELTON_OPTS} ${REPO_NAME} | ${ELTON_CMD} tee | ${PRESTON_CMD} append"
+    ELTON_UPDATE="${ELTON_CMD} update --prov-mode ${ELTON_OPTS} ${REPO_NAME}"
     ELTON_NAMESPACE="$REPO_NAME"
     # when running outside of travis, use a separate review directory'
     use_review_dir
@@ -699,7 +699,7 @@ echo -e "\nReview of [${ELTON_NAMESPACE}] started at [$(date -Iseconds)]." | tee
 
 if [[ -z ${ELTON_UPDATE_DISABLED} ]]
 then
-  ${ELTON_UPDATE}
+  ${ELTON_UPDATE} | ${ELTON_CMD} tee | ${PRESTON_CMD} append
 else
   echo no update: using provided elton datasets dir [${ELTON_DATASETS_DIR}] instead.
   ${ELTON_CMD} prov --prov-dir "${ELTON_DATASETS_DIR}" --data-dir "${ELTON_DATASETS_DIR}" | ${ELTON_CMD} tee | ${PRESTON_CMD} append
