@@ -23,6 +23,10 @@ export ELTON_DATA_REPO_MAIN="https://raw.githubusercontent.com/${REPO_NAME}/main
 export ELTON_JAR="$PWD/elton.jar"
 export ELTON_OPTS=""
 
+export PRESTON_VERSION=0.10.5
+export PRESTON_JAR="$PWD/preston.jar"
+export PRESTON_OPTS=""
+
 export NOMER_VERSION=0.5.15
 export NOMER_JAR="$PWD/nomer.jar"
 export NOMER_PROPERTIES="$(mktemp)"
@@ -566,11 +570,36 @@ function configure_elton {
 
   if [[ -n ${TRAVIS_REPO_SLUG} || -n ${GITHUB_REPOSITORY} ]]
     then
-      ELTON_UPDATE="${ELTON_CMD} update ${ELTON_OPTS} --registry local"
+      ELTON_UPDATE="${ELTON_CMD} update --prov-mode ${ELTON_OPTS} --registry local | ${ELTON_CMD} tee | ${PRESTON_CMD} append"
       ELTON_NAMESPACE="local"
   else
-    ELTON_UPDATE="${ELTON_CMD} update ${ELTON_OPTS} $REPO_NAME"
+    ELTON_UPDATE="${ELTON_CMD} update --prov-mode ${ELTON_OPTS} ${REPO_NAME} | ${ELTON_CMD} tee | ${PRESTON_CMD} append"
     ELTON_NAMESPACE="$REPO_NAME"
+    # when running outside of travis, use a separate review directory'
+    use_review_dir
+  fi
+}
+
+function configure_preston {
+  if [[ $(which preston) ]]
+  then 
+    echo using local preston found at [$(which preston)]
+    export PRESTON_CMD="preston"
+  else
+    local PRESTON_DOWNLOAD_URL="https://github.com/bio-guoda/preston/releases/download/${PRESTON_VERSION}/preston.jar"
+    echo preston not found... installing from [${PRESTON_DOWNLOAD_URL}]
+    curl --silent -L "${PRESTON_DOWNLOAD_URL}" > "${PRESTON_JAR}"
+    export PRESTON_CMD="java -Xmx4G -jar ${PRESTON_JAR}"
+  fi
+
+  export PRESTON_VERSION=$(${PRESTON_CMD} version)
+
+  echo preston version "${PRESTON_VERSION}"
+
+  if [[ -n ${TRAVIS_REPO_SLUG} || -n ${GITHUB_REPOSITORY} ]]
+    then
+      # when likely running in travis/github actions environment
+  else
     # when running outside of travis, use a separate review directory'
     use_review_dir
   fi
@@ -632,6 +661,7 @@ install_deps
 
 configure_elton
 configure_nomer
+configure_preston
 configure_network_compiler
 
 function resolve_names {
@@ -847,7 +877,7 @@ function upload_package {
 #fi
 
 mkdir -p tmp-review
-zip -R tmp-review/review.zip README.txt index.* datasets/* indexed-* review* *.css *.svg *.png *.bib 
+zip -R tmp-review/review.zip README.txt index.* data/* indexed-* review* *.css *.svg *.png *.bib 
 
 # attempt to use s3cmd tool if available and configured
 if [[ -n $(which s3cmd) ]] && [[ -n ${S3CMD_CONFIG} ]]
@@ -896,6 +926,13 @@ then
     tar c datasets/* | gzip > datasets.tar.gz
     upload datasets.tar.gz "cached dataset archive"
   fi
+
+  if [[ -z ${ELTON_UPDATE_DISABLED} ]]
+  then
+    tar c data/* | gzip > data.tar.gz
+    upload data.tar.gz "preston data archive"
+  fi
+
   
   upload tmp-review/review.zip "review archive"
   
