@@ -659,9 +659,9 @@ echo_logo | tee_readme
 
 install_deps
 
+configure_preston
 configure_elton
 configure_nomer
-configure_preston
 configure_network_compiler
 
 function resolve_names {
