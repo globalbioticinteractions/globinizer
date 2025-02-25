@@ -598,7 +598,7 @@ function configure_preston {
 
   if [[ -n ${TRAVIS_REPO_SLUG} || -n ${GITHUB_REPOSITORY} ]]
     then
-      # when likely running in travis/github actions environment
+      echo "likely running in travis/github actions environment"
   else
     # when running outside of travis, use a separate review directory'
     use_review_dir
