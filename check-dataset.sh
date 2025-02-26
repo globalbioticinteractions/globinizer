@@ -551,7 +551,7 @@ echo -e "\nNo interaction network graphs were generated at this time. If you'd l
 }
 
 function configure_elton {
-  ELTON_OPTS=" --cache-dir=${ELTON_DATASETS_DIR}"
+  ELTON_OPTS=" --prov-dir=${ELTON_DATASETS_DIR} --data-dir=${ELTON_DATASETS_DIR}"
 
   if [[ $(which elton) ]]
   then 
