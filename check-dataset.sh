@@ -702,7 +702,7 @@ then
   ${ELTON_UPDATE} | ${ELTON_CMD} tee | ${PRESTON_CMD} append
 else
   echo no update: using provided elton datasets dir [${ELTON_DATASETS_DIR}] instead.
-  ${ELTON_CMD} prov --prov-dir "${ELTON_DATASETS_DIR}" --data-dir "${ELTON_DATASETS_DIR}" | ${ELTON_CMD} tee | ${PRESTON_CMD} append
+  ${ELTON_CMD} prov --prov-dir "${ELTON_DATASETS_DIR}" --data-dir "${ELTON_DATASETS_DIR}" ${REPO_NAME} | ${ELTON_CMD} tee | ${PRESTON_CMD} append
 fi
 
 ${ELTON_CMD} review ${ELTON_OPTS} ${ELTON_NAMESPACE} --type note --type summary | gzip > review.tsv.gz
