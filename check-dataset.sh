@@ -717,10 +717,10 @@ function configure_elton {
 
   if [[ -n ${TRAVIS_REPO_SLUG} || -n ${GITHUB_REPOSITORY} ]]
     then
-      ELTON_UPDATE="${ELTON_CMD} update --prov-mode ${ELTON_OPTS} ${PRESTON_OPTS} --registry local"
+      ELTON_UPDATE="${ELTON_CMD} update --prov-mode ${ELTON_OPTS} --registry local"
       ELTON_NAMESPACE="local"
   else
-    ELTON_UPDATE="${ELTON_CMD} update --prov-mode ${ELTON_OPTS} ${PRESTON_OPTS} ${REPO_NAME}"
+    ELTON_UPDATE="${ELTON_CMD} update --prov-mode ${ELTON_OPTS} ${REPO_NAME}"
     ELTON_NAMESPACE="$REPO_NAME"
     # when running outside of travis, use a separate review directory'
     use_review_dir
@@ -857,7 +857,7 @@ DATASET_VERSION=$(${PRESTON_CMD} head ${PRESTON_OPTS})
 DATASET_VERSION_HEX=$(echo "${DATASET_VERSION}" | sed -E "s+hash://[^/]*/++g")
 
 DATASET_ID="urn:lsid:globalbioticinteractions.org:dataset:${REPO_NAME}"
-DATASET_ID_VERSIONED="${DATASET_ID}:${DATASET_VERSION_HEX}
+DATASET_ID_VERSIONED="${DATASET_ID}:${DATASET_VERSION_HEX}"
 
 ${PRESTON_CMD} head ${PRESTON_OPTS} | tee HEAD | ${PRESTON_CMD} cat > prov.nq
 
