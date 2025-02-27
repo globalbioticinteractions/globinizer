@@ -322,6 +322,98 @@ function pluralize_taxon {
   fi
 }
 
+function generate_zenodo_deposit_metadata {
+  cat <<_EOF_
+ {
+  "metadata": {
+    "related_identifiers": [
+      {
+        "relation": "isAlternateIdentifier",
+        "identifier": "${DATASET_VERSION}"
+      },
+      {
+        "relation": "isAlternateIdentifier",
+        "identifier": "${DATASET_ID}"
+      },
+      {
+        "relation": "hasVersion",
+        "identifier": "${DATASET_VERSION}"
+      },
+      {
+        "relation": "isAlternateIdentifier",
+        "identifier": "${DATASET_ID_VERSIONED}"
+      },
+      {
+        "relation": "isDerivedFrom",
+        "identifier": "zotero://select/groups/5435545/items/IJI9WGI5"
+      },
+      {
+        "relation": "isDerivedFrom",
+        "identifier": "https://zotero.org/groups/5435545/items/IJI9WGI5"
+      },
+      {
+        "relation": "isDerivedFrom",
+        "identifier": "https://linker.bio/cut:hash://md5/2717614e0b13ca488fb57c2ee6c64f2e!/b147656-150219"
+      },
+      {
+        "relation": "isPartOf",
+        "identifier": "hash://md5/26f7ce5dd404e33c6570edd4ba250d20"
+      },
+      {
+        "relation": "isAlternateIdentifier",
+        "identifier": "10.3161/150811010X504671"
+      },
+      {
+        "relation": "isCompiledBy",
+        "identifier": "10.5281/zenodo.14927734",
+        "resource_type": "software"
+      },
+      {
+        "relation": "isCompiledBy",
+        "identifier": "10.5281/zenodo.14893840",
+        "resource_type": "software"
+      },
+      {
+        "relation": "isCompiledBy",
+        "identifier": "10.5281/zenodo.14662206",
+        "resource_type": "software"
+      }
+    ],
+    "communities": [
+      {
+        "identifier": "globi-review"
+      }
+    ],
+    "upload_type": "publication",
+    "creators": [
+      {
+        "name": "Elton"
+      },
+      {
+        "name": "Nomer"
+      },
+      {
+        "name": "Preston"
+      }
+    ],
+    "publication_type": "datapaper",
+    "title": "$(generate_title)",
+    "publication_date": "$(date --iso-8601)",
+    "keywords": [
+      "Biodiversity",
+      "Global Biotic Interactions",
+      "Review",
+      "Species Interactions",
+      "Biotic Interactions",
+      "Ecology",
+      "Biology"
+    ],
+    "description": "Life on Earth is sustained by complex interactions between organisms and their environment. These biotic interactions can be captured in datasets and published digitally. We present a review process of such an openly accessible digital interactions dataset of known origin, and discuss its outcome. The ${summaryPhrase} The report includes detailed summaries of interactions data as well as a taxonomic review from multiple catalogs." 
+  }
+} 
+_EOF_
+}
+
 function generate_md_report {
   headCount=21
   headCountWithoutHeader=20
@@ -762,6 +854,11 @@ fi
 
 # capture data package version
 DATASET_VERSION=$(${PRESTON_CMD} head ${PRESTON_OPTS})
+DATASET_VERSION_HEX=$(echo "${DATASET_VERSION}" | sed -E "s+hash://[^/]*/++g")
+
+DATASET_ID="urn:lsid:globalbioticinteractions.org:dataset:${REPO_NAME}"
+DATASET_ID_VERSIONED="${DATASET_ID}:${DATASET_VERSION_HEX}
+
 ${PRESTON_CMD} head ${PRESTON_OPTS} | tee HEAD | ${PRESTON_CMD} cat > prov.nq
 
 ${ELTON_CMD} review ${ELTON_OPTS} ${ELTON_NAMESPACE} --type note --type summary | gzip > review.tsv.gz
@@ -874,7 +971,10 @@ function export_report_as {
 generate_md_report\
  | tee index.md\
  > review.md
- 
+
+
+generate_zenodo_deposit_metadata\
+ > zenodo_deposit.json 
  
 cat index.md\
  | export_report_as docx\
@@ -937,7 +1037,7 @@ function upload_package {
 #fi
 
 mkdir -p tmp-review
-zip -r tmp-review/review.zip README.txt index.* data/ indexed-* review* *.css *.svg *.png *.bib 
+zip -r tmp-review/review.zip README.txt index.* data/ indexed-* review* *.css *.svg *.png *.bib *.json 
 mv tmp-review/review.zip review.zip
 zip -r data.zip data/
 
@@ -955,6 +1055,7 @@ then
   upload interaction.svg "interaction data model diagram"
   upload HEAD "fingerprint (or version) of dataset under review"
   upload prov.nq "description of origin of dataset under review"
+  upload zenodo_deposit.json "metadata for Zenodo record deposit"
   upload data.zip "Preston archive of dataset under review"
 
   for networkgraph in $(cat network-graph-names.txt)
