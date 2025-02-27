@@ -879,6 +879,7 @@ function upload_package {
 
 mkdir -p tmp-review
 zip -R tmp-review/review.zip README.txt index.* data/* indexed-* review* *.css *.svg *.png *.bib 
+mv tmp-review/review.zip review.zip
 
 # attempt to use s3cmd tool if available and configured
 if [[ -n $(which s3cmd) ]] && [[ -n ${S3CMD_CONFIG} ]]
@@ -935,7 +936,7 @@ then
   fi
 
   
-  upload tmp-review/review.zip "review archive"
+  upload review.zip "review archive"
   
   save_readme
   upload README.txt "review summary"
