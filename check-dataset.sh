@@ -882,7 +882,7 @@ cat indexed-interactions.tsv.gz\
 cat indexed-citations.tsv.gz | gunzip | tsv2csv | gzip > indexed-citations.csv.gz 
 cat indexed-citations.tsv.gz | gunzip | tsv2html | gzip > indexed-citations.html.gz 
 
-${ELTON_CMD} stream --data-dir data --record-type name\
+cat prov.nq | ${ELTON_CMD} stream --data-dir data --record-type name\
 | mlr ${MLR_TSV_OPTS} sort -f taxonName,taxonPath,taxonId,taxonPathIds,taxonRank,taxonPathNames\
 | uniq\
 | gzip > indexed-names.tsv.gz
