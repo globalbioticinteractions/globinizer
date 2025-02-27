@@ -754,10 +754,10 @@ echo -e "\nReview of [${ELTON_NAMESPACE}] started at [$(date -Iseconds)]." | tee
 
 if [[ -z ${ELTON_UPDATE_DISABLED} ]]
 then
-  ${ELTON_UPDATE} | ${ELTON_CMD} tee ${PRESTON_OPTS} ${ELTON_OPTS} | ${PRESTON_CMD} append ${PRESTON_OPTS}
+  ${ELTON_UPDATE} | ${ELTON_CMD} tee ${ELTON_OPTS} | ${PRESTON_CMD} append ${PRESTON_OPTS}
 else
   echo no update: using provided elton datasets dir [${ELTON_DATASETS_DIR}] instead.
-  ${ELTON_CMD} prov ${PRESTON_OPTS} ${ELTON_OPTS} ${REPO_NAME} | ${ELTON_CMD} tee ${PRESTON_OPTS} ${ELTON_OPTS} | ${PRESTON_CMD} append ${PRESTON_OPTS}
+  ${ELTON_CMD} prov ${ELTON_OPTS} ${REPO_NAME} | ${ELTON_CMD} tee ${ELTON_OPTS} | ${PRESTON_CMD} append ${PRESTON_OPTS}
 fi
 
 # capture data package version
