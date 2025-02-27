@@ -208,6 +208,60 @@ function generate_bibliography {
   url          = {https://www.iczn.org/the-code/the-code-online/}
 }
 
+@software{Preston,
+  author       = {Michael Elliott and
+                  Jorrit Poelen and
+                  Icaro Alzuru and
+                  Emilio Berti and
+                  partha04patel},
+  title        = {bio-guoda/preston: 0.10.5},
+  month        = jan,
+  year         = 2025,
+  publisher    = {Zenodo},
+  version      = {0.10.5},
+  doi          = {10.5281/zenodo.14662206},
+  url          = {https://doi.org/10.5281/zenodo.14662206},
+}
+
+@software{Nomer,
+  author       = {José Augusto Salim and
+                  Jorrit Poelen},
+  title        = {globalbioticinteractions/nomer: 0.5.15},
+  month        = feb,
+  year         = 2025,
+  publisher    = {Zenodo},
+  version      = {0.5.15},
+  doi          = {10.5281/zenodo.14893840},
+  url          = {https://doi.org/10.5281/zenodo.14893840},
+  swhid        = {swh:1:dir:521e44bf3950da369f4a2d7320e1ef108fa7a5f9
+                   ;origin=https://doi.org/10.5281/zenodo.1145474;vis
+                   it=swh:1:snp:cce707ad24abf51bac5504eb6eb8be7d774af
+                   34f;anchor=swh:1:rel:5a29f84e40efcdfbbb76ae119af59
+                   cb5ec6a8c7d;path=globalbioticinteractions-
+                   nomer-a430fb0
+                  },
+}
+
+@software{Elton,
+  author       = {Tobias Kuhn and
+                  Jorrit Poelen and
+                  Katrin Leinweber},
+  title        = {globalbioticinteractions/elton: 0.15.1},
+  month        = feb,
+  year         = 2025,
+  publisher    = {Zenodo},
+  version      = {0.15.1},
+  doi          = {10.5281/zenodo.14927734},
+  url          = {https://doi.org/10.5281/zenodo.14927734},
+  swhid        = {swh:1:dir:2dfac02f031fe77f75189bdc9b0318ebf2f1fc96
+                   ;origin=https://doi.org/10.5281/zenodo.998263;visi
+                   t=swh:1:snp:b4c744faa133fc25e44c287102e8690b7e7b6a
+                   b0;anchor=swh:1:rel:65fdfa5fed21a599250c2bf3740332
+                   9048e7443c;path=globalbioticinteractions-
+                   elton-6a3ed51
+                  },
+}
+
 _EOF_
 }
 
@@ -319,10 +373,11 @@ For additional metadata related to this dataset, please visit [https://github.co
 
 # Methods
 
-The review is performed through programmatic scripts that leverage tools like Preston, Elton, Nomer combined with third-party tools like grep, mlr, tail and head. 
+The review is performed through programmatic scripts that leverage tools like Preston [@Preston], Elton [@Elton], Nomer [@Nomer] combined with third-party tools like grep, mlr, tail and head. 
 
  | tool name | version | 
  | --- | --- | 
+ | [preston](https://github.com/bio-guoda/preston) | $(echo "${PRESTON_VERSION}" | version_of) |  
  | [elton](https://github.com/globalbioticinteractions/elton) | $(echo "${ELTON_VERSION}" | version_of) | 
  | [nomer](https://github.com/globalbioticinteractions/nomer) | $(echo "${NOMER_VERSION}" | version_of) |  
  | [mlr](https://miller.readthedocs.io/en/6.8.0/) | $(mlr --version | version_of) |  
