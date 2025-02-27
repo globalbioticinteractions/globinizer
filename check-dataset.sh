@@ -18,14 +18,14 @@ export REVIEW_SCRIPT=$(readlink -f "$0")
 export REPO_NAME=$1
 export ELTON_UPDATE_DISABLED=$2
 export ELTON_DATASETS_DIR=${2:-./datasets}
-export ELTON_VERSION=0.15.1
+export ELTON_VERSION=0.15.2
 export ELTON_DATA_REPO_MAIN="https://raw.githubusercontent.com/${REPO_NAME}/main"
 export ELTON_JAR="$PWD/elton.jar"
 export ELTON_OPTS=""
 
 export PRESTON_VERSION=0.10.5
 export PRESTON_JAR="$PWD/preston.jar"
-export PRESTON_OPTS=""
+export PRESTON_OPTS=" --algo md5"
 
 export NOMER_VERSION=0.5.15
 export NOMER_JAR="$PWD/nomer.jar"
@@ -606,7 +606,7 @@ echo -e "\nNo interaction network graphs were generated at this time. If you'd l
 }
 
 function configure_elton {
-  ELTON_OPTS=" --prov-dir=${ELTON_DATASETS_DIR} --data-dir=${ELTON_DATASETS_DIR}"
+  ELTON_OPTS=" --prov-dir=${ELTON_DATASETS_DIR} --data-dir=${ELTON_DATASETS_DIR} --algo md5"
 
   if [[ $(which elton) ]]
   then 
@@ -621,14 +621,14 @@ function configure_elton {
 
   export ELTON_VERSION=$(${ELTON_CMD} version)
 
-  echo elton version "${ELTON_VERSION}"
+  echo elton version "${ELTON_VERSION}
 
   if [[ -n ${TRAVIS_REPO_SLUG} || -n ${GITHUB_REPOSITORY} ]]
     then
-      ELTON_UPDATE="${ELTON_CMD} update --prov-mode ${ELTON_OPTS} --registry local"
+      ELTON_UPDATE="${ELTON_CMD} update --prov-mode ${ELTON_OPTS} ${PRESTON_OPTS} --registry local"
       ELTON_NAMESPACE="local"
   else
-    ELTON_UPDATE="${ELTON_CMD} update --prov-mode ${ELTON_OPTS} ${REPO_NAME}"
+    ELTON_UPDATE="${ELTON_CMD} update --prov-mode ${ELTON_OPTS} ${PRESTON_OPTS} ${REPO_NAME}"
     ELTON_NAMESPACE="$REPO_NAME"
     # when running outside of travis, use a separate review directory'
     use_review_dir
@@ -754,15 +754,15 @@ echo -e "\nReview of [${ELTON_NAMESPACE}] started at [$(date -Iseconds)]." | tee
 
 if [[ -z ${ELTON_UPDATE_DISABLED} ]]
 then
-  ${ELTON_UPDATE} | ${ELTON_CMD} tee ${ELTON_OPTS} | ${PRESTON_CMD} append
+  ${ELTON_UPDATE} | ${ELTON_CMD} tee ${PRESTON_OPTS} ${ELTON_OPTS} | ${PRESTON_CMD} append ${PRESTON_OPTS}
 else
   echo no update: using provided elton datasets dir [${ELTON_DATASETS_DIR}] instead.
-  ${ELTON_CMD} prov ${ELTON_OPTS} ${REPO_NAME} | ${ELTON_CMD} tee ${ELTON_OPTS} | ${PRESTON_CMD} append
+  ${ELTON_CMD} prov ${PRESTON_OPTS} ${ELTON_OPTS} ${REPO_NAME} | ${ELTON_CMD} tee ${PRESTON_OPTS} ${ELTON_OPTS} | ${PRESTON_CMD} append ${PRESTON_OPTS}
 fi
 
 # capture data package version
-DATA_VERSION=$(${PRESTON_CMD} head)
-${PRESTON_CMD} head | tee HEAD | ${PRESTON_CMD} cat > prov.nq
+DATA_VERSION=$(${PRESTON_CMD} head ${PRESTON_OPTS})
+${PRESTON_CMD} head ${PRESTON_OPTS} | tee HEAD | ${PRESTON_CMD} cat > prov.nq
 
 ${ELTON_CMD} review ${ELTON_OPTS} ${ELTON_NAMESPACE} --type note --type summary | gzip > review.tsv.gz
 cat review.tsv.gz | gunzip | tsv2csv | gzip > review.csv.gz
