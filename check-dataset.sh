@@ -621,7 +621,7 @@ function configure_elton {
 
   export ELTON_VERSION=$(${ELTON_CMD} version)
 
-  echo elton version "${ELTON_VERSION}
+  echo elton version "${ELTON_VERSION}"
 
   if [[ -n ${TRAVIS_REPO_SLUG} || -n ${GITHUB_REPOSITORY} ]]
     then
