@@ -878,7 +878,7 @@ function upload_package {
 #fi
 
 mkdir -p tmp-review
-zip -R tmp-review/review.zip README.txt index.* data/* indexed-* review* *.css *.svg *.png *.bib 
+zip -r tmp-review/review.zip README.txt index.* data/ indexed-* review* *.css *.svg *.png *.bib 
 mv tmp-review/review.zip review.zip
 
 # attempt to use s3cmd tool if available and configured
