@@ -278,9 +278,9 @@ function generate_title {
   if [[ $? -eq 0 ]]
   then
     collectionName=$(echo "${eml}" | xmllint --xpath '//collectionName' - | head -n1)
-    echo "Versioned archive of datasets shared by the ${collectionName}, including a Review of Biotic Interactions and Taxon Names Found within the Darwin Core Archive ${DATA_VERSION}"
+    echo "Versioned archive of datasets shared by the ${collectionName}, including a Review of Biotic Interactions and Taxon Names Found within the Darwin Core Archive ${DATASET_VERSION}"
   else
-    echo "A Review of Biotic Interactions and Taxon Names Found in ${REPO_NAME} ${DATA_VERSION}"
+    echo "A Review of Biotic Interactions and Taxon Names Found in ${REPO_NAME} ${DATASET_VERSION}"
   fi
 }
 
@@ -333,7 +333,7 @@ function generate_md_report {
   uniqueTargetTaxa="$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f targetTaxonName | tail -n+2 | sort | uniq | wc -l))"
   mostFrequentTargetTaxa="$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} count-distinct -f targetTaxonName then sort -nr count then cut -f targetTaxonName | tail -n+2 | head -n1 | tr -d '\n')"
   datasetVolume="$(${ELTON_CMD} log ${ELTON_OPTS} ${ELTON_NAMESPACE} | sort | uniq | ${ELTON_CMD} cat ${ELTON_OPTS} ${ELTON_NAMESPACE} | pv -f -b 2>&1 1>/dev/null | tr '\r' '\n' | grep -E '[0-9]' | tail -n1)"
-  summaryPhrase="dataset under review, named $REPO_NAME, has fingerprint ${DATA_VERSION}, is ${datasetVolume} in size and contains ${numberOfInteractions} interaction$(pluralize ${numberOfInteractions}) with ${numberOfInteractionTypes} unique type$(pluralize ${numberOfInteractionTypes}) of association$(pluralize ${numberOfInteractionTypes}) (e.g., ${mostFrequentInteractionTypes}) between ${uniqueSourceTaxa} primary $(pluralize_taxon ${uniqueSourceTaxa}) (e.g., ${mostFrequentSourceTaxa}) and ${uniqueTargetTaxa} associated $(pluralize_taxon ${uniqueTargetTaxa}) (e.g., ${mostFrequentTargetTaxa})."
+  summaryPhrase="dataset under review, named $REPO_NAME, has fingerprint ${DATASET_VERSION}, is ${datasetVolume} in size and contains ${numberOfInteractions} interaction$(pluralize ${numberOfInteractions}) with ${numberOfInteractionTypes} unique type$(pluralize ${numberOfInteractionTypes}) of association$(pluralize ${numberOfInteractionTypes}) (e.g., ${mostFrequentInteractionTypes}) between ${uniqueSourceTaxa} primary $(pluralize_taxon ${uniqueSourceTaxa}) (e.g., ${mostFrequentSourceTaxa}) and ${uniqueTargetTaxa} associated $(pluralize_taxon ${uniqueTargetTaxa}) (e.g., ${mostFrequentTargetTaxa})."
   
   cat <<_EOF_
 ---
@@ -367,7 +367,7 @@ $(generate_dataset_section)
 
 Data review can be a time consuming process, especially when done manually. This review report aims to help facilitate data review of species interaction claims made in datasets registered with Global Biotic Interactions [@Poelen_2014]. The review includes summary statistics of, and observations about, the dataset under review:
 
-> $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f citation,archiveURI,lastSeenAt | tail -n+2 | sort | uniq | tr '\t' ' ') ${DATA_VERSION}
+> $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f citation,archiveURI,lastSeenAt | tail -n+2 | sort | uniq | tr '\t' ' ') ${DATASET_VERSION}
 
 For additional metadata related to this dataset, please visit [https://github.com/${REPO_NAME}](https://github.com/${REPO_NAME}) and inspect associated metadata files including, but not limited to, _README.md_, _eml.xml_, and/or _globi.json_.
 
@@ -761,7 +761,7 @@ else
 fi
 
 # capture data package version
-DATA_VERSION=$(${PRESTON_CMD} head ${PRESTON_OPTS})
+DATASET_VERSION=$(${PRESTON_CMD} head ${PRESTON_OPTS})
 ${PRESTON_CMD} head ${PRESTON_OPTS} | tee HEAD | ${PRESTON_CMD} cat > prov.nq
 
 ${ELTON_CMD} review ${ELTON_OPTS} ${ELTON_NAMESPACE} --type note --type summary | gzip > review.tsv.gz
@@ -831,7 +831,7 @@ cat indexed-interactions-sample.tsv | mlr ${MLR_TSV_OPT} cut -r -f sourceTaxon*,
 ${ELTON_CMD} nanopubs ${ELTON_OPTS} ${ELTON_NAMESPACE} | gzip > nanopub.trig.gz
 cat nanopub.trig.gz | gunzip | head -n1 > nanopub-sample.trig
 
-echo -e "\nReview of [${REPO_NAME}@${DATA_VERSION}] included:" | tee_readme
+echo -e "\nReview of [${REPO_NAME}@${DATASET_VERSION}] included:" | tee_readme
 cat review.tsv.gz | gunzip | tail -n3 | cut -f6 | sed s/^/\ \ -\ /g | tee_readme
 
 NUMBER_OF_NOTES=$(cat review.tsv.gz | gunzip | cut -f5 | grep "^note$" | wc -l)
