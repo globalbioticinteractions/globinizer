@@ -18,12 +18,12 @@ export REVIEW_SCRIPT=$(readlink -f "$0")
 export REPO_NAME=$1
 export ELTON_UPDATE_DISABLED=$2
 export ELTON_DATASETS_DIR=${2:-./datasets}
-export ELTON_VERSION=0.15.2
+export ELTON_VERSION=0.15.3
 export ELTON_DATA_REPO_MAIN="https://raw.githubusercontent.com/${REPO_NAME}/main"
 export ELTON_JAR="$PWD/elton.jar"
 export ELTON_OPTS=""
 
-export HASH_ALGO="sha256"
+export HASH_ALGO="md5"
 
 export PRESTON_VERSION=0.10.5
 export PRESTON_JAR="$PWD/preston.jar"
