@@ -680,7 +680,8 @@ echo -e "\nNo interaction network graphs were generated at this time. If you'd l
 }
 
 function configure_elton {
-  ELTON_OPTS=" --prov-dir ${ELTON_DATASETS_DIR} --data-dir ${ELTON_DATASETS_DIR} --algo ${HASH_ALGO}"
+  ELTON_OPTS_DIRS=" --prov-dir ${ELTON_DATASETS_DIR} --data-dir ${ELTON_DATASETS_DIR}"
+  ELTON_OPTS="${ELTON_OPTS_DIRS} --algo ${HASH_ALGO}"
 
   if [[ $(which elton) ]]
   then 
@@ -831,6 +832,8 @@ then
   ${ELTON_UPDATE} | ${ELTON_CMD} tee ${ELTON_OPTS} | ${PRESTON_CMD} append ${PRESTON_OPTS}
 else
   echo no update: using provided elton datasets dir [${ELTON_DATASETS_DIR}] instead.
+  # run [elton prov] twice to cover sha256 -> md5 and md5 -> sha256  
+  ${ELTON_CMD} prov ${ELTON_OPTS_DIRS} ${REPO_NAME} | ${ELTON_CMD} tee ${ELTON_OPTS}
   ${ELTON_CMD} prov ${ELTON_OPTS} ${REPO_NAME} | ${ELTON_CMD} tee ${ELTON_OPTS} | ${PRESTON_CMD} append ${PRESTON_OPTS}
 fi
 
