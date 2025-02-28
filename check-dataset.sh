@@ -23,9 +23,11 @@ export ELTON_DATA_REPO_MAIN="https://raw.githubusercontent.com/${REPO_NAME}/main
 export ELTON_JAR="$PWD/elton.jar"
 export ELTON_OPTS=""
 
+export HASH_ALGO="sha256"
+
 export PRESTON_VERSION=0.10.5
 export PRESTON_JAR="$PWD/preston.jar"
-export PRESTON_OPTS=" --algo md5"
+export PRESTON_OPTS=" --algo ${HASH_ALGO}"
 
 export NOMER_VERSION=0.5.15
 export NOMER_JAR="$PWD/nomer.jar"
@@ -342,26 +344,6 @@ function generate_zenodo_deposit_metadata {
       {
         "relation": "isAlternateIdentifier",
         "identifier": "${DATASET_ID_VERSIONED}"
-      },
-      {
-        "relation": "isDerivedFrom",
-        "identifier": "zotero://select/groups/5435545/items/IJI9WGI5"
-      },
-      {
-        "relation": "isDerivedFrom",
-        "identifier": "https://zotero.org/groups/5435545/items/IJI9WGI5"
-      },
-      {
-        "relation": "isDerivedFrom",
-        "identifier": "https://linker.bio/cut:hash://md5/2717614e0b13ca488fb57c2ee6c64f2e!/b147656-150219"
-      },
-      {
-        "relation": "isPartOf",
-        "identifier": "hash://md5/26f7ce5dd404e33c6570edd4ba250d20"
-      },
-      {
-        "relation": "isAlternateIdentifier",
-        "identifier": "10.3161/150811010X504671"
       },
       {
         "relation": "isCompiledBy",
@@ -698,7 +680,7 @@ echo -e "\nNo interaction network graphs were generated at this time. If you'd l
 }
 
 function configure_elton {
-  ELTON_OPTS=" --prov-dir=${ELTON_DATASETS_DIR} --data-dir=${ELTON_DATASETS_DIR} --algo md5"
+  ELTON_OPTS=" --prov-dir ${ELTON_DATASETS_DIR} --data-dir ${ELTON_DATASETS_DIR} --algo ${HASH_ALGO}"
 
   if [[ $(which elton) ]]
   then 
