@@ -853,7 +853,10 @@ cat review.tsv.gz | gunzip | head -n501 > review-sample.tsv
 cat review-sample.tsv | tsv2csv > review-sample.csv
 cat review-sample.tsv | tsv2html > review-sample.html
 
-cat prov.nq | ${ELTON_CMD} stream --record-type interaction --data-dir data | gzip > indexed-interactions.tsv.gz
+# pending https://github.com/globalbioticinteractions/fishbase/issues/1
+# cat prov.nq | ${ELTON_CMD} stream --record-type interaction --data-dir data | gzip > indexed-interactions.tsv.gz
+${ELTON_CMD} interactions ${ELTON_OPTS} ${ELTON_NAMESPACE} | gzip > indexed-interactions.tsv.gz
+
 cat indexed-interactions.tsv.gz | gunzip | tsv2csv | gzip > indexed-interactions.csv.gz
 cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -r -f sourceTaxon*,interactionTypeName,targetTaxon*,referenceCitation | tsv2html | gzip > indexed-interactions.html.gz
 
@@ -867,7 +870,9 @@ cat indexed-interactions.tsv.gz\
 cat indexed-citations.tsv.gz | gunzip | tsv2csv | gzip > indexed-citations.csv.gz 
 cat indexed-citations.tsv.gz | gunzip | tsv2html | gzip > indexed-citations.html.gz 
 
-cat prov.nq | ${ELTON_CMD} stream --data-dir data --record-type name\
+# pending https://github.com/globalbioticinteractions/fishbase/issues/1
+# cat prov.nq | ${ELTON_CMD} stream --data-dir data --record-type name\
+${ELTON_CMD} names ${ELTON_OPTS} ${ELTON_NAMESPACE}\
 | mlr ${MLR_TSV_OPTS} sort -f taxonName,taxonPath,taxonId,taxonPathIds,taxonRank,taxonPathNames\
 | uniq\
 | gzip > indexed-names.tsv.gz
