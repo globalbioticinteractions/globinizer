@@ -390,7 +390,8 @@ function generate_zenodo_deposit_metadata {
       "Ecology",
       "Biology"
     ],
-    "description": "Life on Earth is sustained by complex interactions between organisms and their environment. These biotic interactions can be captured in datasets and published digitally. We present a review process of such an openly accessible digital interactions dataset of known origin, and discuss its outcome. The ${summaryPhrase} The report includes detailed summaries of interactions data as well as a taxonomic review from multiple catalogs." 
+    "description": "Life on Earth is sustained by complex interactions between organisms and their environment. These biotic interactions can be captured in datasets and published digitally. We present a review process of such an openly accessible digital interactions dataset of known origin, and discuss its outcome. The ${summaryPhrase} The report includes detailed summaries of interactions data as well as a taxonomic review from multiple catalogs.\n $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f citation,archiveURI,lastSeenAt | tail -n+2 | sort | uniq | tr '\t' ' ') ${DATASET_VERSION}
+" 
   }
 } 
 _EOF_
