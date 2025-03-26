@@ -380,7 +380,7 @@ function generate_zenodo_deposit_metadata {
       }
     ],
     "publication_type": "datapaper",
-    "title": "$(cat ${report_md} | yq --front-matter=extract .title)",
+    "title": $(cat ${report_md} | yq -o json --front-matter=extract .title),
     "publication_date": "$(cat ${report_md} | yq --front-matter=extract .date)",
     "keywords": $(cat ${report_md} | yq -o json --front-matter=extract .keywords),
     "description": $(cat ${report_md} | jq -R -s '.')
