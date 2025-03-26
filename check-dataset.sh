@@ -383,7 +383,7 @@ function generate_zenodo_deposit_metadata {
     "title": $(cat ${report_md} | yq -o json --front-matter=extract .title),
     "publication_date": "$(cat ${report_md} | yq --front-matter=extract .date)",
     "keywords": $(cat ${report_md} | yq -o json --front-matter=extract .keywords),
-    "description": $(cat ${report_md} | jq -R -s '.')
+    "description": $(cat ${report_md} | pandoc - | jq -s -R .)
   }
 } 
 _EOF_
