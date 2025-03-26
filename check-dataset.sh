@@ -407,7 +407,7 @@ function generate_md_report {
 title: $(generate_title)
 date: $(date --iso-8601)
 author: 
-  - by Nomer and Elton, two naive review bots
+  - by Nomer, Elton and Preston, three naive review bots
   - review@globalbioticinteractions.org
   - https://globalbioticinteractions.org/contribute 
   - https://github.com/${REPO_NAME}/issues 
@@ -580,7 +580,7 @@ We thank the many humans that created us and those who created and maintained th
 
 # Author contributions
 
-Nomer was responsible for name alignments. Elton carried out dataset extraction, and generated the review notes.
+Nomer was responsible for name alignments. Elton carried out dataset extraction, and generated the review notes. Preston tracked, versioned, and packaged, the dataset under review.
 
 [^1]: Disclaimer: The results in this review should be considered friendly, yet naive, notes from an unsophisticated robot. Please keep that in mind when considering the review results. 
 [^2]: According to http://opendefinition.org/: "Open data is data that can be freely used, re-used and redistributed by anyone - subject only, at most, to the requirement to attribute and sharealike."
