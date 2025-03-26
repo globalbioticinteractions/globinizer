@@ -448,6 +448,8 @@ The review is performed through programmatic scripts that leverage tools like Pr
  | [elton](https://github.com/globalbioticinteractions/elton) | $(echo "${ELTON_VERSION}" | version_of) | 
  | [nomer](https://github.com/globalbioticinteractions/nomer) | $(echo "${NOMER_VERSION}" | version_of) |  
  | [mlr](https://miller.readthedocs.io/en/6.8.0/) | $(mlr --version | version_of) |  
+ | [jq](https://jqlang.org/) | $(jq --version | version_of) |  
+ | [yq](https://mikefarah.gitbook.io/yq) | $(yq --version | version_of) |  
  | [pandoc](https://pandoc.org/) | $(pandoc --version | version_of) |  
 : Tools used in this review process
 
