@@ -325,6 +325,7 @@ function pluralize_taxon {
 }
 
 function generate_zenodo_deposit_metadata {
+  local report_md="${1}"
   cat <<_EOF_
  {
   "metadata": {
@@ -379,19 +380,10 @@ function generate_zenodo_deposit_metadata {
       }
     ],
     "publication_type": "datapaper",
-    "title": "$(generate_title)",
-    "publication_date": "$(date --iso-8601)",
-    "keywords": [
-      "Biodiversity",
-      "Global Biotic Interactions",
-      "Review",
-      "Species Interactions",
-      "Biotic Interactions",
-      "Ecology",
-      "Biology"
-    ],
-    "description": "Life on Earth is sustained by complex interactions between organisms and their environment. These biotic interactions can be captured in datasets and published digitally. We present a review process of such an openly accessible digital interactions dataset of known origin, and discuss its outcome. The ${summaryPhrase} The report includes detailed summaries of interactions data as well as a taxonomic review from multiple catalogs.\n $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f citation,archiveURI,lastSeenAt | tail -n+2 | sort | uniq | tr '\t' ' ') ${DATASET_VERSION}
-" 
+    "title": "$(cat ${report_md} | yq --front-matter=extract .title)",
+    "publication_date": "$(cat ${report_md} | yq --front-matter=extract .date)",
+    "keywords": $(cat ${report_md} | yq -o json --front-matter=extract .keywords),
+    "description": "$(cat ${report_md} | jq -R -s '.')" 
   }
 } 
 _EOF_
@@ -620,6 +612,7 @@ function install_deps {
     sudo apt -q update &> /dev/null
     sudo apt -q install miller jq -y &> /dev/null
     curl --silent -L https://github.com/jgm/pandoc/releases/download/3.1.6.1/pandoc-3.1.6.1-1-amd64.deb > pandoc.deb && sudo apt install -q ./pandoc.deb &> /dev/null
+    curl --silent -L https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 > /usr/bin/yq && chmod +x /usr/bin/yq &> /dev/null
     sudo apt -q install pandoc-citeproc
     sudo apt -q install texlive texlive-xetex lmodern
     sudo apt -q install graphviz
@@ -964,7 +957,7 @@ generate_md_report\
  > review.md
 
 
-generate_zenodo_deposit_metadata\
+generate_zenodo_deposit_metadata "index.md"\
  > zenodo_deposit.json 
  
 cat index.md\
