@@ -960,6 +960,7 @@ generate_md_report\
 
 
 generate_zenodo_deposit_metadata "index.md"\
+ | jq -c .\
  > zenodo_deposit.json 
  
 cat index.md\
