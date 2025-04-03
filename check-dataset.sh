@@ -961,7 +961,7 @@ generate_md_report\
 
 generate_zenodo_deposit_metadata "index.md"\
  | jq -c .\
- > zenodo_deposit.json 
+ > zenodo.json 
  
 cat index.md\
  | export_report_as docx\
@@ -1042,7 +1042,7 @@ then
   upload interaction.svg "interaction data model diagram"
   upload HEAD "fingerprint (or version) of dataset under review"
   upload prov.nq "description of origin of dataset under review"
-  upload zenodo_deposit.json "metadata for Zenodo record deposit"
+  upload zenodo.json "metadata for Zenodo record deposit"
   upload data.zip "Preston archive of dataset under review"
 
   for networkgraph in $(cat network-graph-names.txt)
