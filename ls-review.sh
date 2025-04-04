@@ -3,7 +3,7 @@
 # list review urls for a GloBI namespace
 # 
 # usage:
-#   list-review-files globalbioticinteractions/template-dataset 
+#   ./ls-review globalbioticinteractions/template-dataset 
 #
 
 set -eu
