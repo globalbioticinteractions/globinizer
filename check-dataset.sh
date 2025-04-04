@@ -30,6 +30,7 @@ export PRESTON_JAR="$PWD/preston.jar"
 export PRESTON_OPTS=" --algo ${HASH_ALGO}"
 
 export NOMER_VERSION=0.5.15
+export GLOBINIZER_VERSION=0.4.0
 export NOMER_JAR="$PWD/nomer.jar"
 export NOMER_PROPERTIES="$(mktemp)"
 export NOMER_CACHE_DIR="${NOMER_CACHE_DIR:-~/.cache/nomer}"
@@ -264,6 +265,21 @@ function generate_bibliography {
                   },
 }
 
+@software{globinizer,
+  author       = {Jorrit Poelen and
+                  Katja Seltmann and
+                  Daniel Mietchen},
+  title        = {globalbioticinteractions/globinizer: 0.4.0},
+  month        = feb,
+  year         = 2024,
+  publisher    = {Zenodo},
+  version      = {0.4.5},
+  doi          = {10.5281/zenodo.10647565},
+  url          = {https://doi.org/10.5281/zenodo.10647565},
+}
+
+
+
 _EOF_
 }
 
@@ -412,7 +428,7 @@ author:
   - https://globalbioticinteractions.org/contribute 
   - https://github.com/${REPO_NAME}/issues 
 abstract: |
-  Life on Earth is sustained by complex interactions between organisms and their environment. These biotic interactions can be captured in datasets and published digitally. We present a review process of such an openly accessible digital interactions dataset of known origin, and discuss its outcome. The ${summaryPhrase} The report includes detailed summaries of interactions data as well as a taxonomic review from multiple catalogs.
+Life on Earth is sustained by complex interactions between organisms and their environment. These biotic interactions can be captured in datasets and published digitally. We present a review and archiving process for such an openly accessible digital interactions dataset of known origin and discuss its outcome. The ${summaryPhrase} This report includes detailed summaries of interaction data, a taxonomic review from multiple catalogs, and an archived version of the dataset from which the reviews are derived.
 bibliography: biblio.bib
 keywords:
   - biodiversity informatics
@@ -430,9 +446,11 @@ reference-section-title: References
 
 $(generate_dataset_section)
 
-## Data Review
+## Data Review and Archive
 
-Data review can be a time consuming process, especially when done manually. This review report aims to help facilitate data review of species interaction claims made in datasets registered with Global Biotic Interactions [@Poelen_2014]. The review includes summary statistics of, and observations about, the dataset under review:
+Data review and archiving can be a time-consuming process, especially when done manually. This review report aims to help facilitate both activities. It automates the archiving of datasets, including Darwin Core archives, and is a citable backup of a version of the dataset. Additionally, an automatic review of species interaction claims made in the dataset is generated and registered with Global Biotic Interactions [@Poelen_2014].
+
+This review includes summary statistics abut, and observations about, the dataset under review:
 
 > $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f citation,archiveURI,lastSeenAt | tail -n+2 | sort | uniq | tr '\t' ' ') ${DATASET_VERSION}
 
@@ -440,13 +458,14 @@ For additional metadata related to this dataset, please visit [https://github.co
 
 # Methods
 
-The review is performed through programmatic scripts that leverage tools like Preston [@Preston], Elton [@Elton], Nomer [@Nomer] combined with third-party tools like grep, mlr, tail and head. 
+The review is performed through programmatic scripts that leverage tools like Preston [@Preston], Elton [@Elton], Nomer [@Nomer], globinizer [@globinizer] combined with third-party tools like grep, mlr, tail and head.
 
  | tool name | version | 
  | --- | --- | 
  | [preston](https://github.com/bio-guoda/preston) | $(echo "${PRESTON_VERSION}" | version_of) |  
  | [elton](https://github.com/globalbioticinteractions/elton) | $(echo "${ELTON_VERSION}" | version_of) | 
  | [nomer](https://github.com/globalbioticinteractions/nomer) | $(echo "${NOMER_VERSION}" | version_of) |  
+ | [globinizer](https://github.com/globalbioticinteractions/globinizer) | $(echo "${GLOBINIZER_VERSION}" | version_of) |  
  | [mlr](https://miller.readthedocs.io/en/6.8.0/) | $(mlr --version | version_of) |  
  | [jq](https://jqlang.org/) | $(jq --version | version_of) |  
  | [yq](https://mikefarah.gitbook.io/yq) | $(yq --version | version_of) |  
@@ -482,6 +501,10 @@ You can find a recent copy of the full review script at [check-data.sh](https://
 # Results
 
 In the following sections, the results of the review are summarized [^1]. Then, links to the detailed review reports are provided.
+
+## Archived Dataset
+
+The _data.zip_ file in this archive contains the complete, unmodified archived dataset.
 
 ## Biotic Interactions
 
@@ -571,6 +594,8 @@ If you'd like to keep track of reviews or index status of the dataset under revi
 
 
 # Discussion
+
+This review and archive provides a means of creating citable versions of datasets that change frequently. This may be useful for dataset managers, including natural history collection data managers, as a backup archive of a shared Darwin Core archive. It also serves as a means of creating a trackable citation for the dataset in an automated way, while also including some information about the contents of the dataset.
 
 This review aims to provide a perspective on the dataset to aid in understanding of species interaction claims discovered. However, it is important to note that this review does *not* assess the quality of the dataset. Instead, it serves as an indication of the open-ness[^2] and FAIRness [@Wilkinson_2016; @trekels_maarten_2023_8176978] of the dataset: to perform this review, the data was likely openly available, **F**indable, **A**ccessible, **I**nteroperable and **R**eusable. The current Open-FAIR assessment is qualitative, and a more quantitative approach can be implemented with specified measurement units. 
 
