@@ -510,7 +510,7 @@ In the following sections, the results of the review are summarized [^1]. Then, 
 
 The following table includes a list of files generated as part of this review: 
 
-$(cat <(echo -e "filename\tdescription") <(cat "${FILENAME_FILELIST_TSV}" | mlr --itsvlite --omd put -S '$filename=sub($filename,".*","[\0]({{ ZENODO_DEPOSIT_ID }}/files/\0)")')
+$(cat <(echo -e "filename\tdescription") <(cat "${FILENAME_FILELIST_TSV}" | mlr --itsvlite --omd put -S '$filename=sub($filename,".*","[\0](\0)")')
 : Files generated as part of this review.
 
 
