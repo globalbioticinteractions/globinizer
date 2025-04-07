@@ -428,7 +428,7 @@ author:
   - https://globalbioticinteractions.org/contribute 
   - https://github.com/${REPO_NAME}/issues 
 abstract: |
-Life on Earth is sustained by complex interactions between organisms and their environment. These biotic interactions can be captured in datasets and published digitally. We present a review and archiving process for such an openly accessible digital interactions dataset of known origin and discuss its outcome. The ${summaryPhrase} This report includes detailed summaries of interaction data, a taxonomic review from multiple catalogs, and an archived version of the dataset from which the reviews are derived.
+  Life on Earth is sustained by complex interactions between organisms and their environment. These biotic interactions can be captured in datasets and published digitally. We present a review and archiving process for such an openly accessible digital interactions dataset of known origin and discuss its outcome. The ${summaryPhrase} This report includes detailed summaries of interaction data, a taxonomic review from multiple catalogs, and an archived version of the dataset from which the reviews are derived.
 bibliography: biblio.bib
 keywords:
   - biodiversity informatics
