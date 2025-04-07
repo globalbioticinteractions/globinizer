@@ -508,11 +508,14 @@ The following files are produced in this review:
 
  filename | description
  --- | ---  
- [biblio.bib](biblio.bib) | 
- [data.zip](data.zip) | 
- [HEAD](HEAD) | 
- [index.docx](index.docx) | 
- [indexed-citations.csv.gz](indexed-citations.csv.gz) | 
+ [biblio.bib](biblio.bib) | list of bibliographic reference of this review 
+ [data.zip](data.zip) | a Preston [@Preston] archive of the data under review
+ [HEAD](HEAD) | the digital signature of the data under review
+ [index.docx](index.docx) | review in MS Word format 
+ [index.html](index.html) | review in HTML format 
+ [index.md](index.md) |  review in Pandoc markdown format
+ [index.pdf](index.pdf) | review in PDF format
+ [indexed-citations.csv.gz](indexed-citations.csv.gz) |  
  [indexed-citations.html.gz](indexed-citations.html.gz) | 
  [indexed-citations.tsv.gz](indexed-citations.tsv.gz) | 
  [indexed-interactions-col-family-col-family.svg](indexed-interactions-col-family-col-family.svg) | 
@@ -562,15 +565,12 @@ The following files are produced in this review:
  [indexed-names-sample.html](indexed-names-sample.html) | 
  [indexed-names-sample.tsv](indexed-names-sample.tsv) | 
  [indexed-names.tsv.gz](indexed-names.tsv.gz) | 
- [index.html](index.html) | 
- [index.md](index.md) | 
- [index.pdf](index.pdf) | 
  [interaction.svg](interaction.svg) | 
  [nanopub-sample.trig](nanopub-sample.trig) | 
  [nanopub.trig.gz](nanopub.trig.gz) | 
  [process.svg](process.svg) | 
- [prov.nq](prov.nq) | 
- [review.csv.gz](review.csv.gz) | 
+ [prov.nq](prov.nq) | origin of the dataset under review as expressed in rdf/nquads 
+ [review.csv.gz](review.csv.gz) | review notes
  [review.html.gz](review.html.gz) | 
  [review-sample.csv](review-sample.csv) | 
  [review-sample.html](review-sample.html) | 
@@ -578,7 +578,7 @@ The following files are produced in this review:
  [review.svg](review.svg) | 
  [review.tsv.gz](review.tsv.gz) | 
  [review.zip](review.zip) | 
- [zenodo.json](zenodo.json) | 
+ [zenodo.json](zenodo.json) | metadata of this review expressed in Zenodo record metadata
 
 ## Archived Dataset
 
