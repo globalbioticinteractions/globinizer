@@ -38,7 +38,7 @@ export NOMER_OPTS=""
 
 export NETWORK_COMPILER_SCRIPT="$(echo "$REVIEW_SCRIPT" | sed -E 's+/[^/]{1,}$++g')/compile-network.sh"
 export NETWORK_COMPILER_PRESENT=""
-export NETWORK_CATALOG="col"
+export NETWORK_CATALOG="globalnames"
 export NETWORK_CATALOG_DESCRIPTION="Catalogue of Life"
 
 export REVIEW_REPO_HOST="blob.globalbioticinteractions.org"
@@ -50,7 +50,7 @@ export MLR_TSV_INPUT_OPTS="--icsvlite --ifs tab"
 export MLR_TSV_OUTPUT_OPTS="--ocsvlite --ofs tab"
 export MLR_TSV_OPTS="${MLR_TSV_INPUT_OPTS} ${MLR_TSV_OUTPUT_OPTS}"
 
-export TAXONOMIES="col ncbi discoverlife gbif itis wfo mdd tpt pbdb worms"
+export TAXONOMIES="globalnames"
 
 function echo_logo {
   echo "$(cat <<_EOF_
@@ -428,7 +428,7 @@ author:
   - https://globalbioticinteractions.org/contribute 
   - https://github.com/${REPO_NAME}/issues 
 abstract: |
-Life on Earth is sustained by complex interactions between organisms and their environment. These biotic interactions can be captured in datasets and published digitally. We present a review and archiving process for such an openly accessible digital interactions dataset of known origin and discuss its outcome. The ${summaryPhrase} This report includes detailed summaries of interaction data, a taxonomic review from multiple catalogs, and an archived version of the dataset from which the reviews are derived.
+  Life on Earth is sustained by complex interactions between organisms and their environment. These biotic interactions can be captured in datasets and published digitally. We present a review and archiving process for such an openly accessible digital interactions dataset of known origin and discuss its outcome. The ${summaryPhrase} This report includes detailed summaries of interaction data, a taxonomic review from multiple catalogs, and an archived version of the dataset from which the reviews are derived.
 bibliography: biblio.bib
 keywords:
   - biodiversity informatics
