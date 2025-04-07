@@ -502,6 +502,84 @@ You can find a recent copy of the full review script at [check-data.sh](https://
 
 In the following sections, the results of the review are summarized [^1]. Then, links to the detailed review reports are provided.
 
+## Files
+
+The following files are produced in this review:
+
+ filename | description
+ --- | ---  
+ [biblio.bib](biblio.bib) | 
+ [data.zip](data.zip) | 
+ [HEAD](HEAD) | 
+ [index.docx](index.docx) | 
+ [indexed-citations.csv.gz](indexed-citations.csv.gz) | 
+ [indexed-citations.html.gz](indexed-citations.html.gz) | 
+ [indexed-citations.tsv.gz](indexed-citations.tsv.gz) | 
+ [indexed-interactions-col-family-col-family.svg](indexed-interactions-col-family-col-family.svg) | 
+ [indexed-interactions-col-kingdom-col-kingdom.svg](indexed-interactions-col-kingdom-col-kingdom.svg) | 
+ [indexed-interactions.csv.gz](indexed-interactions.csv.gz) | 
+ [indexed-interactions.html.gz](indexed-interactions.html.gz) | 
+ [indexed-interactions-sample.csv](indexed-interactions-sample.csv) | 
+ [indexed-interactions-sample.html](indexed-interactions-sample.html) | 
+ [indexed-interactions-sample.tsv](indexed-interactions-sample.tsv) | 
+ [indexed-interactions.tsv.gz](indexed-interactions.tsv.gz) | 
+ [indexed-names.csv.gz](indexed-names.csv.gz) | 
+ [indexed-names.html.gz](indexed-names.html.gz) | 
+ [indexed-names-resolved-col.csv.gz](indexed-names-resolved-col.csv.gz) | 
+ [indexed-names-resolved-col.html.gz](indexed-names-resolved-col.html.gz) | 
+ [indexed-names-resolved-col.tsv.gz](indexed-names-resolved-col.tsv.gz) | 
+ [indexed-names-resolved.csv.gz](indexed-names-resolved.csv.gz) | 
+ [indexed-names-resolved-discoverlife.csv.gz](indexed-names-resolved-discoverlife.csv.gz) | 
+ [indexed-names-resolved-discoverlife.html.gz](indexed-names-resolved-discoverlife.html.gz) | 
+ [indexed-names-resolved-discoverlife.tsv.gz](indexed-names-resolved-discoverlife.tsv.gz) | 
+ [indexed-names-resolved-gbif.csv.gz](indexed-names-resolved-gbif.csv.gz) | 
+ [indexed-names-resolved-gbif.html.gz](indexed-names-resolved-gbif.html.gz) | 
+ [indexed-names-resolved-gbif.tsv.gz](indexed-names-resolved-gbif.tsv.gz) | 
+ [indexed-names-resolved.html.gz](indexed-names-resolved.html.gz) | 
+ [indexed-names-resolved-itis.csv.gz](indexed-names-resolved-itis.csv.gz) | 
+ [indexed-names-resolved-itis.html.gz](indexed-names-resolved-itis.html.gz) | 
+ [indexed-names-resolved-itis.tsv.gz](indexed-names-resolved-itis.tsv.gz) | 
+ [indexed-names-resolved-mdd.csv.gz](indexed-names-resolved-mdd.csv.gz) | 
+ [indexed-names-resolved-mdd.html.gz](indexed-names-resolved-mdd.html.gz) | 
+ [indexed-names-resolved-mdd.tsv.gz](indexed-names-resolved-mdd.tsv.gz) | 
+ [indexed-names-resolved-ncbi.csv.gz](indexed-names-resolved-ncbi.csv.gz) | 
+ [indexed-names-resolved-ncbi.html.gz](indexed-names-resolved-ncbi.html.gz) | 
+ [indexed-names-resolved-ncbi.tsv.gz](indexed-names-resolved-ncbi.tsv.gz) | 
+ [indexed-names-resolved-pbdb.csv.gz](indexed-names-resolved-pbdb.csv.gz) | 
+ [indexed-names-resolved-pbdb.html.gz](indexed-names-resolved-pbdb.html.gz) | 
+ [indexed-names-resolved-pbdb.tsv.gz](indexed-names-resolved-pbdb.tsv.gz) | 
+ [indexed-names-resolved-tpt.csv.gz](indexed-names-resolved-tpt.csv.gz) | 
+ [indexed-names-resolved-tpt.html.gz](indexed-names-resolved-tpt.html.gz) | 
+ [indexed-names-resolved-tpt.tsv.gz](indexed-names-resolved-tpt.tsv.gz) | 
+ [indexed-names-resolved.tsv.gz](indexed-names-resolved.tsv.gz) | 
+ [indexed-names-resolved-wfo.csv.gz](indexed-names-resolved-wfo.csv.gz) | 
+ [indexed-names-resolved-wfo.html.gz](indexed-names-resolved-wfo.html.gz) | 
+ [indexed-names-resolved-wfo.tsv.gz](indexed-names-resolved-wfo.tsv.gz) | 
+ [indexed-names-resolved-worms.csv.gz](indexed-names-resolved-worms.csv.gz) | 
+ [indexed-names-resolved-worms.html.gz](indexed-names-resolved-worms.html.gz) | 
+ [indexed-names-resolved-worms.tsv.gz](indexed-names-resolved-worms.tsv.gz) | 
+ [indexed-names-sample.csv](indexed-names-sample.csv) | 
+ [indexed-names-sample.html](indexed-names-sample.html) | 
+ [indexed-names-sample.tsv](indexed-names-sample.tsv) | 
+ [indexed-names.tsv.gz](indexed-names.tsv.gz) | 
+ [index.html](index.html) | 
+ [index.md](index.md) | 
+ [index.pdf](index.pdf) | 
+ [interaction.svg](interaction.svg) | 
+ [nanopub-sample.trig](nanopub-sample.trig) | 
+ [nanopub.trig.gz](nanopub.trig.gz) | 
+ [process.svg](process.svg) | 
+ [prov.nq](prov.nq) | 
+ [review.csv.gz](review.csv.gz) | 
+ [review.html.gz](review.html.gz) | 
+ [review-sample.csv](review-sample.csv) | 
+ [review-sample.html](review-sample.html) | 
+ [review-sample.tsv](review-sample.tsv) | 
+ [review.svg](review.svg) | 
+ [review.tsv.gz](review.tsv.gz) | 
+ [review.zip](review.zip) | 
+ [zenodo.json](zenodo.json) | 
+
 ## Archived Dataset
 
 The _data.zip_ file in this archive contains the complete, unmodified archived dataset.
