@@ -43,7 +43,6 @@ export NETWORK_CATALOG_DESCRIPTION="Catalogue of Life"
 
 export REVIEW_REPO_HOST="blob.globalbioticinteractions.org"
 export README=$(mktemp)
-export FILELIST=$(mktemp)
 export FILENAME_README=README.txt
 export FILENAME_FILELIST_TSV=files.tsv
 export FILENAME_FILELIST_CSV=files.csv
@@ -510,7 +509,7 @@ In the following sections, the results of the review are summarized [^1]. Then, 
 
 The following table includes a list of files generated as part of this review: 
 
-$(cat <(echo -e "filename\tdescription") <(cat "${FILENAME_FILELIST_TSV}" | mlr --itsvlite --omd put -S '$filename=sub($filename,".*","[\0]({{ ZENODO_DEPOSIT_ID }}/files/\0)")')
+$(cat "${FILENAME_FILELIST_TSV}" | mlr --itsvlite --omd cat)
 : Files generated as part of this review.
 
 
@@ -653,7 +652,7 @@ function save_filelist {
   cat <(echo -e "filename\tdescription") "${FILES}"\
     > "${FILENAME_FILELIST_TSV}"
   
-  cat "${FILENAME_FILELIST.TSV}"\
+  cat <(echo -e "filename\tdescription") "${FILES}"\
     | mlr --itsvlite --ocsv cat\
     > "${FILENAME_FILELIST_CSV}"
 }
