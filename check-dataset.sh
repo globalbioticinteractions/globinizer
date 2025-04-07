@@ -43,6 +43,9 @@ export NETWORK_CATALOG_DESCRIPTION="Catalogue of Life"
 
 export REVIEW_REPO_HOST="blob.globalbioticinteractions.org"
 export README=$(mktemp)
+export FILENAME_README=README.txt
+export FILENAME_FILELIST_TSV=files.tsv
+export FILENAME_FILELIST_CSV=files.csv
 export REVIEW_DIR="${PWD}/review/${REPO_NAME}"
 
 export MLR_TSV_OPTS="--csvlite --fs tab"
@@ -502,6 +505,14 @@ You can find a recent copy of the full review script at [check-data.sh](https://
 
 In the following sections, the results of the review are summarized [^1]. Then, links to the detailed review reports are provided.
 
+## Files
+
+The following table includes a list of files generated as part of this review: 
+
+$(cat "${FILENAME_FILELIST_TSV}" | mlr --itsvlite --omd cat)
+: Files generated as part of this review.
+
+
 ## Archived Dataset
 
 The _data.zip_ file in this archive contains the complete, unmodified archived dataset.
@@ -626,11 +637,24 @@ function use_review_dir {
 }
 
 function tee_readme {
-  tee --append $README
+  tee --append "${README}"
 }
 
 function save_readme {
-  cat ${README} > README.txt
+  cat "${README}" > "${FILENAME_README}"
+}
+
+function tee_filelist {
+  tee --append "${FILES}"
+}
+
+function save_filelist {
+  cat <(echo -e "filename\tdescription") "${FILES}"\
+    > "${FILENAME_FILELIST_TSV}"
+  
+  cat <(echo -e "filename\tdescription") "${FILES}"\
+    | mlr --itsvlite --ocsv cat\
+    > "${FILENAME_FILELIST_CSV}"
 }
 
 function install_deps {
@@ -1027,6 +1051,7 @@ function upload {
      cat upload.log
   else
      echo "https://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/$1" | tee_readme
+     echo -e "${1}\t${2}" | tee_files
   fi
 
 }
@@ -1049,7 +1074,7 @@ function upload_package {
 #fi
 
 mkdir -p tmp-review
-zip -r tmp-review/review.zip README.txt index.* data/ indexed-* review* *.css *.svg *.png *.bib *.json 
+zip -r tmp-review/review.zip "${FILENAME_FILELIST_TSV}" "${FILENAME_FILELIST_CSV}" "${FILENAME_README}" index.* data/ indexed-* review* *.css *.svg *.png *.bib *.json 
 mv tmp-review/review.zip review.zip
 zip -r data.zip data/
 
@@ -1113,9 +1138,14 @@ then
 
   
   upload review.zip "review archive"
-  
+
   save_readme
-  upload README.txt "review summary"
+  upload "${FILENAME_README}" "review summary"
+
+  save_filelist
+  upload "${FILENAME_FILELIST_TSV}" "review file list in tab separated format"
+  upload "${FILENAME_FILELIST_CSV}" "review file list in comma separated format"
+
   if [[ ${LAST_UPLOAD_RESULT} -eq 0 ]]
   then
     clean_review_dir
