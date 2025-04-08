@@ -525,7 +525,7 @@ or visually, in a process diagram.
 
 ![Review Process Overview](process.svg)
 
-You can find a recent copy of the full review script at [check-data.sh](https://github.com/globalbioticinteractions/globinizer/blob/master/check-dataset.sh). 
+	You can find a copy of the full review script at [check-data.sh](check-dataset.sh). See also [GitHub](https://github.com/globalbioticinteractions/globinizer/blob/master/check-dataset.sh) and [Codeberg](https://codeberg.org/globalbioticinteractions/globinizer/src/branch/master/check-dataset.sh). 
 
 # Results
 
@@ -969,6 +969,10 @@ else
   ${ELTON_CMD} prov ${ELTON_OPTS} ${REPO_NAME} | ${ELTON_CMD} tee ${ELTON_OPTS} | ${PRESTON_CMD} append ${PRESTON_OPTS}
 fi
 
+# capture this review script
+cat "${REVIEW_SCRIPT}"\
+ > check-dataset.sh
+
 # capture data package version
 DATASET_VERSION=$(${PRESTON_CMD} head ${PRESTON_OPTS})
 DATASET_VERSION_HEX=$(echo "${DATASET_VERSION}" | sed -E "s+hash://[^/]*/++g")
@@ -1168,6 +1172,7 @@ zip -r data.zip data/
 if [[ -n $(which s3cmd) ]] && [[ -n ${S3CMD_CONFIG} ]]
 then
   echo -e "\nThis review generated the following resources:" | tee_readme
+  upload check-dataset.sh "review workflow bash script"
   upload index.html "review summary web page"
   upload index.md "review pandoc page"
   upload index.docx "review pandoc word document"
