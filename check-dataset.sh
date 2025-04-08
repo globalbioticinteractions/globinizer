@@ -604,12 +604,11 @@ The following files are produced in this review:
  [review-sample.html](review-sample.html) | first 500 review notes associated with the dataset under review in html format
  [review-sample.tsv](review-sample.tsv) | first 500 review notes associated with the dataset under review in tab-separated values format
  [review.svg](review.svg) | a review badge generated as part of the dataset review process
- [review.zip](review.zip) | an zip archive containing all resources listed here 
  [zenodo.json](zenodo.json) | metadata of this review expressed in Zenodo record metadata
 
 ## Archived Dataset
 
-Note that [_data.zip_](data.zip) file in this archive contains the complete, unmodified archived dataset under review, whereas [_review.zip_](review.zip) also contains the associated review resources. 
+Note that [_data.zip_](data.zip) file in this archive contains the complete, unmodified archived dataset under review. 
 
 ## Biotic Interactions
 
@@ -1165,8 +1164,6 @@ function upload_package {
 #fi
 
 mkdir -p tmp-review
-zip -r tmp-review/review.zip README.txt index.* data/ indexed-* review* *.css *.svg *.png *.bib *.json 
-mv tmp-review/review.zip review.zip
 zip -r data.zip data/
 
 # attempt to use s3cmd tool if available and configured
@@ -1228,9 +1225,6 @@ then
     upload data.tar.gz "preston data archive"
   fi
 
-  
-  upload review.zip "review archive"
-  
   save_readme
   upload README.txt "review summary"
   if [[ ${LAST_UPLOAD_RESULT} -eq 0 ]]
