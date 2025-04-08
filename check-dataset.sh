@@ -612,7 +612,7 @@ The following files are produced in this review:
 
 ## Archived Dataset
 
-Note that _data.zip_ file in this archive contains the complete, unmodified archived dataset under review, whereas _review.zip_ also contains the associated review resources. 
+Note that [_data.zip_](data.zip) file in this archive contains the complete, unmodified archived dataset under review, whereas [_review.zip_](review.zip) also contains the associated review resources. 
 
 ## Biotic Interactions
 
