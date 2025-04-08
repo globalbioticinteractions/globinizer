@@ -667,7 +667,7 @@ $(cat indexed-names-resolved.tsv.gz | gunzip | mlr ${MLR_TSV_INPUT_OPTS} --omd c
 
 | catalog name | alignment results |
 | --- | --- |
-$(echo "${TAXONOMIES}" | tr ' ' '\n' | awk '{ print "| " $1 " | [associated names alignments (first 500](indexed-names-resolved-" $1 ".html), full [csv](indexed-names-resolved-" $1 ".csv)/[tsv](indexed-names-resolved-" $1 ".tsv)) |"}') 
+$(echo "${TAXONOMIES}" | tr ' ' '\n' | awk '{ print "| " $1 " | [associated names alignments (first 500](indexed-names-resolved-" $1 ".html), full [csv](indexed-names-resolved-" $1 ".csv.gz)/[tsv](indexed-names-resolved-" $1 ".tsv.gz)) |"}') 
 : List of Available Name Alignment Reports
 
 ## Additional Reviews
