@@ -525,7 +525,7 @@ or visually, in a process diagram.
 
 ![Review Process Overview](process.svg)
 
-	You can find a copy of the full review script at [check-data.sh](check-dataset.sh). See also [GitHub](https://github.com/globalbioticinteractions/globinizer/blob/master/check-dataset.sh) and [Codeberg](https://codeberg.org/globalbioticinteractions/globinizer/src/branch/master/check-dataset.sh). 
+You can find a copy of the full review script at [check-data.sh](check-dataset.sh). See also [GitHub](https://github.com/globalbioticinteractions/globinizer/blob/master/check-dataset.sh) and [Codeberg](https://codeberg.org/globalbioticinteractions/globinizer/src/branch/master/check-dataset.sh). 
 
 # Results
 
