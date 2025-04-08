@@ -291,7 +291,27 @@ function generate_bibliography {
   version      = {0.27},
   doi          = {10.5281/zenodo.12695629},
   url          = {https://doi.org/10.5281/zenodo.12695629},
-} 
+}
+
+@InProceedings{Nanopub,
+author="Kuhn, Tobias
+and Dumontier, Michel",
+editor="Presutti, Valentina
+and d'Amato, Claudia
+and Gandon, Fabien
+and d'Aquin, Mathieu
+and Staab, Steffen
+and Tordai, Anna",
+title="Trusty URIs: Verifiable, Immutable, and Permanent Digital Artifacts for Linked Data",
+booktitle="The Semantic Web: Trends and Challenges",
+year="2014",
+publisher="Springer International Publishing",
+address="Cham",
+pages="395--410",
+abstract="To make digital resources on the web verifiable, immutable, and permanent, we propose a technique to include cryptographic hash values in URIs. We call them trusty URIs and we show how they can be used for approaches like nanopublications to make not only specific resources but their entire reference trees verifiable. Digital artifacts can be identified not only on the byte level but on more abstract levels such as RDF graphs, which means that resources keep their hash values even when presented in a different format. Our approach sticks to the core principles of the web, namely openness and decentralized architecture, is fully compatible with existing standards and protocols, and can therefore be used right away. Evaluation of our reference implementations shows that these desired properties are indeed accomplished by our approach, and that it remains practical even for very large files.",
+isbn="978-3-319-07443-6"
+}
+ 
 
 _EOF_
 }
