@@ -432,7 +432,7 @@ function generate_zenodo_deposit_metadata {
     "title": $(cat ${report_md} | yq -o json --front-matter=extract .title),
     "publication_date": "$(cat ${report_md} | yq --front-matter=extract .date)",
     "keywords": $(cat ${report_md} | yq -o json --front-matter=extract .keywords),
-    "description": $(cat ${report_md} | pandoc --citeproc - | jq -s -R . | sed -E 's/href=\\"([^.\":]+[.][a-z]{3,4}[^\":]+)\\"/href=\\"\{\{ ZENODO_DEPOSIT_ID \}\}\/files\/\1\\"/g')
+    "description": $(cat ${report_md} | pandoc --citeproc - | jq -s -R . | sed -E 's/href=\\"([^.\":]+[.][a-z][^\":]+)\\"/href=\\"\{\{ ZENODO_DEPOSIT_ID \}\}\/files\/\1\\"/g')
   }
 } 
 _EOF_
@@ -682,7 +682,7 @@ In addition, you can find the most frequently occurring notes in the table below
 $(cat review.tsv.gz | gunzip | mlr ${MLR_TSV_INPUT_OPTS} --omd cut -f reviewCommentType,reviewComment then filter '$reviewCommentType == "note"' then count-distinct -f reviewComment then sort -nr count | head -n6)
 : Most frequently occurring review notes, if any.
 
-For addition information on review notes, please have a look at the first 500 [Review Notes](review.html) or the download full [csv](review.csv) or [tsv](review.tsv) archives.
+For additional information on review notes, please have a look at the first 500 [Review Notes](review.html) or the download full [csv](review.csv) or [tsv](review.tsv) archives.
 
 ## GloBI Review Badge
 
