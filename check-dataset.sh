@@ -602,11 +602,11 @@ The following files are produced in this review:
  [prov.nq](prov.nq) | origin of the dataset under review as expressed in rdf/nquads 
  [review.csv.gz](review.csv.gz) | review notes associated with the dataset under review in gzipped comma-separated values format 
  [review.html.gz](review.html.gz) | review notes associated with the dataset under review in gzipped html format
+ [review.tsv.gz](review.tsv.gz) | review notes associated with the dataset under review in gzipped tab-separated values format
  [review-sample.csv](review-sample.csv) | first 500 review notes associated with the dataset under review in comma-separated values format
  [review-sample.html](review-sample.html) | first 500 review notes associated with the dataset under review in html format
  [review-sample.tsv](review-sample.tsv) | first 500 review notes associated with the dataset under review in tab-separated values format
  [review.svg](review.svg) | a review badge generated as part of the dataset review process
- [review.tsv.gz](review.tsv.gz) | review notes associated with the dataset under review in gzipped tab-separated values format
  [review.zip](review.zip) | an zip archive containing all resources listed here 
  [zenodo.json](zenodo.json) | metadata of this review expressed in Zenodo record metadata
 
@@ -622,7 +622,7 @@ In this review, biotic interactions (or biotic associations) are modeled as a pr
 
 The ${summaryPhrase}
 
-An exhaustive list of indexed interaction claims can be found in [csv](indexed-interactions.csv) and [tsv](indexed-interactions.tsv) archives. To facilitate discovery, the first 500 claims available on the html page at [indexed-interactions.html](indexed-interactions.html) are shown below.
+An exhaustive list of indexed interaction claims can be found in gzipped [csv](indexed-interactions.csv.gz) and [tsv](indexed-interactions.tsv.gz) archives. To facilitate discovery, a preview of claims available in the gzipped html page at [indexed-interactions.html.gz](indexed-interactions.html.gz) are shown below.
 
 The exhaustive list was used to create the following data summaries below.
 
@@ -644,7 +644,7 @@ $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-dis
 
 $(generate_network_graphs)
 
-You can download the indexed dataset under review at [indexed-interactions.csv](indexed-interactions.csv). A tab-separated file can be found at [indexed-interactions.tsv](indexed-interactions.tsv) 
+You can download the indexed dataset under review at [indexed-interactions.csv.gz](indexed-interactions.csv.gz). A tab-separated file can be found at [indexed-interactions.tsv.gz](indexed-interactions.tsv.gz) 
 
 Learn more about the structure of this download at [GloBI website](https://globalbioticinteractions.org), by opening a [GitHub issue](https://github.com/globalbioticinteractions/globalbioticinteractions/issues/new), or by sending an [email](mailto:info@globalbioticinteractions.org).
 
@@ -667,7 +667,7 @@ $(cat indexed-names-resolved.tsv.gz | gunzip | mlr ${MLR_TSV_INPUT_OPTS} --omd c
 
 | catalog name | alignment results |
 | --- | --- |
-$(echo "${TAXONOMIES}" | tr ' ' '\n' | awk '{ print "| " $1 " | [associated names alignments (first 500](indexed-names-resolved-" $1 ".html), full [csv](indexed-names-resolved-" $1 ".csv.gz)/[tsv](indexed-names-resolved-" $1 ".tsv.gz)) |"}') 
+$(echo "${TAXONOMIES}" | tr ' ' '\n' | awk '{ print "| " $1 " | [associated names alignments (first 500)](indexed-names-resolved-" $1 ".html), full [csv](indexed-names-resolved-" $1 ".csv.gz)/[tsv](indexed-names-resolved-" $1 ".tsv.gz)) |"}') 
 : List of Available Name Alignment Reports
 
 ## Additional Reviews
@@ -682,7 +682,7 @@ In addition, you can find the most frequently occurring notes in the table below
 $(cat review.tsv.gz | gunzip | mlr ${MLR_TSV_INPUT_OPTS} --omd cut -f reviewCommentType,reviewComment then filter '$reviewCommentType == "note"' then count-distinct -f reviewComment then sort -nr count | head -n6)
 : Most frequently occurring review notes, if any.
 
-For additional information on review notes, please have a look at the first 500 [Review Notes](review.html) or the download full [csv](review.csv) or [tsv](review.tsv) archives.
+For additional information on review notes, please have a look at the first 500 [Review Notes](review-sample.html) in html format or the download full gzipped [csv](review.csv.gz) or [tsv](review.tsv.gz) archives.
 
 ## GloBI Review Badge
 
@@ -947,6 +947,13 @@ function resolve_names {
     | tsv2html\
     | gzip\
     > ${RESOLVED_HTML}
+  cat ${RESOLVED}\
+    | gunzip\
+    | mlr ${MLR_TSV_OPTS} cut -f providedExternalId,providedName,relationName,resolvedCatalogName,resolvedExternalUrl,resolvedName,resolvedAuthorship,resolvedRank\
+    | tail -n501\
+    | tsv2html\
+    | gzip\
+    > ${RESOLVED_STEM}-sample.html
   echo [$2] resolved $(cat $RESOLVED | gunzip | tail -n+2 | grep -v NONE | wc -l) out of $(cat $RESOLVED | gunzip | tail -n+2 | wc -l) names.
   echo [$2] first 10 unresolved names include:
   cat $RESOLVED | gunzip | tail -n+2 | grep NONE | cut -f1,2 | head -n11 
