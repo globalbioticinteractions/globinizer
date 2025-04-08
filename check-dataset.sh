@@ -538,6 +538,7 @@ The following files are produced in this review:
  filename | description
  --- | ---  
  [biblio.bib](biblio.bib) | list of bibliographic reference of this review 
+ [check-dataset.sh](check-dataset.sh) | data review workflow/process as expressed in a bash script
  [data.zip](data.zip) | a versioned Preston [@Preston] archive of the data under review
  [HEAD](HEAD) | the digital signature of the data under review
  [index.docx](index.docx) | review in MS Word format 
