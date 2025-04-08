@@ -390,7 +390,7 @@ function generate_zenodo_deposit_metadata {
       {
         "relation": "hasVersion",
         "identifier": "${DATASET_VERSION}"
-      }
+      },
       {
         "relation": "isCompiledBy",
         "identifier": "10.5281/zenodo.14927734",
