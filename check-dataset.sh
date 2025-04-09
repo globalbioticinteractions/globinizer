@@ -428,7 +428,7 @@ function generate_zenodo_deposit_metadata {
     "title": $(cat ${report_md} | yq -o json --front-matter=extract .title),
     "publication_date": "$(cat ${report_md} | yq --front-matter=extract .date)",
     "keywords": $(cat ${report_md} | yq -o json --front-matter=extract .keywords),
-    "description": $(cat ${report_md} | pandoc --citeproc - | jq -s -R . | sed -E 's/href=\\"([^.\":]+[.][a-z][^\":]+)\\"/href=\\"\{\{ ZENODO_DEPOSIT_ID \}\}\/files\/\1\\"/g')
+    "description": $(cat ${report_md} | pandoc --citeproc - | jq -s -R . | sed -E 's/href=\\"([^.\":]+[.][a-z][^\":]+|HEAD)\\"/href=\\"\{\{ ZENODO_DEPOSIT_ID \}\}\/files\/\1\\"/g')
   }
 } 
 _EOF_
