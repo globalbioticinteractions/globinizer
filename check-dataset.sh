@@ -970,8 +970,9 @@ else
 fi
 
 # capture this review script
-cat "${REVIEW_SCRIPT}"\
- > check-dataset.sh
+cat "${REVIEW_SCRIPT}" > check-dataset.sh
+
+echo "getting dataset version..."
 
 # capture data package version
 DATASET_VERSION=$(${PRESTON_CMD} head ${PRESTON_OPTS})
