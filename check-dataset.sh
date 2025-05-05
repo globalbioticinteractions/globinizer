@@ -960,6 +960,7 @@ echo -e "\nReview of [${ELTON_NAMESPACE}] started at [$(date -Iseconds)]." | tee
 
 if [[ -z ${ELTON_UPDATE_DISABLED} ]]
 then
+  echo update using local
   ${ELTON_UPDATE} | ${ELTON_CMD} tee ${ELTON_OPTS} | ${PRESTON_CMD} append ${PRESTON_OPTS}
 else
   echo no update: using provided elton datasets dir [${ELTON_DATASETS_DIR}] instead.
