@@ -969,10 +969,12 @@ else
   ${ELTON_CMD} prov ${ELTON_OPTS} ${REPO_NAME} | ${ELTON_CMD} tee ${ELTON_OPTS} | ${PRESTON_CMD} append ${PRESTON_OPTS}
 fi
 
-if [ ${REVIEW_SCRIPT} -ne $(readlink -f check-dataset.sh) ] 
+if [ "${REVIEW_SCRIPT}" -ne "$(readlink -f check-dataset.sh)" ] 
 then
   echo "include the review script [${REVIEW_SCRIPT}]"
   cat "${REVIEW_SCRIPT}" > check-dataset.sh
+else 
+  echo "review script [${REVIEW_SCRIPT}] already present"
 fi 
 
 echo "getting dataset version..."
