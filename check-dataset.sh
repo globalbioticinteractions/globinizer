@@ -969,8 +969,8 @@ else
   ${ELTON_CMD} prov ${ELTON_OPTS} ${REPO_NAME} | ${ELTON_CMD} tee ${ELTON_OPTS} | ${PRESTON_CMD} append ${PRESTON_OPTS}
 fi
 
-echo "capture this review script ${REVIEW_SCRIPT}"
-cat "${REVIEW_SCRIPT}" > check-dataset.sh
+#echo "capture this review script ${REVIEW_SCRIPT}"
+#cat "${REVIEW_SCRIPT}" > check-dataset.sh
 
 echo "getting dataset version..."
 
