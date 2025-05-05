@@ -744,7 +744,6 @@ function install_deps {
     sudo apt -q install miller jq -y &> /dev/null
     curl --silent -L https://github.com/jgm/pandoc/releases/download/3.1.6.1/pandoc-3.1.6.1-1-amd64.deb > pandoc.deb && sudo apt install -q ./pandoc.deb &> /dev/null
     curl --silent -L https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 > /usr/bin/yq && chmod +x /usr/bin/yq &> /dev/null
-    sudo apt -q install pandoc-citeproc
     sudo apt -q install texlive texlive-xetex lmodern
     sudo apt -q install graphviz
     sudo apt -q install librsvg2-bin
