@@ -329,9 +329,9 @@ function generate_title {
   if [[ $? -eq 0 ]]
   then
     collectionName=$(echo "${eml}" | xmllint --xpath '//collectionName' - | head -n1)
-    echo "Versioned archive of datasets shared by the ${collectionName}, including a Review of Biotic Interactions and Taxon Names Found within the Darwin Core Archive ${DATASET_VERSION}"
+    echo "Versioned Darwin Core Archive Shared by ${collectionName}, Including a Review of Biotic Interactions and Taxon Names ${DATASET_VERSION}"
   else
-    echo "A Review of Biotic Interactions and Taxon Names Found in ${REPO_NAME} ${DATASET_VERSION}"
+    echo "Versioned Archive and Review of Biotic Interactions and Taxon Names Found within ${REPO_NAME} ${DATASET_VERSION}"
   fi
 }
 
