@@ -1096,7 +1096,7 @@ generate_styling\
  > styling.css
 
 function export_report_as {
-  pandoc --embed-resources --standalone --toc --citeproc -t $1 -o -
+  pandoc --embed-resources --standalone --toc --citeproc -t $1 $2 -o -
 }
 
 generate_md_report\
@@ -1112,8 +1112,18 @@ cat index.md\
  | export_report_as docx\
  > index.docx
 
+
+#!/bin/bash
+
+pandoc_opts=""
+if (which xelatex); then
+  # https://github.com/globalbioticinteractions/NeoBat_Interactions/issues/1
+  # https://github.com/globalbioticinteractions/neofrugivory/issues/1
+  pandoc_opts="--pdf-engine=xelatex"
+fi
+
 cat index.md\
- | export_report_as pdf\
+ | export_report_as pdf "${pandoc_opts}"\
  > index.pdf
 
 cat index.md\
