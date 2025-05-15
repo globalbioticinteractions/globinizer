@@ -317,7 +317,7 @@ _EOF_
 }
 
 function get_eml {
-  find datasets/ -type f\
+  find "${ELTON_DATASETS_DIR}/${ELTON_NAMESPACE}" -type f\
   | grep -E "[a-f0-9]{64}$"\
   | awk '{ print "-p " $1 " eml.xml" }'\
   | xargs -L1 unzip\
