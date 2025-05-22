@@ -1122,7 +1122,9 @@ if (which xelatex); then
   pandoc_opts="--pdf-engine=xelatex"
 fi
 
+# see https://github.com/mammalbase/database/issues/3
 cat index.md\
+ | sed 's+[\]N+NA+g'\
  | export_report_as pdf "${pandoc_opts}"\
  > index.pdf
 
