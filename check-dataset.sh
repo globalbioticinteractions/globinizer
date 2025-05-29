@@ -1125,6 +1125,7 @@ fi
 # see https://github.com/mammalbase/database/issues/3
 cat index.md\
  | sed 's+[\]N+NA+g'\
+ | sed 's+[\]textit++g'\
  | export_report_as pdf "${pandoc_opts}"\
  > index.pdf
 
