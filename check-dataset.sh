@@ -29,7 +29,7 @@ export PRESTON_VERSION=0.10.5
 export PRESTON_JAR="$PWD/preston.jar"
 export PRESTON_OPTS=" --algo ${HASH_ALGO}"
 
-export NOMER_VERSION=0.5.15
+export NOMER_VERSION=0.5.17
 export GLOBINIZER_VERSION=0.4.0
 export NOMER_JAR="$PWD/nomer.jar"
 export NOMER_PROPERTIES="$(mktemp)"
