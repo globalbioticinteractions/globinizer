@@ -357,6 +357,10 @@ _EOF_
  fi
 }
 
+function generate_dataset_citation {
+  cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f citation,archiveURI,lastSeenAt | tail -n+2 | sort | uniq | tr '\t' ' ') ${DATASET_VERSION}
+}
+
 function pluralize {
   if [ $1 -gt 1 ]
   then 
@@ -432,7 +436,10 @@ function generate_zenodo_deposit_metadata {
     "additional_descriptions": [{ 
        "type": { "id": "technical-info" },
        "description": $(cat ${report_md} | pandoc --citeproc - | jq -s -R . | sed -E 's/href=\\"([^.\":]+[.][a-z][^\":]+|HEAD)\\"/href=\\"\{\{ ZENODO_DEPOSIT_ID \}\}\/files\/\1?download=1\\"/g')
-      }]
+      }],
+    "references": [
+      "$(generate_dataset_citation)"
+    ]
   }
 } 
 _EOF_
@@ -484,7 +491,7 @@ Data review and archiving can be a time-consuming process, especially when done 
 
 This review includes summary statistics about, and observations about, the dataset under review:
 
-> $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f citation,archiveURI,lastSeenAt | tail -n+2 | sort | uniq | tr '\t' ' ') ${DATASET_VERSION}
+> $(generate_dataset_citation) 
 
 For additional metadata related to this dataset, please visit [https://github.com/${REPO_NAME}](https://github.com/${REPO_NAME}) and inspect associated metadata files including, but not limited to, _README.md_, _eml.xml_, and/or _globi.json_.
 
