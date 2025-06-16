@@ -428,7 +428,11 @@ function generate_zenodo_deposit_metadata {
     "title": $(cat ${report_md} | yq -o json --front-matter=extract .title),
     "publication_date": "$(cat ${report_md} | yq --front-matter=extract .date)",
     "keywords": $(cat ${report_md} | yq -o json --front-matter=extract .keywords),
-    "description": $(cat ${report_md} | pandoc --citeproc - | jq -s -R . | sed -E 's/href=\\"([^.\":]+[.][a-z][^\":]+|HEAD)\\"/href=\\"\{\{ ZENODO_DEPOSIT_ID \}\}\/files\/\1?download=1\\"/g')
+    "description": $(cat ${report_md} | yq -o json --front-matter=extract .abstract),
+    "additional_descriptions": [{ 
+       "type": { "id": "technical-info" },
+       "description": $(cat ${report_md} | pandoc --citeproc - | jq -s -R . | sed -E 's/href=\\"([^.\":]+[.][a-z][^\":]+|HEAD)\\"/href=\\"\{\{ ZENODO_DEPOSIT_ID \}\}\/files\/\1?download=1\\"/g')
+      }]
   }
 } 
 _EOF_
@@ -445,8 +449,7 @@ function generate_md_report {
   uniqueTargetTaxa="$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f targetTaxonName | tail -n+2 | sort | uniq | wc -l))"
   mostFrequentTargetTaxa="$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} count-distinct -f targetTaxonName then sort -nr count then cut -f targetTaxonName | tail -n+2 | head -n1 | tr -d '\n')"
   datasetVolume="$(${PRESTON_CMD} head ${PRESTON_OPTS} | ${PRESTON_CMD} cat | ${PRESTON_CMD} cat | pv -f -b 2>&1 1>/dev/null | tr '\r' '\n' | grep -E '[0-9]' | tail -n1)"
-  summaryPhrase="dataset under review, named $REPO_NAME, has fingerprint ${DATASET_VERSION}, is ${datasetVolume} in size and contains ${numberOfInteractions} interaction$(pluralize ${numberOfInteractions}) with ${numberOfInteractionTypes} unique type$(pluralize ${numberOfInteractionTypes}) of association$(pluralize ${numberOfInteractionTypes}) (e.g., ${mostFrequentInteractionTypes}) between ${uniqueSourceTaxa} primary $(pluralize_taxon ${uniqueSourceTaxa}) (e.g., ${mostFrequentSourceTaxa}) and ${uniqueTargetTaxa} associated $(pluralize_taxon ${uniqueTargetTaxa}) (e.g., ${mostFrequentTargetTaxa})."
-  
+  summaryPhrase="dataset under review, named $REPO_NAME, has fingerprint ${DATASET_VERSION}, is ${datasetVolume} in size and contains ${numberOfInteractions} interaction$(pluralize ${numberOfInteractions}) with ${numberOfInteractionTypes} unique type$(pluralize ${numberOfInteractionTypes}) of association$(pluralize ${numberOfInteractionTypes}) (e.g., ${mostFrequentInteractionTypes}) between ${uniqueSourceTaxa} primary $(pluralize_taxon ${uniqueSourceTaxa}) (e.g., ${mostFrequentSourceTaxa}) and ${uniqueTargetTaxa} associated $(pluralize_taxon ${uniqueTargetTaxa}) (e.g., ${mostFrequentTargetTaxa})."  
   cat <<_EOF_
 ---
 title: $(generate_title)
