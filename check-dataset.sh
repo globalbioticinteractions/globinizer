@@ -358,7 +358,9 @@ _EOF_
 }
 
 function generate_dataset_citation {
-  cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f citation,archiveURI,lastSeenAt | tail -n+2 | sort | uniq | tr '\t' ' ') ${DATASET_VERSION}
+  cat <<_EOF_
+$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f citation,archiveURI,lastSeenAt | tail -n+2 | sort | uniq | tr '\t' ' ') ${DATASET_VERSION}
+_EOF_
 }
 
 function pluralize {
