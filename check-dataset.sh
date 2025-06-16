@@ -359,7 +359,7 @@ _EOF_
 
 function generate_dataset_citation {
   cat <<_EOF_
-$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f citation,archiveURI,lastSeenAt | tail -n+2 | sort | uniq | tr '\t' ' ') ${DATASET_VERSION}
+$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f citation,archiveURI,lastSeenAt | tail -n+2 | sort | uniq | tr '\t' ' ') ${DATASET_VERSION} ${ZENODO_DEPOSIT_ID}
 _EOF_
 }
 
@@ -440,7 +440,7 @@ function generate_zenodo_deposit_metadata {
        "description": $(cat ${report_md} | pandoc --citeproc - | jq -s -R . | sed -E 's/href=\\"([^.\":]+[.][a-z][^\":]+|HEAD)\\"/href=\\"\{\{ ZENODO_DEPOSIT_ID \}\}\/files\/\1?download=1\\"/g')
       }],
     "references": [
-      "$(generate_dataset_citation)"
+      "$(generate_dataset_citation) https://doi.org/10.5281/zenodo.\{\{ ZENODO_DEPOSIT_ID \}\}"
     ]
   }
 } 
