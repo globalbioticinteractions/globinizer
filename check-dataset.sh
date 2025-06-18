@@ -1262,6 +1262,7 @@ then
   upload "indexed-names.parquet" "indexed names"
 
   upload_package_gz indexed-names-resolved "indexed names resolved across taxonomies [${TAXONOMIES}]"  
+  upload "indexed-names-resolved.parquet" "indexed names resolved across taxonomies [${TAXONOMIES}]"
   
   for taxonomy in ${TAXONOMIES}; do 
     upload_package_gz "indexed-names-resolved-${taxonomy}" "indexed names resolved against [${taxonomy}]" ; 
