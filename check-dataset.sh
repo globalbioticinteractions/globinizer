@@ -751,6 +751,16 @@ function save_readme {
   cat ${README} > README.txt
 }
 
+function install_duckdb {
+  DUCKDB_DIR=".duckdb/cli/latest"
+  if [ ! -f $HOME/$DUCKDB_DIR/duckdb ]; then
+    curl https://install.duckdb.org | sh &> /dev/null
+  fi
+  if [[ ! $PATH =~ "$DUCKDB_DIR" ]]; then
+    export PATH=$HOME/$DUCKDB_DIR:$PATH
+  fi
+}
+
 function install_deps {
   if [[ -n ${TRAVIS_REPO_SLUG} || -n ${GITHUB_REPOSITORY} ]]
   then
@@ -763,11 +773,11 @@ function install_deps {
     sudo apt -q install librsvg2-bin
     sudo apt -q install libxml2-utils
     sudo apt -q install pv
-    curl https://install.duckdb.org | sh &> /dev/null
-    export PATH=$HOME'/.duckdb/cli/latest':$PATH
     sudo pip install s3cmd &> /dev/null   
   fi
 
+  install_duckdb
+  
   mlr --version
   s3cmd --version
   java -version
