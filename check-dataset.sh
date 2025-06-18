@@ -511,6 +511,7 @@ The review is performed through programmatic scripts that leverage tools like Pr
  | [jq](https://jqlang.org/) | $(jq --version | version_of) |  
  | [yq](https://mikefarah.gitbook.io/yq) | $(yq --version | version_of) |  
  | [pandoc](https://pandoc.org/) | $(pandoc --version | version_of) |  
+ | [duckdb](https://duckdb.org/) | $(duckdb --version | version_of) |  
 : Tools used in this review process
 
 The review process can be described in the form of the script below ^[Note that you have to first get the data (e.g., via elton pull ${REPO_NAME}) before being able to generate reviews (e.g., elton review ${REPO_NAME}), extract interaction claims (e.g., elton interactions ${REPO_NAME}), or list taxonomic names (e.g., elton names ${REPO_NAME})].
@@ -565,6 +566,7 @@ The following files are produced in this review:
  [indexed-interactions.csv.gz](indexed-interactions.csv.gz) | species interaction claims indexed from the dataset under review in gzipped comma-separated values format 
  [indexed-interactions.html.gz](indexed-interactions.html.gz) | species interaction claims indexed from the dataset under review in gzipped html format
  [indexed-interactions.tsv.gz](indexed-interactions.tsv.gz) | species interaction claims indexed from the dataset under review in gzipped tab-separated values format
+ [indexed-interactions.parquet](indexed-interactions.parquet) | species interaction claims indexed from the dataset under review in Apache Parquet format
  [indexed-interactions-sample.csv](indexed-interactions-sample.csv) | list of species interaction claims indexed from the dataset under review in gzipped comma-separated values format
  [indexed-interactions-sample.html](indexed-interactions-sample.html) | first 500 species interaction claims indexed from the dataset under review in html format 
  [indexed-interactions-sample.tsv](indexed-interactions-sample.tsv) | first 500 species interaction claims indexed from the dataset under review in tab-separated values format
@@ -630,7 +632,7 @@ In this review, biotic interactions (or biotic associations) are modeled as a pr
 
 The ${summaryPhrase}
 
-An exhaustive list of indexed interaction claims can be found in gzipped [csv](indexed-interactions.csv.gz) and [tsv](indexed-interactions.tsv.gz) archives. To facilitate discovery, a preview of claims available in the gzipped html page at [indexed-interactions.html.gz](indexed-interactions.html.gz) are shown below.
+An exhaustive list of indexed interaction claims can be found in gzipped [csv](indexed-interactions.csv.gz), [tsv](indexed-interactions.tsv.gz) and [parquet](indexed-interactions.parquet) archives. To facilitate discovery, a preview of claims available in the gzipped html page at [indexed-interactions.html.gz](indexed-interactions.html.gz) are shown below.
 
 The exhaustive list was used to create the following data summaries below.
 
@@ -761,6 +763,7 @@ function install_deps {
     sudo apt -q install librsvg2-bin
     sudo apt -q install libxml2-utils
     sudo apt -q install pv
+    sudo apt -q install duckdb
     sudo pip install s3cmd &> /dev/null   
   fi
 
@@ -768,6 +771,7 @@ function install_deps {
   s3cmd --version
   java -version
   pandoc --version
+  duckdb --version
 }
 
 function configure_network_compiler {
@@ -1012,6 +1016,7 @@ ${ELTON_CMD} interactions ${ELTON_OPTS} ${ELTON_NAMESPACE} | gzip > indexed-inte
 
 cat indexed-interactions.tsv.gz | gunzip | tsv2csv | gzip > indexed-interactions.csv.gz
 cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -r -f sourceTaxon*,interactionTypeName,targetTaxon*,referenceCitation | tsv2html | gzip > indexed-interactions.html.gz
+duckdb -c "COPY 'indexed-interactions.tsv.gz' TO 'indexed-interactions.parquet';"
 
 cat indexed-interactions.tsv.gz\
 | gunzip\
@@ -1224,6 +1229,7 @@ then
   upload_package_gz review "review notes"
   
   upload_package_gz indexed-interactions "indexed interactions"
+  upload indexed-interactions.parquet "indexed interactions"
   
   upload_package indexed-interactions-sample "indexed interactions sample"
   
