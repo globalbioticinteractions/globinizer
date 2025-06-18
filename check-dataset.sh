@@ -763,7 +763,7 @@ function install_deps {
     sudo apt -q install librsvg2-bin
     sudo apt -q install libxml2-utils
     sudo apt -q install pv
-    sudo apt -q install duckdb
+    curl https://install.duckdb.org | sh &> /dev/null
     sudo pip install s3cmd &> /dev/null   
   fi
 
