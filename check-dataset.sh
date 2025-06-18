@@ -573,6 +573,7 @@ The following files are produced in this review:
  [indexed-names.csv.gz](indexed-names.csv.gz) | taxonomic names indexed from the dataset under review in gzipped comma-separated values format 
  [indexed-names.html.gz](indexed-names.html.gz) | taxonomic names found in the dataset under review in gzipped html format
  [indexed-names.tsv.gz](indexed-names.tsv.gz) | taxonomic names found in the dataset under review in gzipped tab-separated values format
+ [indexed-names.parquet](indexed-names.parquet) | taxonomic names found in the dataset under review in Apache Parquet format
  [indexed-names-resolved-col.csv.gz](indexed-names-resolved-col.csv.gz) | taxonomic names found in the dataset under review aligned with the Catalogue of Life as accessed through the Nomer Corpus of Taxonomic Resources [@NomerCorpus] in gzipped comma-separated values format
  [indexed-names-resolved-col.html.gz](indexed-names-resolved-col.html.gz) | taxonomic names found in the dataset under review aligned with the Catalogue of Life as accessed through the Nomer Corpus of Taxonomic Resources [@NomerCorpus] in gzipped html format
  [indexed-names-resolved-col.tsv.gz](indexed-names-resolved-col.tsv.gz) | taxonomic names found in the dataset under review aligned with the Catalogue of Life as accessed through the Nomer Corpus of Taxonomic Resources [@NomerCorpus] in gzipped tab-separated values format
@@ -969,6 +970,7 @@ function resolve_names {
     | tsv2html\
     | gzip\
     > ${RESOLVED_HTML}
+  duckdb -c "COPY '${RESOLVED}' TO '${RESOLVED_STEM}.parquet';"
   cat ${RESOLVED}\
     | gunzip\
     | mlr ${MLR_TSV_OPTS} cut -f providedExternalId,providedName,relationName,resolvedCatalogName,resolvedExternalUrl,resolvedName,resolvedAuthorship,resolvedRank\
@@ -1048,6 +1050,8 @@ ${ELTON_CMD} names ${ELTON_OPTS} ${ELTON_NAMESPACE}\
 
 cat indexed-names.tsv.gz | gunzip | tsv2csv | gzip > indexed-names.csv.gz
 cat indexed-names.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -r -f taxon* | tsv2html | gzip > indexed-names.html.gz
+duckdb -c "COPY 'indexed-names.tsv.gz' TO 'indexed-names.parquet';"
+
 cat indexed-names.tsv.gz | gunzip | head -n501 > indexed-names-sample.tsv
 cat indexed-names-sample.tsv | tsv2csv > indexed-names-sample.csv
 cat indexed-names-sample.tsv | mlr ${MLR_TSV_OPTS} cut -r -f taxon* | tsv2html > indexed-names-sample.html
