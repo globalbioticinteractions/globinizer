@@ -764,6 +764,7 @@ function install_deps {
     sudo apt -q install libxml2-utils
     sudo apt -q install pv
     curl https://install.duckdb.org | sh &> /dev/null
+    export PATH=$HOME'/.duckdb/cli/latest':$PATH
     sudo pip install s3cmd &> /dev/null   
   fi
 
