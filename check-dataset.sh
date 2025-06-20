@@ -1090,7 +1090,7 @@ cat <(gzipped_name_header) <(gzipped_name_tails)  > indexed-names-resolved.tsv.g
 
 mlr ${MLR_TSV_INPUT_OPTS} --ocsv --prepipe gunzip cat indexed-names-resolved.tsv.gz | gzip > indexed-names-resolved.csv.gz
 cat indexed-names-resolved.tsv.gz | gunzip | tsv2html | gzip > indexed-names-resolved.html.gz
-duckdb -c "COPY FROM 'indexed-names-resolved.tsv.gz' TO 'indexed-names-resolved.parquet'"
+duckdb -c "COPY 'indexed-names-resolved.tsv.gz' TO 'indexed-names-resolved.parquet'"
 
 cat indexed-interactions.tsv.gz | gunzip | head -n501 > indexed-interactions-sample.tsv
 cat indexed-interactions-sample.tsv | tsv2csv > indexed-interactions-sample.csv
