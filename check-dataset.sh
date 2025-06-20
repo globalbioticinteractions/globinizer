@@ -763,12 +763,9 @@ function save_readme {
 }
 
 function install_duckdb {
-  DUCKDB_DIR=".duckdb/cli/latest"
-  if [ ! -f $HOME/$DUCKDB_DIR/duckdb ]; then
+  if [[ ! $(which duckdb) ]]; then
     curl https://install.duckdb.org | sh &> /dev/null
-  fi
-  if [[ ! $PATH =~ "$DUCKDB_DIR" ]]; then
-    export PATH=$HOME/$DUCKDB_DIR:$PATH
+    export PATH=$HOME/.duckdb/cli/latest:$PATH
   fi
 }
 
