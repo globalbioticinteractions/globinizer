@@ -89,7 +89,8 @@ _EOF_
 
 function version_of {
   head -n1\
-  | grep -o -E "([0-9]+[.]{0,1})+"
+  | grep -o -E "([0-9]+[.]{0,1})+"\
+  | head -n1
 }
 
 function echo_review_badge {
