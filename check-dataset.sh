@@ -360,7 +360,7 @@ _EOF_
 
 function generate_dataset_citation {
   cat <<_EOF_
-$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f citation,archiveURI,lastSeenAt | tail -n+2 | sort | uniq | tr '\t' ' ') ${DATASET_VERSION} ${DATASET_CITATION}
+$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f citation,archiveURI,lastSeenAt | tail -n+2 | sort | uniq | tr '\t' ' ') ${DATASET_VERSION}
 _EOF_
 }
 
@@ -492,7 +492,7 @@ $(generate_dataset_section)
 
 Data review and archiving can be a time-consuming process, especially when done manually. This review report aims to help facilitate both activities. It automates the archiving of datasets, including Darwin Core archives, and is a citable backup of a version of the dataset. Additionally, an automatic review of species interaction claims made in the dataset is generated and registered with Global Biotic Interactions [@Poelen_2014].
 
-This review includes summary statistics about, and observations about, the dataset under review:
+This review includes summary statistics about, and observations about, the dataset under review $DATASET_CITATION:
 
 > $(generate_dataset_citation) 
 
