@@ -360,7 +360,7 @@ _EOF_
 
 function generate_dataset_citation {
   cat <<_EOF_
-$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f citation,archiveURI,lastSeenAt | tail -n+2 | sort | uniq | tr '\t' ' ') ${DATASET_VERSION}
+$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f citation,archiveURI,lastSeenAt | tail -n+2 | sort | uniq | tr '\t' ' ') ${DATASET_VERSION} ${DATASET_CITATION}
 _EOF_
 }
 
@@ -1129,6 +1129,9 @@ generate_model_diagram\
 generate_process_diagram\
  | dot -Tsvg\
  > process.svg
+
+# grab existing data citation if available
+DATASET_CITATION=$(cat biblio.bib | sed -nE 's/@[a-zA-Z ]+\{([^,]+).*/@\1/p' | tr '\n' ';' | sed 's/^/\[/g' | sed 's/$/\]/g')
 
 generate_bibliography\
  >> biblio.bib
