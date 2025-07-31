@@ -1131,7 +1131,7 @@ generate_process_diagram\
  > process.svg
 
 generate_bibliography\
- > biblio.bib
+ >> biblio.bib
 
 generate_styling\
  > styling.css
