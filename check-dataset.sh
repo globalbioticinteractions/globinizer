@@ -365,14 +365,16 @@ _EOF_
 }
 
 function pluralize {
-  if [ $1 -gt 1 ]
+  numberToPluralize=$(echo $1 | sed 's/[^0-9]//g')
+  if [ ${numberToPluralize} -gt 1 ]
   then 
     echo -e s
   fi    
 }
 
 function pluralize_taxon {
-  if [ $1 -gt 1 ]
+  numberToPluralize=$(echo $1 | sed 's/[^0-9]//g')
+  if [ ${numberToPluralize} -gt 1 ]
   then 
     echo -e taxa
   else
