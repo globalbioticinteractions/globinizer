@@ -29,7 +29,7 @@ export PRESTON_VERSION=0.10.5
 export PRESTON_JAR="$PWD/preston.jar"
 export PRESTON_OPTS=" --algo ${HASH_ALGO}"
 
-export NOMER_VERSION=0.5.17
+
 export GLOBINIZER_VERSION=0.4.0
 export NOMER_JAR="$PWD/nomer.jar"
 export NOMER_PROPERTIES="$(mktemp)"
@@ -980,7 +980,7 @@ function resolve_names {
     | tsv2html\
     | gzip\
     > ${RESOLVED_HTML}
-  duckdb -c "COPY '${RESOLVED}' TO '${RESOLVED_STEM}.parquet';"
+  duckdb -c "COPY '${RESOLVED_CSV}' TO '${RESOLVED_STEM}.parquet';"
   cat ${RESOLVED}\
     | gunzip\
     | mlr ${MLR_TSV_OPTS} cut -f providedExternalId,providedName,relationName,resolvedCatalogName,resolvedExternalUrl,resolvedName,resolvedAuthorship,resolvedRank\
@@ -1039,7 +1039,7 @@ ${ELTON_CMD} interactions ${ELTON_OPTS} ${ELTON_NAMESPACE} | gzip > indexed-inte
 
 cat indexed-interactions.tsv.gz | gunzip | tsv2csv | gzip > indexed-interactions.csv.gz
 cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -r -f sourceTaxon*,interactionTypeName,targetTaxon*,referenceCitation | tsv2html | gzip > indexed-interactions.html.gz
-duckdb -c "COPY 'indexed-interactions.tsv.gz' TO 'indexed-interactions.parquet';"
+duckdb -c "COPY 'indexed-interactions.csv.gz' TO 'indexed-interactions.parquet';"
 
 cat indexed-interactions.tsv.gz\
 | gunzip\
@@ -1060,7 +1060,7 @@ ${ELTON_CMD} names ${ELTON_OPTS} ${ELTON_NAMESPACE}\
 
 cat indexed-names.tsv.gz | gunzip | tsv2csv | gzip > indexed-names.csv.gz
 cat indexed-names.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -r -f taxon* | tsv2html | gzip > indexed-names.html.gz
-duckdb -c "COPY 'indexed-names.tsv.gz' TO 'indexed-names.parquet';"
+duckdb -c "COPY 'indexed-names.csv.gz' TO 'indexed-names.parquet';"
 
 cat indexed-names.tsv.gz | gunzip | head -n501 > indexed-names-sample.tsv
 cat indexed-names-sample.tsv | tsv2csv > indexed-names-sample.csv
@@ -1093,7 +1093,7 @@ cat <(gzipped_name_header) <(gzipped_name_tails)  > indexed-names-resolved.tsv.g
 
 mlr ${MLR_TSV_INPUT_OPTS} --ocsv --prepipe gunzip cat indexed-names-resolved.tsv.gz | gzip > indexed-names-resolved.csv.gz
 cat indexed-names-resolved.tsv.gz | gunzip | tsv2html | gzip > indexed-names-resolved.html.gz
-duckdb -c "COPY 'indexed-names-resolved.tsv.gz' TO 'indexed-names-resolved.parquet'"
+duckdb -c "COPY 'indexed-names-resolved.csv.gz' TO 'indexed-names-resolved.parquet'"
 
 cat indexed-interactions.tsv.gz | gunzip | head -n501 > indexed-interactions-sample.tsv
 cat indexed-interactions-sample.tsv | tsv2csv > indexed-interactions-sample.csv
