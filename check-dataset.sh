@@ -1152,8 +1152,9 @@ generate_md_report\
 
 
 generate_zenodo_deposit_metadata "index.md"\
+ | tee zenodo.json\
  | jq -c .\
- > zenodo.json 
+ > zenodo.jsonl 
  
 cat index.md\
  | export_report_as docx\
