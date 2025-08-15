@@ -28,6 +28,7 @@ export HASH_ALGO="md5"
 export PRESTON_VERSION=0.10.5
 export PRESTON_JAR="$PWD/preston.jar"
 export PRESTON_OPTS=" --algo ${HASH_ALGO}"
+export PRESTON_DATA_DIR="data/"
 
 
 export GLOBINIZER_VERSION=0.4.0
@@ -318,7 +319,7 @@ _EOF_
 }
 
 function get_eml {
-  find "${ELTON_DATASETS_DIR}/${ELTON_NAMESPACE}" -type f\
+  find "${PRESTON_DATA_DIR}" -type f\
   | grep -E "[a-f0-9]{64}$"\
   | awk '{ print "-p " $1 " eml.xml" }'\
   | xargs -L1 unzip\
@@ -1228,7 +1229,7 @@ function upload_package {
 #fi
 
 mkdir -p tmp-review
-zip -r data.zip data/
+zip -r data.zip "${PRESTON_DATA_DIR}"
 
 # attempt to use s3cmd tool if available and configured
 if [[ -n $(which s3cmd) ]] && [[ -n ${S3CMD_CONFIG} ]]
