@@ -443,9 +443,9 @@ function generate_zenodo_deposit_metadata {
        "type": { "id": "technical-info" },
        "description": $(cat ${report_md} | pandoc --citeproc - | jq -s -R . | sed -E 's/href=\\"([^.\":]+[.][a-z][^\":]+|HEAD)\\"/href=\\"\{\{ ZENODO_DEPOSIT_ID \}\}\/files\/\1?download=1\\"/g')
       }],
-    "references": [
-      $(generate_dataset_citation | jq -s -R .)
-    ]
+    "references": 
+      $(generate_dataset_citation | jq -s -R '. | split("\n") | map(select(length > 0))')
+    
   }
 } 
 _EOF_
