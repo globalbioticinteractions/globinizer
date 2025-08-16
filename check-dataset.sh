@@ -871,6 +871,10 @@ function configure_elton {
     # when running outside of travis, use a separate review directory'
     use_review_dir
   fi
+
+  ELTON_TEE_OPTS_DIRS=" --prov-dir ${ELTON_DATASETS_DIR} --data-dir ${ELTON_DATASETS_DIR}/${ELTON_NAMESPACE}"
+  ELTON_TEE_OPTS="${ELTON_TEE_OPTS_DIRS} --algo ${HASH_ALGO}"
+  
 }
 
 function configure_preston {
@@ -1001,12 +1005,12 @@ echo -e "\nReview of [${ELTON_NAMESPACE}] started at [$(date -Iseconds)]." | tee
 if [[ -z ${ELTON_UPDATE_DISABLED} ]]
 then
   echo update using local
-  ${ELTON_UPDATE} | ${ELTON_CMD} tee ${ELTON_OPTS} | ${PRESTON_CMD} append ${PRESTON_OPTS}
+  ${ELTON_UPDATE} | ${ELTON_CMD} tee ${ELTON_TEE_OPTS} | ${PRESTON_CMD} append ${PRESTON_OPTS}
 else
   echo no update: using provided elton datasets dir [${ELTON_DATASETS_DIR}] instead.
   # run [elton prov] twice to cover sha256 -> md5 and md5 -> sha256  
-  ${ELTON_CMD} prov ${ELTON_OPTS_DIRS} ${REPO_NAME} | ${ELTON_CMD} tee ${ELTON_OPTS}
-  ${ELTON_CMD} prov ${ELTON_OPTS} ${REPO_NAME} | ${ELTON_CMD} tee ${ELTON_OPTS} | ${PRESTON_CMD} append ${PRESTON_OPTS}
+  ${ELTON_CMD} prov ${ELTON_OPTS_DIRS} ${REPO_NAME} | ${ELTON_CMD} tee ${ELTON_TEE_OPTS}
+  ${ELTON_CMD} prov ${ELTON_OPTS} ${REPO_NAME} | ${ELTON_CMD} tee ${ELTON_TEE_OPTS} | ${PRESTON_CMD} append ${PRESTON_OPTS}
 fi
 
 if [[ ${REVIEW_SCRIPT} != $(readlink -f check-dataset.sh) ]]; then
