@@ -444,7 +444,7 @@ function generate_zenodo_deposit_metadata {
        "description": $(cat ${report_md} | pandoc --citeproc - | jq -s -R . | sed -E 's/href=\\"([^.\":]+[.][a-z][^\":]+|HEAD)\\"/href=\\"\{\{ ZENODO_DEPOSIT_ID \}\}\/files\/\1?download=1\\"/g')
       }],
     "references": [
-      "$(generate_dataset_citation)"
+      "$(generate_dataset_citation | jq -s -R .)"
     ]
   }
 } 
@@ -1156,9 +1156,8 @@ generate_md_report\
 
 
 generate_zenodo_deposit_metadata "index.md"\
- | tee zenodo.json\
  | jq -c .\
- > zenodo.jsonl 
+ > zenodo.json 
  
 cat index.md\
  | export_report_as docx\
