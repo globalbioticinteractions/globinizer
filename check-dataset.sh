@@ -32,6 +32,7 @@ export PRESTON_DATA_DIR="data/"
 
 
 export GLOBINIZER_VERSION=0.4.0
+export NOMER_VERSION=0.6.0
 export NOMER_JAR="$PWD/nomer.jar"
 export NOMER_PROPERTIES="$(mktemp)"
 export NOMER_CACHE_DIR="${NOMER_CACHE_DIR:-~/.cache/nomer}"
