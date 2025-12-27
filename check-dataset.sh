@@ -23,7 +23,7 @@ export ELTON_DATA_REPO_MAIN="https://raw.githubusercontent.com/${REPO_NAME}/main
 export ELTON_JAR="$PWD/elton.jar"
 export ELTON_OPTS=""
 
-export HASH_ALGO="sha256"
+export HASH_ALGO="md5"
 
 export PRESTON_VERSION=0.10.5
 export PRESTON_JAR="$PWD/preston.jar"
