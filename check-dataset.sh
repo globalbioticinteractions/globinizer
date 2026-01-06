@@ -113,6 +113,7 @@ _EOF_
 
 function generate_geopackage {
   cat << _EOF_
+SET extension_directory = '.duckdb/ext/';
 INSTALL spatial;
 LOAD spatial;
 
