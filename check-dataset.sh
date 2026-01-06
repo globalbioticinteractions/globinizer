@@ -595,6 +595,7 @@ The following files are produced in this review:
  [indexed-interactions.html.gz](indexed-interactions.html.gz) | species interaction claims indexed from the dataset under review in gzipped html format
  [indexed-interactions.tsv.gz](indexed-interactions.tsv.gz) | species interaction claims indexed from the dataset under review in gzipped tab-separated values format
  [indexed-interactions.parquet](indexed-interactions.parquet) | species interaction claims indexed from the dataset under review in Apache Parquet format
+ [indexed-interactions.gpkg](indexed-interactions.dpkg) | species interaction claims indexed from the dataset under review in GeoPackage format
  [indexed-interactions-sample.csv](indexed-interactions-sample.csv) | list of species interaction claims indexed from the dataset under review in gzipped comma-separated values format
  [indexed-interactions-sample.html](indexed-interactions-sample.html) | first 500 species interaction claims indexed from the dataset under review in html format 
  [indexed-interactions-sample.tsv](indexed-interactions-sample.tsv) | first 500 species interaction claims indexed from the dataset under review in tab-separated values format
@@ -671,7 +672,7 @@ In this review, biotic interactions (or biotic associations) are modeled as a pr
 
 The ${summaryPhrase}
 
-An exhaustive list of indexed interaction claims can be found in gzipped [csv](indexed-interactions.csv.gz), [tsv](indexed-interactions.tsv.gz) and [parquet](indexed-interactions.parquet) archives. To facilitate discovery, a preview of claims available in the gzipped html page at [indexed-interactions.html.gz](indexed-interactions.html.gz) are shown below.
+An exhaustive list of indexed interaction claims can be found in gzipped [csv](indexed-interactions.csv.gz), [tsv](indexed-interactions.tsv.gz), [geopackage](indexed-interactions.gpkg) and [parquet](indexed-interactions.parquet) archives. To facilitate discovery, a preview of claims available in the gzipped html page at [indexed-interactions.html.gz](indexed-interactions.html.gz) are shown below.
 
 The exhaustive list was used to create the following data summaries below.
 
@@ -1293,6 +1294,7 @@ then
   
   upload_package_gz indexed-interactions "indexed interactions"
   upload indexed-interactions.parquet "indexed interactions"
+  upload indexed-interactions.gpkg "indexed interactions"
   
   upload_package indexed-interactions-sample "indexed interactions sample"
   
