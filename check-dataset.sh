@@ -111,6 +111,29 @@ _EOF_
   fi
 }
 
+function generate_geopackage {
+  cat << _EOF_
+INSTALL spatial;
+LOAD spatial;
+
+COPY (
+  SELECT ST_COLLECT(list(ST_POINT(decimalLongitude,decimalLatitude))), sourceTaxonName, interactionTypeName, targetTaxonName, "http://rs.tdwg.org/dwc/terms/eventDate" as eventDate, referenceCitation, citation, namespace, lastSeenAt
+  FROM 'indexed-interactions.parquet'
+  GROUP BY 
+   sourceTaxonName, 
+   interactionTypeName, 
+   targetTaxonName, 
+   "http://rs.tdwg.org/dwc/terms/eventDate", 
+   referenceCitation, 
+   citation, 
+   namespace,
+   lastSeenAt
+) 
+TO 'indexed-interactions.gpkg'
+WITH (FORMAT gdal, DRIVER 'GPKG', SRS 'EPSG:4326');
+_EOF_
+} 
+
 function echo_reproduce {
   echo -e "\n\nIf you'd like, you can generate your own review notes by:"
   echo "  - installing GloBI's Elton via https://github.com/globalbioticinteractions/elton"
@@ -1046,6 +1069,11 @@ ${ELTON_CMD} interactions ${ELTON_OPTS} ${ELTON_NAMESPACE} | gzip > indexed-inte
 cat indexed-interactions.tsv.gz | gunzip | tsv2csv | gzip > indexed-interactions.csv.gz
 cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -r -f sourceTaxon*,interactionTypeName,targetTaxon*,referenceCitation | tsv2html | gzip > indexed-interactions.html.gz
 duckdb -c "COPY (SELECT * FROM read_csv('indexed-interactions.csv.gz', sample_size = -1)) TO 'indexed-interactions.parquet';"
+
+# create indexed-interactions.dpkg
+# see https://duckdb.org/docs/stable/core_extensions/spatial
+# see https://github.com/globalbioticinteractions/globalbioticinteractions/issues/1134
+generate_geopackage | duckdb
 
 cat indexed-interactions.tsv.gz\
 | gunzip\
