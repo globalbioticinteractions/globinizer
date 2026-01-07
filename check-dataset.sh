@@ -118,17 +118,8 @@ INSTALL spatial;
 LOAD spatial;
 
 COPY (
-  SELECT ST_COLLECT(list(ST_POINT(decimalLongitude,decimalLatitude))), sourceTaxonName, interactionTypeName, targetTaxonName, "http://rs.tdwg.org/dwc/terms/eventDate" as eventDate, referenceCitation, citation, namespace, lastSeenAt
+  SELECT ST_POINT(decimalLongitude,decimalLatitude), sourceTaxonName, interactionTypeName, targetTaxonName, "http://rs.tdwg.org/dwc/terms/eventDate" as eventDate, referenceCitation, citation, namespace, lastSeenAt
   FROM 'indexed-interactions.parquet'
-  GROUP BY 
-   sourceTaxonName, 
-   interactionTypeName, 
-   targetTaxonName, 
-   "http://rs.tdwg.org/dwc/terms/eventDate", 
-   referenceCitation, 
-   citation, 
-   namespace,
-   lastSeenAt
 ) 
 TO 'indexed-interactions.gpkg'
 WITH (FORMAT gdal, DRIVER 'GPKG', SRS 'EPSG:4326');
