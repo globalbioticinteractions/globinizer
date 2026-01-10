@@ -645,6 +645,7 @@ The following files are produced in this review:
  [indexed-interactions.html.gz](indexed-interactions.html.gz) | species interaction claims indexed from the dataset under review in gzipped html format
  [indexed-interactions.tsv.gz](indexed-interactions.tsv.gz) | species interaction claims indexed from the dataset under review in gzipped tab-separated values format
  [indexed-interactions.parquet](indexed-interactions.parquet) | species interaction claims indexed from the dataset under review in Apache Parquet format
+ [indexed-interactions.png](indexed-interactions.png) | species interaction claims indexed from the dataset under review plotted on a map
  [indexed-interactions.gpkg](indexed-interactions.dpkg) | species interaction claims indexed from the dataset under review in GeoPackage format
  [indexed-interactions-sample.csv](indexed-interactions-sample.csv) | list of species interaction claims indexed from the dataset under review in gzipped comma-separated values format
  [indexed-interactions-sample.html](indexed-interactions-sample.html) | first 500 species interaction claims indexed from the dataset under review in html format 
@@ -1347,6 +1348,8 @@ then
   upload_package_gz indexed-interactions "indexed interactions"
   upload indexed-interactions.parquet "indexed interactions"
   upload indexed-interactions.gpkg "indexed interactions"
+  upload indexed-interactions.png "indexed interactions"
+
   
   upload_package indexed-interactions-sample "indexed interactions sample"
   
