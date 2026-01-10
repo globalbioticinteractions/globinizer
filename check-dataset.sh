@@ -861,6 +861,7 @@ function install_deps {
     sudo apt -q install librsvg2-bin
     sudo apt -q install libxml2-utils
     sudo apt -q install pv
+    sudo apt -q install mapserver-bin
     sudo pip install s3cmd &> /dev/null   
   fi
 
@@ -1127,7 +1128,9 @@ duckdb -c "COPY (SELECT * FROM read_csv('indexed-interactions.csv.gz', sample_si
 # see https://github.com/globalbioticinteractions/globalbioticinteractions/issues/1134
 generate_geopackage | duckdb
 generate_mapserver > indexed-interactions.map
-map2img -m indexed-interactions.map -o indexed-interactions.png -map_debug 3 -conf <(echo -e "CONFIG\nMAPS\nEND\nEND")
+# https://mapserver.org/development/rfc/ms-rfc-136.html#rfc136
+# map2img -m indexed-interactions.map -o indexed-interactions.png -map_debug 3 -conf <(echo -e "CONFIG\nMAPS\nEND\nEND")
+shp2img -m indexed-interactions.map -o indexed-interactions.png -map_debug 3 -conf <(echo -e "CONFIG\nMAPS\nEND\nEND")
 
 cat indexed-interactions.tsv.gz\
 | gunzip\
