@@ -124,6 +124,63 @@ COPY (
 TO 'indexed-interactions.gpkg'
 WITH (FORMAT gdal, DRIVER 'GPKG', SRS 'EPSG:4326');
 _EOF_
+}
+
+function generate_mapserver {
+  cat << _EOF_
+MAP
+  SIZE 1200 1600
+  EXTENT $(duckdb -csv -c "select ST_XMin(extent) as xmin, ST_Ymin(extent) as ymin, ST_XMax(extent) as xmax, ST_YMax(extent) as ymax from (select ST_Extent(ST_Collect(list(geom))) as extent from 'indexed-interactions.gpkg');" | tail -n+2 | tr ',' ' ')
+  PROJECTION
+    "init=epsg:4326"
+  END
+  SYMBOL
+    NAME "circle"
+    TYPE ELLIPSE
+    FILLED TRUE
+    POINTS
+        1 1
+    END
+  END
+  LAYER # MODIS WMS map from NASA
+    NAME         "modis_nasa"
+    TYPE         RASTER
+    OFFSITE      0 0 0
+    STATUS       ON
+    CONNECTIONTYPE WMS
+    CONNECTION "https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?"
+
+    METADATA
+      "wms_srs" "EPSG:4326"
+      "wms_name" "Blue Marble"
+      "wms_server_version" "1.1.1"
+      "wms_format" "image/jpeg"
+    END
+    CLASS
+      STYLE
+        COLOR        232 232 232
+        OUTLINECOLOR 32 32 32
+      END
+    END
+  END 
+  LAYER
+    NAME "indexed-interactions"
+    TYPE POINT
+    STATUS ON
+    CONNECTIONTYPE OGR
+    CONNECTION "indexed-interactions.gpkg"
+    DATA "indexed-interactions"
+    CLASS
+      STYLE
+        SYMBOL "circle"
+        COLOR 232 232 232
+        OUTLINECOLOR 32 32 32
+        SIZE 24
+      END
+    END
+  END
+END
+_EOF_
 } 
 
 function echo_reproduce {
@@ -532,6 +589,7 @@ The review is performed through programmatic scripts that leverage tools like Pr
  | [yq](https://mikefarah.gitbook.io/yq) | $(yq --version | version_of) |  
  | [pandoc](https://pandoc.org/) | $(pandoc --version | version_of) |  
  | [duckdb](https://duckdb.org/) | $(duckdb --version | version_of) |  
+ | [mapserver](https://mapserver.org/) | $(mapserv -v | version_of) |  
 : Tools used in this review process
 
 The review process can be described in the form of the script below ^[Note that you have to first get the data (e.g., via elton pull ${REPO_NAME}) before being able to generate reviews (e.g., elton review ${REPO_NAME}), extract interaction claims (e.g., elton interactions ${REPO_NAME}), or list taxonomic names (e.g., elton names ${REPO_NAME})].
@@ -1067,6 +1125,8 @@ duckdb -c "COPY (SELECT * FROM read_csv('indexed-interactions.csv.gz', sample_si
 # see https://duckdb.org/docs/stable/core_extensions/spatial
 # see https://github.com/globalbioticinteractions/globalbioticinteractions/issues/1134
 generate_geopackage | duckdb
+generate_mapserver > indexed-interactions.map
+map2img -m indexed-interactions.map -o indexed-interactions.png -map_debug 3 -conf <(echo -e "CONFIG\nMAPS\nEND\nEND")
 
 cat indexed-interactions.tsv.gz\
 | gunzip\
