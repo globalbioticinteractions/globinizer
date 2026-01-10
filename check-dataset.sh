@@ -130,7 +130,7 @@ function generate_mapserver {
   cat << _EOF_
 MAP
   SIZE 1200 1600
-  EXTENT $(duckdb -csv -c "select ST_XMin(extent) as xmin, ST_Ymin(extent) as ymin, ST_XMax(extent) as xmax, ST_YMax(extent) as ymax from (select ST_Extent(ST_Collect(list(geom))) as extent from 'indexed-interactions.gpkg');" | tail -n+2 | tr ',' ' ')
+  EXTENT $(duckdb -csv -c "SET extension_directory = '.duckdb/ext/'; INSTALL spatial; LOAD spatial; SELECT ST_XMin(extent) as xmin, ST_Ymin(extent) as ymin, ST_XMax(extent) as xmax, ST_YMax(extent) as ymax from (select ST_Extent(ST_Collect(list(geom))) as extent from 'indexed-interactions.gpkg');" | tail -n+2 | tr ',' ' ')
   PROJECTION
     "init=epsg:4326"
   END
