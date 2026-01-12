@@ -766,7 +766,15 @@ $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} --omd count-dis
 
 $(generate_network_graphs)
 
-You can download the indexed dataset under review at [indexed-interactions.csv.gz](indexed-interactions.csv.gz). A tab-separated file can be found at [indexed-interactions.tsv.gz](indexed-interactions.tsv.gz) 
+You can download the indexed dataset under review at [indexed-interactions.csv.gz](indexed-interactions.csv.gz). A tab-separated file can be found at [indexed-interactions.tsv.gz](indexed-interactions.tsv.gz)
+
+## Geospatial Distribution
+
+If geospatial information was extracted from the dataset under review, the map below will show their distribution.
+
+![Hexagonal grid cells indicate that interactions claims are available for selected geospatial area: the lighter the color, relatively more claims are present.](indexed-interactions.png) .
+
+Associated data can be found in the geopackage files at [indexed-interactions.gpkg](indexed-interactions.gpkg) and [indexed-interactions-h3.gpkg](indexed-interactions-h3.gpkg).
 
 Learn more about the structure of this download at [GloBI website](https://globalbioticinteractions.org), by opening a [GitHub issue](https://github.com/globalbioticinteractions/globalbioticinteractions/issues/new), or by sending an [email](mailto:info@globalbioticinteractions.org).
 
