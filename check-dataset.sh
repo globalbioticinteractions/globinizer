@@ -116,10 +116,20 @@ function generate_geopackage {
 SET extension_directory = '.duckdb/ext/';
 INSTALL spatial;
 LOAD spatial;
+INSTALL h3 FROM community;
+LOAD h3;
 
 COPY (
-  SELECT ST_POINT(decimalLongitude,decimalLatitude), sourceTaxonName, interactionTypeName, targetTaxonName, "http://rs.tdwg.org/dwc/terms/eventDate" as eventDate, referenceCitation, citation, namespace, lastSeenAt
-  FROM 'indexed-interactions.parquet'
+  SELECT
+    ST_GeomFromText(h3_cell_to_boundary_wkt(h3_cell)),
+    log_number_of_records
+  FROM (
+    SELECT
+      h3_latlng_to_cell(decimalLatitude,decimalLongitude) as h3_cell,
+      LOG(1+COUNT(*)) as log_number_of_records
+    FROM 'indexed-interactions.parquet'
+    GROUP BY h3_cell
+  )
 ) 
 TO 'indexed-interactions.gpkg'
 WITH (FORMAT gdal, DRIVER 'GPKG', SRS 'EPSG:4326');
@@ -133,14 +143,6 @@ MAP
   EXTENT $(duckdb -csv -c "SET extension_directory = '.duckdb/ext/'; INSTALL spatial; LOAD spatial; SELECT ST_XMin(extent) as xmin, ST_Ymin(extent) as ymin, ST_XMax(extent) as xmax, ST_YMax(extent) as ymax from (select ST_Extent(ST_Collect(list(geom))) as extent from 'indexed-interactions.gpkg');" | tail -n+2 | tr ',' ' ')
   PROJECTION
     "init=epsg:4326"
-  END
-  SYMBOL
-    NAME "circle"
-    TYPE ELLIPSE
-    FILLED TRUE
-    POINTS
-        1 1
-    END
   END
   LAYER # MODIS WMS map from NASA
     NAME         "modis_nasa"
@@ -165,17 +167,17 @@ MAP
   END 
   LAYER
     NAME "indexed-interactions"
-    TYPE POINT
+    TYPE POLYGON
     STATUS ON
     CONNECTIONTYPE OGR
     CONNECTION "indexed-interactions.gpkg"
     DATA "indexed-interactions"
     CLASS
       STYLE
-        SYMBOL "circle"
-        COLOR 232 232 232
-        OUTLINECOLOR 32 32 32
-        SIZE 24
+        COLORRANGE 32.0 164.0 134.0 253.0 231.0 37.0
+        DATARANGE $(duckdb -csv -c "SET extension_directory = '.duckdb/ext/'; INSTALL spatial; LOAD spatial; SELECT MIN(log_number_of_records), MAX(log_number_of_records) FROM 'indexed-interactions.gpkg';" | tail -n+2 | tr ',' ' ')
+        RANGEITEM "number_of_records"
+        OUTLINECOLOR 0 0 0
       END
     END
   END
