@@ -131,8 +131,26 @@ COPY (
     GROUP BY h3_cell
   )
 ) 
+TO 'indexed-interactions-h3.gpkg'
+WITH (FORMAT gdal, DRIVER 'GPKG', SRS 'EPSG:4326');
+
+COPY (
+  SELECT
+    ST_POINT(decimalLongitude,decimalLatitude),
+    sourceTaxonName,
+    interactionTypeName,
+    targetTaxonName,
+    "http://rs.tdwg.org/dwc/terms/eventDate" as eventDate,
+    referenceCitation,
+    citation,
+    namespace,
+    lastSeenAt
+  FROM
+    'indexed-interactions.parquet'
+)
 TO 'indexed-interactions.gpkg'
 WITH (FORMAT gdal, DRIVER 'GPKG', SRS 'EPSG:4326');
+
 _EOF_
 }
 
@@ -140,7 +158,7 @@ function generate_mapserver {
   cat << _EOF_
 MAP
   SIZE 1200 1600
-  EXTENT $(duckdb -csv -c "SET extension_directory = '.duckdb/ext/'; INSTALL spatial; LOAD spatial; SELECT ST_XMin(extent) as xmin, ST_Ymin(extent) as ymin, ST_XMax(extent) as xmax, ST_YMax(extent) as ymax from (select ST_Extent(ST_Collect(list(geom))) as extent from 'indexed-interactions.gpkg');" | tail -n+2 | tr ',' ' ')
+  EXTENT $(duckdb -csv -c "SET extension_directory = '.duckdb/ext/'; INSTALL spatial; LOAD spatial; SELECT ST_XMin(extent) as xmin, ST_Ymin(extent) as ymin, ST_XMax(extent) as xmax, ST_YMax(extent) as ymax from (select ST_Extent(ST_Collect(list(geom))) as extent from 'indexed-interactions-h3.gpkg');" | tail -n+2 | tr ',' ' ')
   PROJECTION
     "init=epsg:4326"
   END
@@ -170,12 +188,12 @@ MAP
     TYPE POLYGON
     STATUS ON
     CONNECTIONTYPE OGR
-    CONNECTION "indexed-interactions.gpkg"
-    DATA "indexed-interactions"
+    CONNECTION "indexed-interactions-h3.gpkg"
+    DATA "indexed-interactions-h3"
     CLASS
       STYLE
         COLORRANGE 32.0 164.0 134.0 253.0 231.0 37.0
-        DATARANGE $(duckdb -csv -c "SET extension_directory = '.duckdb/ext/'; INSTALL spatial; LOAD spatial; SELECT MIN(log_number_of_records), MAX(log_number_of_records) FROM 'indexed-interactions.gpkg';" | tail -n+2 | tr ',' ' ')
+        DATARANGE $(duckdb -csv -c "SET extension_directory = '.duckdb/ext/'; INSTALL spatial; LOAD spatial; SELECT MIN(log_number_of_records), MAX(log_number_of_records) FROM 'indexed-interactions-h3.gpkg';" | tail -n+2 | tr ',' ' ')
         RANGEITEM "number_of_records"
         OUTLINECOLOR 0 0 0
       END
@@ -649,6 +667,7 @@ The following files are produced in this review:
  [indexed-interactions.parquet](indexed-interactions.parquet) | species interaction claims indexed from the dataset under review in Apache Parquet format
  [indexed-interactions.png](indexed-interactions.png) | species interaction claims indexed from the dataset under review plotted on a map
  [indexed-interactions.gpkg](indexed-interactions.dpkg) | species interaction claims indexed from the dataset under review in GeoPackage format
+ [indexed-interactions-h3.gpkg](indexed-interactions-h3.dpkg) | geospatially clustered h3 species interaction claims indexed from the dataset under review in GeoPackage format
  [indexed-interactions-sample.csv](indexed-interactions-sample.csv) | list of species interaction claims indexed from the dataset under review in gzipped comma-separated values format
  [indexed-interactions-sample.html](indexed-interactions-sample.html) | first 500 species interaction claims indexed from the dataset under review in html format 
  [indexed-interactions-sample.tsv](indexed-interactions-sample.tsv) | first 500 species interaction claims indexed from the dataset under review in tab-separated values format
@@ -1353,6 +1372,7 @@ then
   upload_package_gz indexed-interactions "indexed interactions"
   upload indexed-interactions.parquet "indexed interactions"
   upload indexed-interactions.gpkg "indexed interactions"
+  upload indexed-interactions-h3.gpkg "indexed interactions"
   upload indexed-interactions.png "indexed interactions"
 
   
