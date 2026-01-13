@@ -125,7 +125,7 @@ COPY (
     log_number_of_records
   FROM (
     SELECT
-      h3_latlng_to_cell(decimalLatitude,decimalLongitude) as h3_cell,
+      h3_latlng_to_cell(decimalLatitude,decimalLongitude,5) as h3_cell,
       LOG(1+COUNT(*)) as log_number_of_records
     FROM 'indexed-interactions.parquet'
     GROUP BY h3_cell
