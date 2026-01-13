@@ -772,7 +772,7 @@ You can download the indexed dataset under review at [indexed-interactions.csv.g
 
 If geospatial information was extracted from the dataset under review, the map below will show their distribution.
 
-![Hexagonal grid cells indicate that interactions claims are available for selected geospatial area: the lighter the color, relatively more claims are present.](indexed-interactions.png) .
+![Hexagonal grid cells indicate that interactions claims are available for selected geospatial area: the lighter the color, relatively more claims are present.](indexed-interactions.png)
 
 Associated data can be found in the geopackage files at [indexed-interactions.gpkg](indexed-interactions.gpkg) and [indexed-interactions-h3.gpkg](indexed-interactions-h3.gpkg).
 
