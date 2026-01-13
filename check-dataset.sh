@@ -194,7 +194,7 @@ MAP
       STYLE
         COLORRANGE 32.0 164.0 134.0 253.0 231.0 37.0
         DATARANGE $(duckdb -csv -c "SET extension_directory = '.duckdb/ext/'; INSTALL spatial; LOAD spatial; SELECT MIN(log_number_of_records), MAX(log_number_of_records) FROM 'indexed-interactions-h3.gpkg';" | tail -n+2 | tr ',' ' ')
-        RANGEITEM "number_of_records"
+        RANGEITEM "log_number_of_records"
         OUTLINECOLOR 0 0 0
       END
     END
