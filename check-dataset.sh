@@ -157,8 +157,8 @@ _EOF_
 function generate_mapserver {
   cat << _EOF_
 MAP
-  SIZE 1200 1600
-  EXTENT -90.0 -180.0 90.0 180.0 
+  SIZE 1600 800
+  EXTENT -180 -90 180 90
   PROJECTION
     "init=epsg:4326"
   END
@@ -172,7 +172,7 @@ MAP
 
     METADATA
       "wms_srs" "EPSG:4326"
-      "wms_name" "Blue Marble"
+      "wms_name" "OSM_Land_Water_Map"
       "wms_server_version" "1.1.1"
       "wms_format" "image/jpeg"
     END
