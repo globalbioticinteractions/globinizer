@@ -125,7 +125,7 @@ COPY (
     log_number_of_records
   FROM (
     SELECT
-      h3_latlng_to_cell(decimalLatitude,decimalLongitude,5) as h3_cell,
+      h3_latlng_to_cell(decimalLatitude,decimalLongitude,2) as h3_cell,
       LOG(1+COUNT(*)) as log_number_of_records
     FROM 'indexed-interactions.parquet'
     GROUP BY h3_cell
@@ -158,7 +158,7 @@ function generate_mapserver {
   cat << _EOF_
 MAP
   SIZE 1200 1600
-  EXTENT $(duckdb -csv -c "SET extension_directory = '.duckdb/ext/'; INSTALL spatial; LOAD spatial; SELECT ST_XMin(extent) as xmin, ST_Ymin(extent) as ymin, ST_XMax(extent) as xmax, ST_YMax(extent) as ymax from (select ST_Extent(ST_Collect(list(geom))) as extent from 'indexed-interactions-h3.gpkg');" | tail -n+2 | tr ',' ' ')
+  EXTENT -90.0 -180.0 90.0 180.0 
   PROJECTION
     "init=epsg:4326"
   END
