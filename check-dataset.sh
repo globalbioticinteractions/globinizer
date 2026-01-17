@@ -121,7 +121,7 @@ LOAD h3;
 
 COPY (
   SELECT
-    ST_GeomFromText(h3_cell_to_boundary_wkt(h3_cell)),
+    ST_GeomFromText(h3_cell_to_boundary_wkt(h3_cell)) as cell_boundary,
     log_number_of_records
   FROM (
     SELECT
@@ -129,7 +129,8 @@ COPY (
       LOG(1+COUNT(*)) as log_number_of_records
     FROM 'indexed-interactions.parquet'
     GROUP BY h3_cell
-  )
+  ) 
+  WHERE ST_XMax(cell_boundary) - ST_XMin(cell_boundary) < 90
 ) 
 TO 'indexed-interactions-h3.gpkg'
 WITH (FORMAT gdal, DRIVER 'GPKG', SRS 'EPSG:4326');
