@@ -125,10 +125,14 @@ COPY (
     log_number_of_records
   FROM (
     SELECT
-      h3_latlng_to_cell(decimalLatitude,decimalLongitude,2) as h3_cell,
+      h3_latlng_to_cell(CAST(decimalLatitude AS DOUBLE),CAST(decimalLongitude AS DOUBLE),2) as h3_cell,
       LOG(1+COUNT(*)) as log_number_of_records
-    FROM 'indexed-interactions.parquet'
-    GROUP BY h3_cell
+    FROM 
+      'indexed-interactions.parquet'
+    WHERE
+      decimalLatitude <> NULL AND decimalLongitude <> NULL
+    GROUP BY 
+      h3_cell
   ) 
   WHERE ST_XMax(cell_boundary) - ST_XMin(cell_boundary) < 90
 ) 
@@ -137,7 +141,7 @@ WITH (FORMAT gdal, DRIVER 'GPKG', SRS 'EPSG:4326');
 
 COPY (
   SELECT
-    ST_POINT(decimalLongitude,decimalLatitude),
+    ST_POINT(CAST(decimalLongitude AS DOUBLE),CAST(decimalLatitude AS DOUBLE)),
     sourceTaxonName,
     interactionTypeName,
     targetTaxonName,
@@ -148,6 +152,8 @@ COPY (
     lastSeenAt
   FROM
     'indexed-interactions.parquet'
+  WHERE 
+    decimalLatitude <> NULL AND decimalLongitude <> NULL
 )
 TO 'indexed-interactions.gpkg'
 WITH (FORMAT gdal, DRIVER 'GPKG', SRS 'EPSG:4326');
