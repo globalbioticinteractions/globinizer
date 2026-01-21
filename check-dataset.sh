@@ -130,7 +130,7 @@ COPY (
     FROM 
       'indexed-interactions.parquet'
     WHERE
-      decimalLatitude <> NULL AND decimalLongitude <> NULL
+      h3_cell <> NULL
     GROUP BY 
       h3_cell
   ) 
@@ -141,7 +141,7 @@ WITH (FORMAT gdal, DRIVER 'GPKG', SRS 'EPSG:4326');
 
 COPY (
   SELECT
-    ST_POINT(CAST(decimalLongitude AS DOUBLE),CAST(decimalLatitude AS DOUBLE)),
+    ST_POINT(CAST(decimalLongitude AS DOUBLE),CAST(decimalLatitude AS DOUBLE)) as point,
     sourceTaxonName,
     interactionTypeName,
     targetTaxonName,
@@ -153,7 +153,7 @@ COPY (
   FROM
     'indexed-interactions.parquet'
   WHERE 
-    decimalLatitude <> NULL AND decimalLongitude <> NULL
+    ST_IsValid(point)
 )
 TO 'indexed-interactions.gpkg'
 WITH (FORMAT gdal, DRIVER 'GPKG', SRS 'EPSG:4326');
