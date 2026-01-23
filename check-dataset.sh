@@ -199,7 +199,7 @@ MAP
     DATA "indexed-interactions-h3"
     CLASS
       STYLE
-        COLORRANGE 32.0 164.0 134.0 253.0 231.0 37.0
+        COLORRANGE 253.0 231.0 37.0 32.0 164.0 134.0
         DATARANGE $(duckdb -csv -c "SET extension_directory = '.duckdb/ext/'; INSTALL spatial; LOAD spatial; SELECT MIN(log_number_of_records), MAX(log_number_of_records) FROM 'indexed-interactions-h3.gpkg';" | tail -n+2 | tr ',' ' ')
         RANGEITEM "log_number_of_records"
         OUTLINECOLOR 0 0 0
@@ -779,9 +779,9 @@ You can download the indexed dataset under review at [indexed-interactions.csv.g
 
 If geospatial information was extracted from the dataset under review, the map below will show their distribution.
 
-![Hexagonal grid cells indicate that interactions claims are available for selected geospatial area: light yellow means relatively more claims, dark green relatively fewer claims.](indexed-interactions.png)
+![Hexagonal grid cells indicate that interactions claims are available for selected geospatial area: light yellow means relatively fewer claims, dark green relatively more claims.](indexed-interactions.png)
 
-Associated data can be found in the geopackage files at [indexed-interactions.gpkg](indexed-interactions.gpkg) and [indexed-interactions-h3.gpkg](indexed-interactions-h3.gpkg).
+Associated data can be found in the geopackage files at [indexed-interactions.gpkg](indexed-interactions.gpkg) for point data and [indexed-interactions-h3.gpkg](indexed-interactions-h3.gpkg) for data clustered in geospatial h3 hexagonals.
 
 Learn more about the structure of this download at [GloBI website](https://globalbioticinteractions.org), by opening a [GitHub issue](https://github.com/globalbioticinteractions/globalbioticinteractions/issues/new), or by sending an [email](mailto:info@globalbioticinteractions.org).
 
