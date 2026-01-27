@@ -130,7 +130,7 @@ COPY (
     FROM 
       'indexed-interactions.parquet'
     WHERE
-      h3_cell <> NULL
+      h3_cell IS NOT NULL
     GROUP BY 
       h3_cell
   ) 
