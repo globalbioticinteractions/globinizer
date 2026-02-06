@@ -673,8 +673,8 @@ The following files are produced in this review:
  [indexed-interactions.tsv.gz](indexed-interactions.tsv.gz) | species interaction claims indexed from the dataset under review in gzipped tab-separated values format
  [indexed-interactions.parquet](indexed-interactions.parquet) | species interaction claims indexed from the dataset under review in Apache Parquet format
  [indexed-interactions.png](indexed-interactions.png) | species interaction claims indexed from the dataset under review plotted on a map
- [indexed-interactions.gpkg](indexed-interactions.dpkg) | species interaction claims indexed from the dataset under review in GeoPackage format
- [indexed-interactions-h3.gpkg](indexed-interactions-h3.dpkg) | geospatially clustered h3 species interaction claims indexed from the dataset under review in GeoPackage format
+ [indexed-interactions.gpkg](indexed-interactions.gpkg) | species interaction claims indexed from the dataset under review in GeoPackage format
+ [indexed-interactions-h3.gpkg](indexed-interactions-h3.gpkg) | geospatially clustered h3 species interaction claims indexed from the dataset under review in GeoPackage format
  [indexed-interactions-sample.csv](indexed-interactions-sample.csv) | list of species interaction claims indexed from the dataset under review in gzipped comma-separated values format
  [indexed-interactions-sample.html](indexed-interactions-sample.html) | first 500 species interaction claims indexed from the dataset under review in html format 
  [indexed-interactions-sample.tsv](indexed-interactions-sample.tsv) | first 500 species interaction claims indexed from the dataset under review in tab-separated values format
@@ -1159,7 +1159,7 @@ cat indexed-interactions.tsv.gz | gunzip | tsv2csv | gzip > indexed-interactions
 cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -r -f sourceTaxon*,interactionTypeName,targetTaxon*,referenceCitation | tsv2html | gzip > indexed-interactions.html.gz
 duckdb -c "COPY (SELECT * FROM read_csv('indexed-interactions.csv.gz', sample_size = -1)) TO 'indexed-interactions.parquet';"
 
-# create indexed-interactions.dpkg
+# create indexed-interactions.gpkg
 # see https://duckdb.org/docs/stable/core_extensions/spatial
 # see https://github.com/globalbioticinteractions/globalbioticinteractions/issues/1134
 generate_geopackage | duckdb
@@ -1366,7 +1366,7 @@ then
   upload index.md "review pandoc page"
   upload index.docx "review pandoc word document"
   upload index.pdf "review pandoc pdf document"
-  upload index.jats "review pandoc jats document"
+  upload index.xml "review pandoc jats document"
   upload review.svg "review badge"
   upload process.svg "review process diagram"
   upload interaction.svg "interaction data model diagram"
