@@ -1164,9 +1164,15 @@ duckdb -c "COPY (SELECT * FROM read_csv('indexed-interactions.csv.gz', sample_si
 # see https://github.com/globalbioticinteractions/globalbioticinteractions/issues/1134
 generate_geopackage | duckdb
 generate_mapserver > indexed-interactions.map
+
 # https://mapserver.org/development/rfc/ms-rfc-136.html#rfc136
-# map2img -m indexed-interactions.map -o indexed-interactions.png -map_debug 3 -conf <(echo -e "CONFIG\nMAPS\nEND\nEND")
-shp2img -m indexed-interactions.map -o indexed-interactions.png -map_debug 3 -conf <(echo -e "CONFIG\nMAPS\nEND\nEND")
+MAP2IMG_OPTS=' -m indexed-interactions.map -o indexed-interactions.png -map_debug 3 -conf <(echo -e "CONFIG\nMAPS\nEND\nEND")'
+if command -v shp2img >/dev/null 2>&1
+then
+    shp2img ${MAP2IMG_OPTS}
+else
+    map2img ${MAP2IMG_OPTS}
+fi
 
 cat indexed-interactions.tsv.gz\
 | gunzip\
