@@ -1166,13 +1166,13 @@ generate_geopackage | duckdb
 generate_mapserver > indexed-interactions.map
 
 # https://mapserver.org/development/rfc/ms-rfc-136.html#rfc136
-MAP2IMG_OPTS=' -m indexed-interactions.map -o indexed-interactions.png -map_debug 3 -conf <(echo -e "CONFIG\nMAPS\nEND\nEND")'
+MAP2IMG_CMD="map2img"
 if command -v shp2img >/dev/null 2>&1
 then
-    shp2img ${MAP2IMG_OPTS}
-else
-    map2img ${MAP2IMG_OPTS}
+    MAP2IMG_CMD="shp2img"
 fi
+
+${MAP2IMG_CMD} -m indexed-interactions.map -o indexed-interactions.png -map_debug 3 -conf <(echo -e "CONFIG\nMAPS\nEND\nEND")
 
 cat indexed-interactions.tsv.gz\
 | gunzip\
