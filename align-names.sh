@@ -19,7 +19,7 @@ export NOMER_JAR="$PWD/nomer.jar"
 export NOMER_MATCHERS="col ncbi gbif itis wfo"
 export NOMER_CACHE_DIR=${NOMER_CACHE_DIR:-~/.cache/nomer}
 
-export PRESTON_VERSION=0.10.1
+export PRESTON_VERSION=0.11.6
 export PRESTON_JAR="$PWD/preston.jar"
 
 export REVIEW_REPO_HOST="blob.globalbioticinteractions.org"
