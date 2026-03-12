@@ -413,7 +413,36 @@ pages="395--410",
 abstract="To make digital resources on the web verifiable, immutable, and permanent, we propose a technique to include cryptographic hash values in URIs. We call them trusty URIs and we show how they can be used for approaches like nanopublications to make not only specific resources but their entire reference trees verifiable. Digital artifacts can be identified not only on the byte level but on more abstract levels such as RDF graphs, which means that resources keep their hash values even when presented in a different format. Our approach sticks to the core principles of the web, namely openness and decentralized architecture, is fully compatible with existing standards and protocols, and can therefore be used right away. Evaluation of our reference implementations shows that these desired properties are indeed accomplished by our approach, and that it remains practical even for very large files.",
 isbn="978-3-319-07443-6"
 }
- 
+
+@software{mckenna_2025_17807263,
+  author       = {McKenna, Jeff and
+                  Lime, Steve and
+                  Bonfort, Thomas and
+                  Boué, Jérome and
+                  Butler, Howard and
+                  Girvin, Seth and
+                  Kralidis, Tom and
+                  Meissl, Stephan and
+                  Morissette, Daniel and
+                  Nacionales, Perry and
+                  Rahkonen, Jukka and
+                  Rouault, Even and
+                  Smith, Mike and
+                  Szekeres, Tamas},
+  title        = {MapServer},
+  month        = dec,
+  year         = 2025,
+  publisher    = {Zenodo},
+  version      = {rel-8-6-0},
+  doi          = {10.5281/zenodo.17807263},
+  url          = {https://doi.org/10.5281/zenodo.17807263},
+  swhid        = {swh:1:dir:66095259779ef8d39cc98da2bf3cc3f761fbfc69
+                   ;origin=https://doi.org/10.5281/zenodo.6994443;vis
+                   it=swh:1:snp:0fd98a760178a7ca1c736fd8d70306c5defd3
+                   e36;anchor=swh:1:rel:4458c2c9310f343b348ca2b7ba54f
+                   c71116bc92b;path=MapServer-MapServer-42e41f8
+                  },
+} 
 
 _EOF_
 }
@@ -673,6 +702,7 @@ The following files are produced in this review:
  [indexed-interactions.tsv.gz](indexed-interactions.tsv.gz) | species interaction claims indexed from the dataset under review in gzipped tab-separated values format
  [indexed-interactions.parquet](indexed-interactions.parquet) | species interaction claims indexed from the dataset under review in Apache Parquet format
  [indexed-interactions.png](indexed-interactions.png) | species interaction claims indexed from the dataset under review plotted on a map
+ [indexed-interactions.map](indexed-interactions.map) | mapserver configuration to plot species interaction claims indexed from the dataset under review on a map
  [indexed-interactions.gpkg](indexed-interactions.gpkg) | species interaction claims indexed from the dataset under review in GeoPackage format
  [indexed-interactions-h3.gpkg](indexed-interactions-h3.gpkg) | geospatially clustered h3 species interaction claims indexed from the dataset under review in GeoPackage format
  [indexed-interactions-sample.csv](indexed-interactions-sample.csv) | list of species interaction claims indexed from the dataset under review in gzipped comma-separated values format
@@ -777,7 +807,7 @@ You can download the indexed dataset under review at [indexed-interactions.csv.g
 
 ## Geospatial Distribution
 
-If geospatial information was extracted from the dataset under review, the map below will show their distribution.
+If geospatial information was extracted from the dataset under review, the map below will show their distribution. These maps were generated using MapServer [@mckenna_2025_17807263] tools.
 
 ![Hexagonal grid cells indicate that interactions claims are available for selected geospatial area: light yellow means relatively fewer claims, dark green relatively more claims.](indexed-interactions.png)
 
@@ -1395,6 +1425,7 @@ then
   upload indexed-interactions.gpkg "indexed interactions"
   upload indexed-interactions-h3.gpkg "indexed interactions"
   upload indexed-interactions.png "indexed interactions"
+  upload indexed-interactions.map "indexed interactions"
 
   
   upload_package indexed-interactions-sample "indexed interactions sample"
