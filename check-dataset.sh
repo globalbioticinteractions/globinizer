@@ -4,22 +4,24 @@
 #   If optional elton dataset dir is provided, no remote updates will be attempted.
 #
 #   usage:
-#     check-dataset.sh [github repo name] [(optional) elton datasets dir]
+#     check-dataset.sh [dataset namespace] [(optional) elton datasets dir]
 # 
 #   example:
 #     ./check-dataset.sh globalbioticinteractions/template-dataset
 #     ./check-dataset.sh globalbioticinteractions/template-dataset /var/cache/elton/datasets
+#
+#    namespaces without urn:lsid: prefixes are assumed to be github repository org/name combinations (e.g., globalbioticinteractions/template-dataset)
 #
 
 set -x
 
 export REVIEW_SCRIPT=$(readlink -f "$0")
 
-export REPO_NAME=$1
+export DATASET_NAMESPACE=$1
 export ELTON_UPDATE_DISABLED=$2
 export ELTON_DATASETS_DIR=${2:-./datasets}
 export ELTON_VERSION=0.16.8
-export ELTON_DATA_REPO_MAIN="https://raw.githubusercontent.com/${REPO_NAME}/main"
+export ELTON_DATA_REPO_MAIN="https://raw.githubusercontent.com/${DATASET_NAMESPACE}/main"
 export ELTON_JAR="$PWD/elton.jar"
 export ELTON_OPTS=""
 
@@ -45,7 +47,7 @@ export NETWORK_CATALOG_DESCRIPTION="Catalogue of Life"
 
 export REVIEW_REPO_HOST="blob.globalbioticinteractions.org"
 export README=$(mktemp)
-export REVIEW_DIR="${PWD}/review/${REPO_NAME}"
+export REVIEW_DIR="${PWD}/review/${DATASET_NAMESPACE}"
 
 export MLR_TSV_OPTS="--csvlite --fs tab"
 export MLR_TSV_INPUT_OPTS="--icsvlite --ifs tab"
@@ -213,7 +215,7 @@ _EOF_
 function echo_reproduce {
   echo -e "\n\nIf you'd like, you can generate your own review notes by:"
   echo "  - installing GloBI's Elton via https://github.com/globalbioticinteractions/elton"
-  echo "  - running \"elton update $REPO_NAME && elton review --type note --type summary $REPO_NAME > review.tsv\""
+  echo "  - running \"elton update $DATASET_NAMESPACE && elton review --type note --type summary $DATASET_NAMESPACE > review.tsv\""
   echo "  - inspecting review.tsv"
   echo -e "\nPlease email info@globalbioticinteractions.org for questions/ comments."
 }
@@ -462,7 +464,7 @@ function generate_title {
     collectionName=$(echo "${eml}" | xmllint --xpath '//collectionName' - | head -n1)
     echo "Versioned Darwin Core Archive Shared by ${collectionName}, Including a Review of Biotic Interactions and Taxon Names ${DATASET_VERSION}"
   else
-    echo "Versioned Archive and Review of Biotic Interactions and Taxon Names Found within ${REPO_NAME} ${DATASET_VERSION}"
+    echo "Versioned Archive and Review of Biotic Interactions and Taxon Names Found within ${DATASET_NAMESPACE} ${DATASET_VERSION}"
   fi
 }
 
@@ -591,7 +593,7 @@ function generate_md_report {
   uniqueTargetTaxa="$(printf "%'d" $(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f targetTaxonName | tail -n+2 | sort | uniq | wc -l))"
   mostFrequentTargetTaxa="$(cat indexed-interactions.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} count-distinct -f targetTaxonName then sort -nr count then cut -f targetTaxonName | tail -n+2 | head -n1 | tr -d '\n')"
   datasetVolume="$(${PRESTON_CMD} head ${PRESTON_OPTS} | ${PRESTON_CMD} cat | ${PRESTON_CMD} cat | pv -f -b 2>&1 1>/dev/null | tr '\r' '\n' | grep -E '[0-9]' | tail -n1)"
-  summaryPhrase="dataset under review, named $REPO_NAME, has fingerprint ${DATASET_VERSION}, is ${datasetVolume} in size and contains ${numberOfInteractions} interaction$(pluralize ${numberOfInteractions}) with ${numberOfInteractionTypes} unique type$(pluralize ${numberOfInteractionTypes}) of association$(pluralize ${numberOfInteractionTypes}) (e.g., ${mostFrequentInteractionTypes}) between ${uniqueSourceTaxa} primary $(pluralize_taxon ${uniqueSourceTaxa}) (e.g., ${mostFrequentSourceTaxa}) and ${uniqueTargetTaxa} associated $(pluralize_taxon ${uniqueTargetTaxa}) (e.g., ${mostFrequentTargetTaxa})."  
+  summaryPhrase="dataset under review, named $DATASET_NAMESPACE, has fingerprint ${DATASET_VERSION}, is ${datasetVolume} in size and contains ${numberOfInteractions} interaction$(pluralize ${numberOfInteractions}) with ${numberOfInteractionTypes} unique type$(pluralize ${numberOfInteractionTypes}) of association$(pluralize ${numberOfInteractionTypes}) (e.g., ${mostFrequentInteractionTypes}) between ${uniqueSourceTaxa} primary $(pluralize_taxon ${uniqueSourceTaxa}) (e.g., ${mostFrequentSourceTaxa}) and ${uniqueTargetTaxa} associated $(pluralize_taxon ${uniqueTargetTaxa}) (e.g., ${mostFrequentTargetTaxa})."  
   cat <<_EOF_
 ---
 title: $(generate_title)
@@ -600,7 +602,6 @@ author:
   - by Nomer, Elton and Preston, three naive review bots
   - review@globalbioticinteractions.org
   - https://globalbioticinteractions.org/contribute 
-  - https://github.com/${REPO_NAME}/issues 
 abstract: |
   Life on Earth is sustained by complex interactions between organisms and their environment. These biotic interactions can be captured in datasets and published digitally. We present a review and archiving process for such an openly accessible digital interactions dataset of known origin and discuss its outcome. The ${summaryPhrase} This report includes detailed summaries of interaction data, a taxonomic review from multiple catalogs, and an archived version of the dataset from which the reviews are derived.
 bibliography: biblio.bib
@@ -628,8 +629,6 @@ This review includes summary statistics about, and observations about, the datas
 
 > $(generate_dataset_citation) 
 
-For additional metadata related to this dataset, please visit [https://github.com/${REPO_NAME}](https://github.com/${REPO_NAME}) and inspect associated metadata files including, but not limited to, _README.md_, _eml.xml_, and/or _globi.json_.
-
 # Methods
 
 The review is performed through programmatic scripts that leverage tools like Preston [@Preston], Elton [@Elton], Nomer [@Nomer], globinizer [@globinizer] combined with third-party tools like grep, mlr, tail and head.
@@ -648,22 +647,22 @@ The review is performed through programmatic scripts that leverage tools like Pr
  | [mapserver](https://mapserver.org/) | $(mapserv -v | version_of) |  
 : Tools used in this review process
 
-The review process can be described in the form of the script below ^[Note that you have to first get the data (e.g., via elton pull ${REPO_NAME}) before being able to generate reviews (e.g., elton review ${REPO_NAME}), extract interaction claims (e.g., elton interactions ${REPO_NAME}), or list taxonomic names (e.g., elton names ${REPO_NAME})].
+The review process can be described in the form of the script below ^[Note that you have to first get the data (e.g., via elton pull ${DATASET_NAMESPACE}) before being able to generate reviews (e.g., elton review ${DATASET_NAMESPACE}), extract interaction claims (e.g., elton interactions ${DATASET_NAMESPACE}), or list taxonomic names (e.g., elton names ${DATASET_NAMESPACE})].
 
 ~~~
 # get versioned copy of the dataset (size approx. ${datasetVolume}) under review 
-elton pull ${REPO_NAME}
+elton pull ${DATASET_NAMESPACE}
 
 # generate review notes
-elton review ${REPO_NAME}\\
+elton review ${DATASET_NAMESPACE}\\
  > review.tsv
 
 # export indexed interaction records
-elton interactions ${REPO_NAME}\\
+elton interactions ${DATASET_NAMESPACE}\\
  > interactions.tsv
 
 # export names and align them with the Catalogue of Life using Nomer 
-elton names ${REPO_NAME}\\
+elton names ${DATASET_NAMESPACE}\\
  | nomer append col\\
  > name-alignment.tsv
 ~~~
@@ -819,7 +818,7 @@ Associated data can be found in the geopackage files at [indexed-interactions.gp
 
 Learn more about the structure of this download at [GloBI website](https://globalbioticinteractions.org), by opening a [GitHub issue](https://github.com/globalbioticinteractions/globalbioticinteractions/issues/new), or by sending an [email](mailto:info@globalbioticinteractions.org).
 
-Another way to discover the dataset under review is by searching for it on the [GloBI website](https://www.globalbioticinteractions.org/?accordingTo=globi%3A$(echo ${REPO_NAME} | sed 's+/+%2F+g')).
+Another way to discover the dataset under review is by searching for it on the [GloBI website](https://www.globalbioticinteractions.org/?accordingTo=globi%3A$(echo ${DATASET_NAMESPACE} | sed 's+/+%2F+g')).
 
 
 ## Taxonomic Alignment
@@ -859,7 +858,7 @@ For additional information on review notes, please have a look at the first 500 
 
 As part of the review, a review badge is generated. This review badge can be included in webpages to indicate the review status of the dataset under review. 
 
-![Picture of a GloBI Review Badge ^[Up-to-date status of the GloBI Review Badge can be retrieved from the [GloBI Review Depot](https://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/review.svg)]](review.svg) 
+![Picture of a GloBI Review Badge ^[Up-to-date status of the GloBI Review Badge can be retrieved from the [GloBI Review Depot](https://depot.globalbioticinteractions.org/reviews/${DATASET_NAMESPACE}/review.svg)]](review.svg) 
 
 Note that if the badge is green, no review notes were generated. If the badge is yellow, the review bots may need some help with interpreting the species interaction data.
 
@@ -867,7 +866,7 @@ Note that if the badge is green, no review notes were generated. If the badge is
 
 If the dataset under review has been [registered with GloBI](https://globalbioticinteractions.org/contribute), and has been succesfully indexed by GloBI, the GloBI Index Status Badge will turn green. This means that the dataset under review was indexed by GloBI and is available through GloBI services and derived data products. 
 
-![Picture of a GloBI Index Badge ^[Up-to-date status of the GloBI Index Badge can be retrieved from [GloBI's API](https://api.globalbioticinteractions.org/interaction.svg?interactionType=ecologicallyRelatedTo&accordingTo=globi:${REPO_NAME}&refutes=true&refutes=false)]](https://api.globalbioticinteractions.org/interaction.svg?interactionType=ecologicallyRelatedTo&accordingTo=globi:${REPO_NAME}&refutes=true&refutes=false)
+![Picture of a GloBI Index Badge ^[Up-to-date status of the GloBI Index Badge can be retrieved from [GloBI's API](https://api.globalbioticinteractions.org/interaction.svg?interactionType=ecologicallyRelatedTo&accordingTo=globi:${DATASET_NAMESPACE}&refutes=true&refutes=false)]](https://api.globalbioticinteractions.org/interaction.svg?interactionType=ecologicallyRelatedTo&accordingTo=globi:${DATASET_NAMESPACE}&refutes=true&refutes=false)
 
 If you'd like to keep track of reviews or index status of the dataset under review, please visit GloBI's dataset index ^[At time of writing ($(date --iso-8601)) the version of the GloBI dataset index was available at [https://globalbioticinteractions.org/datasets](https://globalbioticinteractions.org/datasets)] for badge examples. 
 
@@ -1013,8 +1012,8 @@ function configure_elton {
       ELTON_UPDATE="${ELTON_CMD} update --prov-mode ${ELTON_OPTS} --registry local"
       ELTON_NAMESPACE="local"
   else
-    ELTON_UPDATE="${ELTON_CMD} update --prov-mode ${ELTON_OPTS} ${REPO_NAME}"
-    ELTON_NAMESPACE="$REPO_NAME"
+    ELTON_UPDATE="${ELTON_CMD} update --prov-mode ${ELTON_OPTS} ${DATASET_NAMESPACE}"
+    ELTON_NAMESPACE="$DATASET_NAMESPACE"
     # when running outside of travis, use a separate review directory'
     use_review_dir
   fi
@@ -1096,7 +1095,7 @@ _EOF_
 
 function tsv2html {
   generate_styling > styling.css
-  head -n501 | pandoc --embed-resources --standalone --metadata title=${REPO_NAME} --css=styling.css --to=html5 --from=tsv -o - | pv -l
+  head -n501 | pandoc --embed-resources --standalone --metadata title=${DATASET_NAMESPACE} --css=styling.css --to=html5 --from=tsv -o - | pv -l
 }
 
 echo_logo | tee_readme 
@@ -1156,8 +1155,8 @@ then
 else
   echo no update: using provided elton datasets dir [${ELTON_DATASETS_DIR}] instead.
   # run [elton prov] twice to cover sha256 -> md5 and md5 -> sha256  
-  ${ELTON_CMD} prov ${ELTON_OPTS_DIRS} ${REPO_NAME} | ${ELTON_CMD} tee ${ELTON_TEE_OPTS}
-  ${ELTON_CMD} prov ${ELTON_OPTS} ${REPO_NAME} | ${ELTON_CMD} tee ${ELTON_TEE_OPTS} | ${PRESTON_CMD} append ${PRESTON_OPTS}
+  ${ELTON_CMD} prov ${ELTON_OPTS_DIRS} ${DATASET_NAMESPACE} | ${ELTON_CMD} tee ${ELTON_TEE_OPTS}
+  ${ELTON_CMD} prov ${ELTON_OPTS} ${DATASET_NAMESPACE} | ${ELTON_CMD} tee ${ELTON_TEE_OPTS} | ${PRESTON_CMD} append ${PRESTON_OPTS}
 fi
 
 if [[ ${REVIEW_SCRIPT} != $(readlink -f check-dataset.sh) ]]; then
@@ -1173,7 +1172,8 @@ echo "getting dataset version..."
 DATASET_VERSION=$(${PRESTON_CMD} head ${PRESTON_OPTS})
 DATASET_VERSION_HEX=$(echo "${DATASET_VERSION}" | sed -E "s+hash://[^/]*/++g")
 
-DATASET_ID="urn:lsid:globalbioticinteractions.org:dataset:${REPO_NAME}"
+DATASET_ID_PREFIX_DEFAULT="urn:lsid:globalbioticinteractions.org:dataset:"
+DATASET_ID=[[ "${DATASET_NAMESPACE}" =~ ^urn:lsid:.*$ ]] && echo "${DATASET_NAMESPACE}" || echo "${DATASET_ID_PREFIX_DEFAULT}${DATASET_NAMESPACE}"
 DATASET_ID_VERSIONED="${DATASET_ID}:${DATASET_VERSION_HEX}"
 
 ${PRESTON_CMD} head ${PRESTON_OPTS} | tee HEAD | ${PRESTON_CMD} cat > prov.nq
@@ -1269,7 +1269,7 @@ cat indexed-interactions-sample.tsv | mlr ${MLR_TSV_OPT} cut -r -f sourceTaxon*,
 ${ELTON_CMD} nanopubs ${ELTON_OPTS} ${ELTON_NAMESPACE} | gzip > nanopub.trig.gz
 cat nanopub.trig.gz | gunzip | head -n1 > nanopub-sample.trig
 
-echo -e "\nReview of [${REPO_NAME}@${DATASET_VERSION}] included:" | tee_readme
+echo -e "\nReview of [${DATASET_NAMESPACE}@${DATASET_VERSION}] included:" | tee_readme
 cat review.tsv.gz | gunzip | tail -n3 | cut -f6 | sed s/^/\ \ -\ /g | tee_readme
 
 NUMBER_OF_NOTES=$(cat review.tsv.gz | gunzip | cut -f5 | grep "^note$" | wc -l)
@@ -1281,10 +1281,10 @@ echo_review_badge $NUMBER_OF_NOTES > review.svg
 
 if [ ${NUMBER_OF_NOTES} -gt 0 ]
 then
-  echo -e "\n[${REPO_NAME}] has ${NUMBER_OF_NOTES} reviewer note(s):" | tee_readme
+  echo -e "\n[${DATASET_NAMESPACE}] has ${NUMBER_OF_NOTES} reviewer note(s):" | tee_readme
   cat review.tsv.gz | gunzip | tail -n+2 | cut -f6 | tac | tail -n+5 | sort | uniq -c | sort -nr | tee_readme
 else
-  echo -e "\nHurray! [${REPO_NAME}] passed the GloBI review." | tee_readme
+  echo -e "\nHurray! [${DATASET_NAMESPACE}] passed the GloBI review." | tee_readme
 fi
 
 echo_reproduce >> ${README}
@@ -1366,13 +1366,13 @@ cat index.md\
 
 function upload {
 
-  s3cmd --config "${S3CMD_CONFIG}" put "$PWD/$1" "s3://${ARTIFACTS_BUCKET}/reviews/${REPO_NAME}/$1" &> upload.log
+  s3cmd --config "${S3CMD_CONFIG}" put "$PWD/$1" "s3://${ARTIFACTS_BUCKET}/reviews/${DATASET_NAMESPACE}/$1" &> upload.log
   LAST_UPLOAD_RESULT=$?
   if [[ ${LAST_UPLOAD_RESULT} -ne 0 ]] ; then
      echo -e "\nfailed to upload [$1], please check following upload log"
      cat upload.log
   else
-     echo "https://depot.globalbioticinteractions.org/reviews/${REPO_NAME}/$1" | tee_readme
+     echo "https://depot.globalbioticinteractions.org/reviews/${DATASET_NAMESPACE}/$1" | tee_readme
   fi
 
 }
