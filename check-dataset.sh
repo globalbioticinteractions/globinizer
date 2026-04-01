@@ -1018,7 +1018,7 @@ function configure_elton {
     use_review_dir
   fi
 
-  ELTON_TEE_OPTS_DIRS=" --prov-dir ${ELTON_DATASETS_DIR} --data-dir ${ELTON_DATASETS_DIR}/${ELTON_NAMESPACE}"
+  ELTON_TEE_OPTS_DIRS=" --prov-dir ${ELTON_DATASETS_DIR} --data-dir ${ELTON_DATASETS_DIR}/$(echo ${ELTON_NAMESPACE} | tr ':' '/')"
   ELTON_TEE_OPTS="${ELTON_TEE_OPTS_DIRS} --algo ${HASH_ALGO}"
   
 }
