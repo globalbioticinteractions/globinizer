@@ -1173,7 +1173,7 @@ DATASET_VERSION=$(${PRESTON_CMD} head ${PRESTON_OPTS})
 DATASET_VERSION_HEX=$(echo "${DATASET_VERSION}" | sed -E "s+hash://[^/]*/++g")
 
 DATASET_ID_PREFIX_DEFAULT="urn:lsid:globalbioticinteractions.org:dataset:"
-DATASET_ID=[[ "${DATASET_NAMESPACE}" =~ ^urn:lsid:.*$ ]] && echo "${DATASET_NAMESPACE}" || echo "${DATASET_ID_PREFIX_DEFAULT}${DATASET_NAMESPACE}"
+DATASET_ID=$([[ "${DATASET_NAMESPACE}" =~ ^urn:lsid:.*$ ]] && echo "${DATASET_NAMESPACE}" || echo "${DATASET_ID_PREFIX_DEFAULT}${DATASET_NAMESPACE}")
 DATASET_ID_VERSIONED="${DATASET_ID}:${DATASET_VERSION_HEX}"
 
 ${PRESTON_CMD} head ${PRESTON_OPTS} | tee HEAD | ${PRESTON_CMD} cat > prov.nq
