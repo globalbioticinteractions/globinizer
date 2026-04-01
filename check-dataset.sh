@@ -73,7 +73,7 @@ function echo_logo {
         |___/                                                   
 ⚠️ Disclaimer: The results in this review should be considered
 friendly, yet naive, notes from an unsophisticated robot. 
-    sudo apt -q install graphviz
+
 Please carefully review the results listed below and share issues/ideas
 by email info at globalbioticinteractions.org or by opening an issue at 
 https://github.com/globalbioticinteractions/globalbioticinteractions/issues .
