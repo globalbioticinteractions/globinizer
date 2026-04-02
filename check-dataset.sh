@@ -654,16 +654,16 @@ The review process can be described in the form of the script below ^[Note that 
 elton pull ${DATASET_NAMESPACE}
 
 # generate review notes
-elton review ${DATASET_NAMESPACE}\\
+elton review ${DATASET_NAMESPACE} \\
  > review.tsv
 
 # export indexed interaction records
-elton interactions ${DATASET_NAMESPACE}\\
+elton interactions ${DATASET_NAMESPACE} \\
  > interactions.tsv
 
 # export names and align them with the Catalogue of Life using Nomer 
-elton names ${DATASET_NAMESPACE}\\
- | nomer append col\\
+elton names ${DATASET_NAMESPACE} \\
+ | nomer append col \\
  > name-alignment.tsv
 ~~~
 
