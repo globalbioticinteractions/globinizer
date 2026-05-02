@@ -679,7 +679,7 @@ In the following sections, the results of the review are summarized [^1]. Then, 
 
 ## Files
 
-An extensive list of files produced as part of the review process can be found in [Appendix A. Review Files]
+An extensive list of files produced as part of the review process can be found in [Appendix A. Review Files].
 
 
 ## Archived Dataset
