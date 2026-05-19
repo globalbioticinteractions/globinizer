@@ -160,6 +160,13 @@ COPY (
 TO 'indexed-interactions.gpkg'
 WITH (FORMAT gdal, DRIVER 'GPKG', SRS 'EPSG:4326');
 
+COPY (
+  SELECT *  
+  FROM 'indexed-interactions.gpkg' 
+) 
+TO 'indexed-interactions.fgb'
+WITH (FORMAT gdal, DRIVER 'FlatGeobuf', SRS 'EPSG:4326');
+
 _EOF_
 }
 
@@ -827,6 +834,7 @@ The following files are produced in this review:
  [indexed-interactions.png](indexed-interactions.png) | species interaction claims indexed from the dataset under review plotted on a map
  [indexed-interactions.map](indexed-interactions.map) | mapserver configuration to plot species interaction claims indexed from the dataset under review on a map
  [indexed-interactions.gpkg](indexed-interactions.gpkg) | species interaction claims indexed from the dataset under review in GeoPackage format
+ [indexed-interactions.fgb](indexed-interactions.fgb) | species interaction claims indexed from the dataset under review in FlatGeoBuf format
  [indexed-interactions-h3.gpkg](indexed-interactions-h3.gpkg) | geospatially clustered h3 species interaction claims indexed from the dataset under review in GeoPackage format
  [indexed-interactions-sample.csv](indexed-interactions-sample.csv) | list of species interaction claims indexed from the dataset under review in gzipped comma-separated values format
  [indexed-interactions-sample.html](indexed-interactions-sample.html) | first 500 species interaction claims indexed from the dataset under review in html format 
@@ -1432,6 +1440,7 @@ then
   upload_package_gz indexed-interactions "indexed interactions"
   upload indexed-interactions.parquet "indexed interactions"
   upload indexed-interactions.gpkg "indexed interactions"
+  upload indexed-interactions.fgb "indexed interactions"
   upload indexed-interactions-h3.gpkg "indexed interactions"
   upload indexed-interactions.png "indexed interactions"
   upload indexed-interactions.map "indexed interactions"
