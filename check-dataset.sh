@@ -940,6 +940,9 @@ function install_deps {
     sudo apt -q update &> /dev/null
     sudo apt -q install miller jq -y &> /dev/null
     curl --silent -L https://github.com/jgm/pandoc/releases/download/3.1.6.1/pandoc-3.1.6.1-1-amd64.deb > pandoc.deb && sudo apt install -q ./pandoc.deb &> /dev/null
+    curl --silent -L https://github.com/globalbioticinteractions/nomer/releases/download/${NOMER_VERSION}/nomer.deb > nomer.deb && sudo apt install -q ./nomer.deb &> /dev/null
+    curl --silent -L https://github.com/globalbioticinteractions/elton/releases/download/${ELTON_VERSION}/elton.deb > elton.deb && sudo apt install -q ./elton.deb &> /dev/null
+    curl --silent -L https://github.com/bio-guoda/preston/releases/download/${PRESTON_VERSION}/preston.deb > preston.deb && sudo apt install -q ./preston.deb &> /dev/null
     curl --silent -L https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 > /usr/local/bin/yq && chmod +x /usr/local/bin/yq &> /dev/null
     sudo apt -q install texlive texlive-xetex lmodern
     sudo apt -q install graphviz
