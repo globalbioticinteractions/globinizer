@@ -1095,7 +1095,8 @@ function configure_nomer {
   fi
 
   if [[ -n ${TRAVIS_REPO_SLUG} || -n ${GITHUB_REPOSITORY} ]]
-    for taxonomy in ${TAXONOMIES}; do configure_taxonomy ${taxonomy}; done; 
+  then 
+      for taxonomy in ${TAXONOMIES}; do configure_taxonomy ${taxonomy}; done; 
   fi
 
   export NOMER_VERSION=$(${NOMER_CMD} version | sed 's/@.*//g')
