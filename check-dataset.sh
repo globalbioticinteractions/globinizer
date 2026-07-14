@@ -52,7 +52,7 @@ export REVIEW_DIR="${PWD}/review/${DATASET_NAMESPACE}"
 export MLR_TSV_OPTS="--csvlite --fs tab"
 export MLR_TSV_INPUT_OPTS="--icsvlite --ifs tab"
 export MLR_TSV_OUTPUT_OPTS="--ocsvlite --ofs tab"
-export MLR_TSV_OPTS="${MLR_TSV_INPUT_OPTS} ${MLR_TSV_OUTPUT_OPTS}"
+export MLR_TSV_OPTS="${MLR_TSV_INPUT_OPTS} ${MLR_TSV_OUTPUT_
 
 export TAXONOMIES="col ncbi discoverlife gbif itis wfo mdd pbdb worms wikidata"
 
@@ -1092,9 +1092,10 @@ function configure_nomer {
     echo nomer not found... installing from [${NOMER_DOWNLOAD_URL}]
     curl --silent -L "${NOMER_DOWNLOAD_URL}" > "${NOMER_JAR}"
     export NOMER_CMD="java -Xmx4G -jar ${NOMER_JAR}"
-   
+  fi
+
+  if [[ -n ${TRAVIS_REPO_SLUG} || -n ${GITHUB_REPOSITORY} ]]
     for taxonomy in ${TAXONOMIES}; do configure_taxonomy ${taxonomy}; done; 
-        
   fi
 
   export NOMER_VERSION=$(${NOMER_CMD} version | sed 's/@.*//g')
