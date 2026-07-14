@@ -25,6 +25,8 @@ export ELTON_DATA_REPO_MAIN="https://raw.githubusercontent.com/${DATASET_NAMESPA
 export ELTON_JAR="$PWD/elton.jar"
 export ELTON_OPTS=""
 
+export NAME_PARSER="gbif-parse"
+
 export HASH_ALGO="md5"
 
 export PRESTON_VERSION=0.10.5
@@ -1152,7 +1154,7 @@ function resolve_names {
   echo -e "\n--- [$2] start ---\n"
   time cat $1 | gunzip | tail -n+2 | sort | uniq\
     | ${NOMER_CMD} replace ${NOMER_OPTS} globi-correct\
-    | ${NOMER_CMD} replace ${NOMER_OPTS} gn-parse\
+    | ${NOMER_CMD} replace ${NOMER_OPTS} ${NAME_PARSER}\
     | sed 's/null//g'\
     | ${NOMER_CMD} append ${NOMER_OPTS} $2 --include-header\
     | mlr ${MLR_TSV_OPTS} put -s catalogName="${2}" '$resolvedCatalogName = @catalogName'\
