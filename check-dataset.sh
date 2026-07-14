@@ -75,8 +75,13 @@ function echo_logo {
 friendly, yet naive, notes from an unsophisticated robot. 
 
 Please carefully review the results listed below and share issues/ideas
-by email info at globalbioticinteractions.org or by opening an issue at 
-https://github.com/globalbioticinteractions/globalbunction echo_nomer_schema {
+by email info at globalbioticinteractions.org or by opening an issue at
+https://github.com/globalbioticinteractions/globalbioticinteractions/issues .
+_EOF_
+)"
+}
+
+function echo_nomer_schema {
   # ignore authorship for now
   echo "$(cat <<_EOF_
 nomer.cache.dir=${NOMER_CACHE_DIR}
