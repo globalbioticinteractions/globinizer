@@ -744,6 +744,9 @@ As part of the review, all names are aligned against various name catalogs (e.g.
 $(cat indexed-names-resolved.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f providedName,relationName,resolvedCatalogName,resolvedName | mlr ${MLR_TSV_INPUT_OPTS} --omd uniq -f providedName,relationName,resolvedCatalogName,resolvedName | head -n6) 
 : Sample of Name Alignments
 
+$(cat indexed-names-alignment-index.tsv.gz | gunzip | mlr ${MLR_TSV_INPUT_OPTS} --omd cat | head -n${headCount}) 
+: Sample of Name Alignment Index. Names aligned with all catalog have index value 1.0, whereas names aligned with none of the used catalogs have index 0.0. Ordered in increasing index order followed by most frequently occurring names. So, suspicious taxonomic names (e.g., Donald duck, Homo sapienz) are expected to be listed first. 
+
 $(cat indexed-names-resolved.tsv.gz | gunzip | mlr --tsvlite uniq -f providedName,resolvedCatalogName,resolvedRank |  sed 's/\t$/\tNA/g' | mlr --itsvlite --omd count-distinct -f resolvedCatalogName,resolvedRank then sort -f resolvedCatalogName,resolvedRank)
 : Distribution of Taxonomic Ranks of Aligned Names by Catalog. Names that were not aligned with a catalog are counted as NAs. So, the total number of unaligned names for a catalog will be listed in their NA row. 
 
