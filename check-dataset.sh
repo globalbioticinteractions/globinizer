@@ -19,7 +19,7 @@ export REVIEW_SCRIPT=$(readlink -f "$0")
 
 export DATASET_NAMESPACE=$1
 export ELTON_UPDATE_DISABLED=$2
-export ELTON_DATASETS_DIR=${2:$PWD/datasets}
+export ELTON_DATASETS_DIR=${2:-$PWD/datasets}
 export ELTON_VERSION=0.16.11
 export ELTON_DATA_REPO_MAIN="https://raw.githubusercontent.com/${DATASET_NAMESPACE}/main"
 export ELTON_JAR="$PWD/elton.jar"
