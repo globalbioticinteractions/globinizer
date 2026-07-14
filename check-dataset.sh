@@ -76,12 +76,7 @@ friendly, yet naive, notes from an unsophisticated robot.
 
 Please carefully review the results listed below and share issues/ideas
 by email info at globalbioticinteractions.org or by opening an issue at 
-https://github.com/globalbioticinteractions/globalbioticinteractions/issues .
-_EOF_
-)"
-}
-
-function echo_nomer_schema {
+https://github.com/globalbioticinteractions/globalbunction echo_nomer_schema {
   # ignore authorship for now
   echo "$(cat <<_EOF_
 nomer.cache.dir=${NOMER_CACHE_DIR}
@@ -761,6 +756,11 @@ $(cat indexed-names-resolved.tsv.gz | gunzip | mlr ${MLR_TSV_INPUT_OPTS} --omd c
 $(echo "${TAXONOMIES}" | tr ' ' '\n' | awk '{ print "| " $1 " | associated names alignments report in gzipped [html](indexed-names-resolved-" $1 ".html.gz), [csv](indexed-names-resolved-" $1 ".csv.gz), and [tsv](indexed-names-resolved-" $1 ".tsv.gz)) |"}') 
 : List of Available Name Alignment Reports
 
+| provided name | alignment results |
+| --- | --- |
+$(echo "${TAXONOMIES}" | tr ' ' '\n' | awk '{ print "| " $1 " | associated names alignments report in gzipped [html](indexed-names-resolved-" $1 ".html.gz), [csv](indexed-names-resolved-" $1 ".csv.gz), and [tsv](indexed-names-resolved-" $1 ".tsv.gz)) |"}') 
+: 
+
 ## Additional Reviews
 
 Elton, Nomer, and other tools may have difficulties interpreting existing species interaction datasets. Or, they may misbehave, or otherwise show unexpected behavior. As part of the review process, detailed review notes are kept that document possibly misbehaving, or confused, review bots. An sample of review notes associated with this review can be found below.
@@ -1099,6 +1099,14 @@ function tsv2csv {
   mlr ${MLR_TSV_INPUT_OPTS} --ocsv cat
 }
 
+
+function csv2tsv {
+  # for backward compatibility do not use
+  #   mlr --icsv -otsv cat
+  # but use:
+  mlr --icsv ${MLR_TSV_OUTPUT_OPTS} cat
+}
+
 function generate_styling {
   # from http://b.enjam.info/panam/styling.css
   cat <<_EOF_ 
@@ -1274,6 +1282,11 @@ cat <(gzipped_name_header) <(gzipped_name_tails)  > indexed-names-resolved.tsv.g
 mlr ${MLR_TSV_INPUT_OPTS} --ocsv --prepipe gunzip cat indexed-names-resolved.tsv.gz | gzip > indexed-names-resolved.csv.gz
 cat indexed-names-resolved.tsv.gz | gunzip | tsv2html | gzip > indexed-names-resolved.html.gz
 duckdb -c "COPY (SELECT * FROM read_csv('indexed-names-resolved.csv.gz', sample_size = -1)) TO 'indexed-names-resolved.parquet'"
+
+duckdb -c "COPY (SELECT DISTINCT providedName, 1.0 - count(*)/(SELECT COUNT(DISTINCT resolvedCatalogName) FROM 'indexed-names-resolved.parquet') as alignmentIndex from (SELECT DISTINCT providedName,resolvedCatalogName,count(*) as providedNameFrequency FROM 'indexed-names-resolved.parquet' where relationName = 'NONE' GROUP BY providedName, resolvedCatalogName) GROUP BY providedName, providedNameFrequency ORDER BY alignmentIndex ASC, providedNameFrequency DESC, providedName ASC) TO 'indexed-names-alignment-index.csv.gz';"
+
+cat indexed-names-alignment-index.csv.gz | gunzip | csv2tsv | gzip > indexed-names-alignment-index.tsv.gz
+cat indexed-names-alignment-index.tsv.gz | gunzip | tsv2html | gzip > indexed-names-alignment-index.html.gz
 
 cat indexed-interactions.tsv.gz | gunzip | head -n501 > indexed-interactions-sample.tsv
 cat indexed-interactions-sample.tsv | tsv2csv > indexed-interactions-sample.csv
@@ -1451,6 +1464,7 @@ then
   upload_package_gz indexed-names "indexed names"
   upload "indexed-names.parquet" "indexed names"
 
+  upload_package_gz indexed-names-alignment-index "indexed names alignment index across taxonomies [${TAXONOMIES}]"  
   upload_package_gz indexed-names-resolved "indexed names resolved across taxonomies [${TAXONOMIES}]"  
   upload "indexed-names-resolved.parquet" "indexed names resolved across taxonomies [${TAXONOMIES}]"
   
