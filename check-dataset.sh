@@ -851,6 +851,9 @@ The following files are produced in this review:
  [indexed-names.html.gz](indexed-names.html.gz) | taxonomic names found in the dataset under review in gzipped html format
  [indexed-names.tsv.gz](indexed-names.tsv.gz) | taxonomic names found in the dataset under review in gzipped tab-separated values format
  [indexed-names.parquet](indexed-names.parquet) | taxonomic names found in the dataset under review in Apache Parquet format
+ [indexed-names-alignment-index.csv.gz](indexed-names-alignment-index.csv.gz) | taxonomic names and their alignment index calculated using the Nomer Corpus of Taxonomic Resources [@NomerCorpus] in gzipped comma-separated values format
+ [indexed-names-alignment-index.tsv.gz](indexed-names-alignment-index.tsv.gz) | taxonomic names and their alignment index calculated using the Nomer Corpus of Taxonomic Resources [@NomerCorpus] in gzipped tab-separated values format
+ [indexed-names-alignment-index.html.gz](indexed-names-alignment-index.html.gz) | taxonomic names and their alignment index calculated using the Nomer Corpus of Taxonomic Resources [@NomerCorpus] in gzipped html format
  [indexed-names-resolved-col.csv.gz](indexed-names-resolved-col.csv.gz) | taxonomic names found in the dataset under review aligned with the Catalogue of Life as accessed through the Nomer Corpus of Taxonomic Resources [@NomerCorpus] in gzipped comma-separated values format
  [indexed-names-resolved-col.html.gz](indexed-names-resolved-col.html.gz) | taxonomic names found in the dataset under review aligned with the Catalogue of Life as accessed through the Nomer Corpus of Taxonomic Resources [@NomerCorpus] in gzipped html format
  [indexed-names-resolved-col.tsv.gz](indexed-names-resolved-col.tsv.gz) | taxonomic names found in the dataset under review aligned with the Catalogue of Life as accessed through the Nomer Corpus of Taxonomic Resources [@NomerCorpus] in gzipped tab-separated values format
