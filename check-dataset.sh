@@ -750,7 +750,7 @@ $(cat indexed-names-resolved.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f provid
 : Sample of Name Alignments
 
 $(cat indexed-names-alignment-index.tsv.gz | gunzip | mlr ${MLR_TSV_INPUT_OPTS} --omd cat | head -n${headCount}) 
-: Sample of Name Alignment Index (up to ${headCountWithoutHeader}). Names successfully aligned with all catalog have index value 1.0, whereas names aligned with none of the used catalogs have index 0.0. Ordered in increasing index order followed by most frequently occurring names. So, suspicious taxonomic names (e.g., a name with typo like _Homo sapienz_) with low or 0.0 alignment index values are listed first to facilitate review. 
+: Sample of Name Alignment Index (up to ${headCountWithoutHeader}). Names successfully aligned with all catalog have index value 1.0, whereas names aligned with none of the used catalogs have index 0.0. So, suspicious taxonomic names (e.g., a name with typo like _Homo sapienz_) with low or 0.0 alignment index values are listed first to facilitate review. 
 
 $(cat indexed-names-resolved.tsv.gz | gunzip | mlr --tsvlite uniq -f providedName,resolvedCatalogName,resolvedRank |  sed 's/\t$/\tNA/g' | mlr --itsvlite --omd count-distinct -f resolvedCatalogName,resolvedRank then sort -f resolvedCatalogName,resolvedRank)
 : Distribution of Taxonomic Ranks of Aligned Names by Catalog. Names that were not aligned with a catalog are counted as NAs. So, the total number of unaligned names for a catalog will be listed in their NA row. 
@@ -1299,7 +1299,7 @@ mlr ${MLR_TSV_INPUT_OPTS} --ocsv --prepipe gunzip cat indexed-names-resolved.tsv
 cat indexed-names-resolved.tsv.gz | gunzip | tsv2html | gzip > indexed-names-resolved.html.gz
 duckdb -c "COPY (SELECT * FROM read_csv('indexed-names-resolved.csv.gz', sample_size = -1)) TO 'indexed-names-resolved.parquet'"
 
-duckdb -c "COPY (SELECT DISTINCT providedName, 1.0 - count(*)/(SELECT COUNT(DISTINCT resolvedCatalogName) FROM 'indexed-names-resolved.parquet') as alignmentIndex, providedNameFrequency from (SELECT DISTINCT providedName,resolvedCatalogName,count(*) as providedNameFrequency FROM 'indexed-names-resolved.parquet' where relationName = 'NONE' GROUP BY providedName, resolvedCatalogName) GROUP BY providedName, providedNameFrequency ORDER BY alignmentIndex ASC, providedNameFrequency DESC, providedName ASC) TO 'indexed-names-alignment-index.csv.gz';"
+duckdb -c "COPY (SELECT DISTINCT providedName, 1.0 - count(*)/(SELECT COUNT(DISTINCT resolvedCatalogName) FROM 'indexed-names-resolved.parquet') as alignmentIndex from (SELECT DISTINCT providedName,resolvedCatalogName FROM 'indexed-names-resolved.parquet' where relationName = 'NONE' GROUP BY providedName, resolvedCatalogName) GROUP BY providedName ORDER BY alignmentIndex ASC, providedName ASC) TO 'indexed-names-alignment-index.csv.gz';"
 
 cat indexed-names-alignment-index.csv.gz | gunzip | csv2tsv | gzip > indexed-names-alignment-index.tsv.gz
 cat indexed-names-alignment-index.tsv.gz | gunzip | tsv2html | gzip > indexed-names-alignment-index.html.gz
