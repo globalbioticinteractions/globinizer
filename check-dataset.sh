@@ -1153,6 +1153,7 @@ function resolve_names {
   time cat $1 | gunzip | tail -n+2 | sort | uniq\
     | ${NOMER_CMD} replace ${NOMER_OPTS} globi-correct\
     | ${NOMER_CMD} replace ${NOMER_OPTS} gn-parse\
+    | sed 's/null//g'\
     | ${NOMER_CMD} append ${NOMER_OPTS} $2 --include-header\
     | mlr ${MLR_TSV_OPTS} put -s catalogName="${2}" '$resolvedCatalogName = @catalogName'\
     | mlr ${MLR_TSV_OPTS} reorder -f resolvedCatalogName -a relationName\
