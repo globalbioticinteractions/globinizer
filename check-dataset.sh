@@ -19,7 +19,7 @@ export REVIEW_SCRIPT=$(readlink -f "$0")
 
 export DATASET_NAMESPACE=$1
 export ELTON_UPDATE_DISABLED=$2
-export ELTON_DATASETS_DIR=${2:-./datasets}
+export ELTON_DATASETS_DIR=${2:$PWD/datasets}
 export ELTON_VERSION=0.16.11
 export ELTON_DATA_REPO_MAIN="https://raw.githubusercontent.com/${DATASET_NAMESPACE}/main"
 export ELTON_JAR="$PWD/elton.jar"
@@ -30,14 +30,14 @@ export HASH_ALGO="md5"
 export PRESTON_VERSION=0.10.5
 export PRESTON_JAR="$PWD/preston.jar"
 export PRESTON_OPTS=" --algo ${HASH_ALGO}"
-export PRESTON_DATA_DIR="data/"
+export PRESTON_DATA_DIR="$PWD/data/"
 
 
 export GLOBINIZER_VERSION=0.4.0
 export NOMER_VERSION=0.6.6
 export NOMER_JAR="$PWD/nomer.jar"
 export NOMER_PROPERTIES="$(mktemp)"
-export NOMER_CACHE_DIR="${NOMER_CACHE_DIR:-.cache/nomer}"
+export NOMER_CACHE_DIR="${NOMER_CACHE_DIR:-$PWD/.cache/nomer}"
 export NOMER_OPTS=""
 
 export NETWORK_COMPILER_SCRIPT="$(echo "$REVIEW_SCRIPT" | sed -E 's+/[^/]{1,}$++g')/compile-network.sh"
