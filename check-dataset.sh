@@ -1152,13 +1152,16 @@ function resolve_names {
   local RESOLVED_CSV=${RESOLVED_STEM}.csv.gz
   local RESOLVED_HTML=${RESOLVED_STEM}.html.gz
   echo -e "\n--- [$2] start ---\n"
-  time cat $1 | gunzip | tail -n+2 | sort | uniq\
+  time cat $1 | gunzip\
+    | mlr ${MLR_TSV_OPTS} put '$verbatimName = $taxonName'\
+    | tail -n+2 | sort | uniq\
     | ${NOMER_CMD} replace ${NOMER_OPTS} globi-correct\
     | ${NOMER_CMD} replace ${NOMER_OPTS} ${NAME_PARSER}\
     | sed 's/null//g'\
     | ${NOMER_CMD} append ${NOMER_OPTS} $2 --include-header\
     | mlr ${MLR_TSV_OPTS} put -s catalogName="${2}" '$resolvedCatalogName = @catalogName'\
     | mlr ${MLR_TSV_OPTS} reorder -f resolvedCatalogName -a relationName\
+    | mlr ${MLR_TSV_OPTS} rename providedCol12,providedName\
     | gzip > ${RESOLVED}
   cat ${RESOLVED}\
     | gunzip\
