@@ -746,7 +746,7 @@ Another way to discover the dataset under review is by searching for it on the [
 
 ## Taxonomic Alignment
 
-As part of the review, all names are aligned against various name catalogs (e.g., $(echo ${TAXONOMIES} | sed 's/ /, /g' | sed -E 's/, ([a-z]+)$/, and \1/g')). These alignments can help review name usage or aid in selecting of a suitable taxonomic name resource. 
+As part of the review, all names are aligned against various name catalogs (e.g., $(echo ${TAXONOMIES} | sed 's/ /, /g' | sed -E 's/, ([a-z]+)$/, and \1/g')). These alignments can help review name usage or aid in selecting of a suitable taxonomic name resource. Also, for each name, an alignment index is calculated where the alignment index for a specific name = 1 - (number of catalogs without the name) / (total number of catalogs) . So, if a name is not recognized by any catalog, the alignment index value for that name is 0. Also, if a name is recognized by all catalogues, the alignment index value for that name is 1.  
 
 $(cat indexed-names-resolved.tsv.gz | gunzip | mlr ${MLR_TSV_OPTS} cut -f providedName,relationName,resolvedCatalogName,resolvedName | mlr ${MLR_TSV_INPUT_OPTS} --omd uniq -f providedName,relationName,resolvedCatalogName,resolvedName | head -n6) 
 : Sample of Name Alignments
