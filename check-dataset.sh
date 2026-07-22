@@ -38,7 +38,8 @@ export PRESTON_DATA_DIR="$PWD/data/"
 export GLOBINIZER_VERSION=0.4.0
 export NOMER_VERSION=0.6.6
 export NOMER_JAR="$PWD/nomer.jar"
-export NOMER_PROPERTIES="$(mktemp)"
+export NOMER_REPLACE_PROPERTIES="$(mktemp)"
+export NOMER_APPEND_PROPERTIES="$(mktemp)"
 export NOMER_CACHE_DIR="${NOMER_CACHE_DIR:-$PWD/.cache/nomer}"
 export NOMER_OPTS=""
 
@@ -83,12 +84,21 @@ _EOF_
 )"
 }
 
-function echo_nomer_schema {
+function echo_nomer_schema_replace {
+  # ignore authorship for now
+  echo "$(cat <<_EOF_
+nomer.cache.dir=${NOMER_CACHE_DIR}
+nomer.schema.input=[{"column":0,"type":"externalId"},{"column": 1,"type":"name"}]
+nomer.schema.output=[{"column":0,"type":"externalId"},{"column": 1,"type":"name"}]
+_EOF_
+)"
+}
+
+function echo_nomer_schema_append {
   # ignore authorship for now
   echo "$(cat <<_EOF_
 nomer.cache.dir=${NOMER_CACHE_DIR}
 nomer.schema.input=[{"column":0,"type":"externalId"},{"column": 1,"type":"name"},{"column": 4,"type":"path"}]
-nomer.schema.output=[{"column":0,"type":"externalId"},{"column": 1,"type":"name"},{"column": 4,"type":"path"}]
 _EOF_
 )"
 }
@@ -1080,8 +1090,8 @@ function configure_taxonomy {
 }
 
 function configure_nomer {
-  echo_nomer_schema | tee "${NOMER_PROPERTIES}"
-  NOMER_OPTS=" --properties=${NOMER_PROPERTIES}"
+  echo_nomer_schema_replace | tee "${NOMER_REPLACE_PROPERTIES}"
+  echo_nomer_schema_append | tee "${NOMER_APPEND_PROPERTIES}"
 
   if [[ $(which nomer) ]]
   then 
@@ -1150,10 +1160,10 @@ function resolve_names {
   time cat $1 | gunzip\
     | mlr ${MLR_TSV_OPTS} put '$verbatimId = $taxonId; $verbatimName = $taxonName;$verbatimPath = $taxonPath'\
     | tail -n+2 | sort | uniq\
-    | ${NOMER_CMD} replace ${NOMER_OPTS} globi-correct\
-    | ${NOMER_CMD} replace ${NOMER_OPTS} ${NAME_PARSER}\
+    | ${NOMER_CMD} replace --properties ${NOMER_REPLACE_PROPERTIES} globi-correct\
+    | ${NOMER_CMD} replace --properties ${NOMER_REPLACE_PROPERTIES} ${NAME_PARSER}\
     | sed 's/null//g'\
-    | ${NOMER_CMD} append ${NOMER_OPTS} $2 --include-header\
+    | ${NOMER_CMD} append --properties ${NOMER_APPEND_PROPERTIES} $2 --include-header\
     | mlr ${MLR_TSV_OPTS} put -s catalogName="${2}" '$resolvedCatalogName = @catalogName'\
     | mlr ${MLR_TSV_OPTS} reorder -f resolvedCatalogName -a relationName\
     | mlr ${MLR_TSV_OPTS} rename providedCol12,providedExternalId,providedCol13,providedName,providedCol14,providedPath\
