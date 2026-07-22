@@ -88,7 +88,7 @@ function echo_nomer_schema {
   echo "$(cat <<_EOF_
 nomer.cache.dir=${NOMER_CACHE_DIR}
 nomer.schema.input=[{"column":0,"type":"externalId"},{"column": 1,"type":"name"},{"column": 4,"type":"path"}]
-nomer.schema.output=[{"column":0,"type":"externalId"},{"column": 1,"type":"name"},{"column":2,"type":"rank"},{"column":3, "type":"pathIds"},{"column": 4,"type":"path"},{"column":5,"type":"pathNames"}]
+nomer.schema.output=[{"column":0,"type":"externalId"},{"column": 1,"type":"name"},{"column": 4,"type":"path"}]
 _EOF_
 )"
 }
@@ -1156,9 +1156,7 @@ function resolve_names {
     | ${NOMER_CMD} append ${NOMER_OPTS} $2 --include-header\
     | mlr ${MLR_TSV_OPTS} put -s catalogName="${2}" '$resolvedCatalogName = @catalogName'\
     | mlr ${MLR_TSV_OPTS} reorder -f resolvedCatalogName -a relationName\
-    | mlr ${MLR_TSV_OPTS} rename providedCol12,providedExternalId\
-    | mlr ${MLR_TSV_OPTS} rename providedCol13,providedName\
-    | mlr ${MLR_TSV_OPTS} rename providedCol14,providedPath\
+    | mlr ${MLR_TSV_OPTS} rename providedCol12,providedExternalId,providedCol13,providedName,providedCol14,providedPath\
     | gzip > ${RESOLVED}
   cat ${RESOLVED}\
     | gunzip\
