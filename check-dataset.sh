@@ -87,7 +87,7 @@ function echo_nomer_schema {
   # ignore authorship for now
   echo "$(cat <<_EOF_
 nomer.cache.dir=${NOMER_CACHE_DIR}
-nomer.schema.input=[{"column":0,"type":"externalId"},{"column": 1,"type":"name"},{"column": 2,"type":"path"}]
+nomer.schema.input=[{"column":0,"type":"externalId"},{"column": 1,"type":"name"},{"column": 4,"type":"path"}]
 nomer.schema.output=[{"column":0,"type":"externalId"},{"column": 1,"type":"name"},{"column": 2,"type":"path"}]
 _EOF_
 )"
@@ -1148,9 +1148,7 @@ function resolve_names {
   local RESOLVED_HTML=${RESOLVED_STEM}.html.gz
   echo -e "\n--- [$2] start ---\n"
   time cat $1 | gunzip\
-    | mlr ${MLR_TSV_OPTS} put '$verbatimId = $taxonId'\
-    | mlr ${MLR_TSV_OPTS} put '$verbatimName = $taxonName'\
-    | mlr ${MLR_TSV_OPTS} put '$verbatimPath = $taxonPath'\
+    | mlr ${MLR_TSV_OPTS} put '$verbatimId = $taxonId; $verbatimName = $taxonName;$verbatimPath = $taxonPath'\
     | tail -n+2 | sort | uniq\
     | ${NOMER_CMD} replace ${NOMER_OPTS} globi-correct\
     | ${NOMER_CMD} replace ${NOMER_OPTS} ${NAME_PARSER}\
