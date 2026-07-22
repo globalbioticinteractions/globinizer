@@ -95,10 +95,10 @@ _EOF_
 }
 
 function echo_nomer_schema_append {
-  # ignore authorship for now
+  # ignore authorship and path matching for now
   echo "$(cat <<_EOF_
 nomer.cache.dir=${NOMER_CACHE_DIR}
-nomer.schema.input=[{"column":0,"type":"externalId"},{"column": 1,"type":"name"},{"column": 4,"type":"path"}]
+nomer.schema.input=[{"column":0,"type":"externalId"},{"column": 1,"type":"name"},{"column": 4,"type":"disable_path"}]
 _EOF_
 )"
 }
