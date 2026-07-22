@@ -1156,7 +1156,7 @@ function resolve_names {
     | ${NOMER_CMD} append ${NOMER_OPTS} $2 --include-header\
     | mlr ${MLR_TSV_OPTS} put -s catalogName="${2}" '$resolvedCatalogName = @catalogName'\
     | mlr ${MLR_TSV_OPTS} reorder -f resolvedCatalogName -a relationName\
-    | mlr ${MLR_TSV_OPTS} rename providedCol12,providedId\
+    | mlr ${MLR_TSV_OPTS} rename providedCol12,providedExternalId\
     | mlr ${MLR_TSV_OPTS} rename providedCol13,providedName\
     | mlr ${MLR_TSV_OPTS} rename providedCol14,providedPath\
     | gzip > ${RESOLVED}
@@ -1167,7 +1167,7 @@ function resolve_names {
     > ${RESOLVED_CSV}
   cat ${RESOLVED}\
     | gunzip\
-    | mlr ${MLR_TSV_OPTS} cut -f providedId,providedName,providedPathrelationName,resolvedCatalogName,resolvedExternalUrl,resolvedName,resolvedAuthorship,resolvedRank,resolvedPath\
+    | mlr ${MLR_TSV_OPTS} cut -f providedExternalId,providedName,providedPath,relationName,resolvedCatalogName,resolvedExternalUrl,resolvedName,resolvedAuthorship,resolvedRank,resolvedPath\
     | tsv2html\
     | gzip\
     > ${RESOLVED_HTML}
