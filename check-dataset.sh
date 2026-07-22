@@ -1148,7 +1148,9 @@ function resolve_names {
   local RESOLVED_HTML=${RESOLVED_STEM}.html.gz
   echo -e "\n--- [$2] start ---\n"
   time cat $1 | gunzip\
+    | mlr ${MLR_TSV_OPTS} put '$verbatimId = $taxonId'\
     | mlr ${MLR_TSV_OPTS} put '$verbatimName = $taxonName'\
+    | mlr ${MLR_TSV_OPTS} put '$verbatimPath = $taxonPath'\
     | tail -n+2 | sort | uniq\
     | ${NOMER_CMD} replace ${NOMER_OPTS} globi-correct\
     | ${NOMER_CMD} replace ${NOMER_OPTS} ${NAME_PARSER}\
@@ -1156,7 +1158,9 @@ function resolve_names {
     | ${NOMER_CMD} append ${NOMER_OPTS} $2 --include-header\
     | mlr ${MLR_TSV_OPTS} put -s catalogName="${2}" '$resolvedCatalogName = @catalogName'\
     | mlr ${MLR_TSV_OPTS} reorder -f resolvedCatalogName -a relationName\
-    | mlr ${MLR_TSV_OPTS} rename providedCol12,providedName\
+    | mlr ${MLR_TSV_OPTS} rename providedCol12,providedId\
+    | mlr ${MLR_TSV_OPTS} rename providedCol13,providedName\
+    | mlr ${MLR_TSV_OPTS} rename providedCol14,providedPath\
     | gzip > ${RESOLVED}
   cat ${RESOLVED}\
     | gunzip\
@@ -1165,14 +1169,14 @@ function resolve_names {
     > ${RESOLVED_CSV}
   cat ${RESOLVED}\
     | gunzip\
-    | mlr ${MLR_TSV_OPTS} cut -f providedExternalId,providedName,relationName,resolvedCatalogName,resolvedExternalUrl,resolvedName,resolvedAuthorship,resolvedRank\
+    | mlr ${MLR_TSV_OPTS} cut -f providedId,providedName,providedPathrelationName,resolvedCatalogName,resolvedExternalUrl,resolvedName,resolvedAuthorship,resolvedRank,resolvedPath\
     | tsv2html\
     | gzip\
     > ${RESOLVED_HTML}
   duckdb -c "COPY (SELECT * FROM read_csv('${RESOLVED_CSV}', sample_size = -1)) TO '${RESOLVED_STEM}.parquet';"
   cat ${RESOLVED}\
     | gunzip\
-    | mlr ${MLR_TSV_OPTS} cut -f providedExternalId,providedName,relationName,resolvedCatalogName,resolvedExternalUrl,resolvedName,resolvedAuthorship,resolvedRank\
+    | mlr ${MLR_TSV_OPTS} cut -f providedId,providedName,providedPath,relationName,resolvedCatalogName,resolvedExternalUrl,resolvedName,resolvedAuthorship,resolvedRank,resolvedPath\
     | tail -n501\
     | tsv2html\
     | gzip\
