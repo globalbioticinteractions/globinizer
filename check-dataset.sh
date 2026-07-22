@@ -88,7 +88,7 @@ function echo_nomer_schema {
   echo "$(cat <<_EOF_
 nomer.cache.dir=${NOMER_CACHE_DIR}
 nomer.schema.input=[{"column":0,"type":"externalId"},{"column": 1,"type":"name"},{"column": 4,"type":"path"}]
-nomer.schema.output=[{"column":0,"type":"externalId"},{"column": 1,"type":"name"},{"column": 2,"type":"path"}]
+nomer.schema.output=[{"column":0,"type":"externalId"},{"column": 1,"type":"name"},{"column":2,"type":"rank"},{"column":3, "type":"pathIds"},{"column": 4,"type":"path"},{"column":5,"type":"pathNames"}]
 _EOF_
 )"
 }
