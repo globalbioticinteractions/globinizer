@@ -1318,7 +1318,7 @@ mlr ${MLR_TSV_INPUT_OPTS} --ocsv --prepipe gunzip cat indexed-names-resolved.tsv
 cat indexed-names-resolved.tsv.gz | gunzip | tsv2html | gzip > indexed-names-resolved.html.gz
 duckdb -c "COPY (SELECT * FROM read_csv('indexed-names-resolved.csv.gz', sample_size = -1)) TO 'indexed-names-resolved.parquet'"
 
-duckdb -c "COPY (SELECT DISTINCT providedName, 1.0 - count(*)/(SELECT COUNT(DISTINCT resolvedCatalogName) FROM 'indexed-names-resolved.parquet') as alignmentIndex from (SELECT DISTINCT providedName,resolvedCatalogName FROM 'indexed-names-resolved.parquet' where relationName = 'NONE' GROUP BY providedName, resolvedCatalogName) GROUP BY providedName ORDER BY alignmentIndex ASC, providedName ASC) TO 'indexed-names-alignment-index.csv.gz';"
+duckdb -c "COPY (SELECT DISTINCT providedName, CAST((1.0 - count(*)/(SELECT COUNT(DISTINCT resolvedCatalogName) FROM 'indexed-names-resolved.parquet')) as DECIMAL(3,1)) as alignmentIndex from (SELECT DISTINCT providedName,resolvedCatalogName FROM 'indexed-names-resolved.parquet' where relationName = 'NONE' GROUP BY providedName, resolvedCatalogName) GROUP BY providedName ORDER BY alignmentIndex ASC, providedName ASC) TO 'indexed-names-alignment-index.csv.gz';"
 
 cat indexed-names-alignment-index.csv.gz | gunzip | csv2tsv | gzip > indexed-names-alignment-index.tsv.gz
 cat indexed-names-alignment-index.tsv.gz | gunzip | tsv2html | gzip > indexed-names-alignment-index.html.gz
