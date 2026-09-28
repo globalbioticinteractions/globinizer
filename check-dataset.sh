@@ -1081,11 +1081,11 @@ function configure_preston {
 
   echo preston version "${PRESTON_VERSION}"
 
-  if [[ -n ${TRAVIS_REPO_SLUG} || -n ${GITHUB_REPOSITORY} ]]
+  if [[ -n ${TRAVIS_REPO_SLUG} || -n ${GITHUB_REPOSITORY} || "${DATASET_NAMESPACE}" = "local" ]]
     then
       echo "likely running in travis/github actions environment"
   else
-    # when running outside of travis, use a separate review directory'
+    # when using non-local datasets (e.g., github, zenodo) use a separate review directory'
     use_review_dir
   fi
 }
