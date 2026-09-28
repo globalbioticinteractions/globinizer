@@ -1049,7 +1049,7 @@ function configure_elton {
 
   echo elton version "${ELTON_VERSION}"
 
-  if [[ -n ${TRAVIS_REPO_SLUG} || -n ${GITHUB_REPOSITORY} ]]
+  if [[ -n ${TRAVIS_REPO_SLUG} || -n ${GITHUB_REPOSITORY} || "{$DATASET_NAMESPACE}" = "local" ]]
     then
       ELTON_UPDATE="${ELTON_CMD} update --prov-mode ${ELTON_OPTS} --registry local"
       ELTON_NAMESPACE="local"
