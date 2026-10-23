@@ -22,7 +22,6 @@ export ELTON_UPDATE_DISABLED=$2
 export ELTON_DATASETS_DIR=${2:-$PWD/datasets}
 export ELTON_VERSION=0.17.2
 export ELTON_DATA_REPO_MAIN="https://raw.githubusercontent.com/${DATASET_NAMESPACE}/main"
-export ELTON_JAR="$PWD/elton.jar"
 export ELTON_OPTS=""
 
 export NAME_PARSER="gbif-parse"
@@ -30,14 +29,10 @@ export NAME_PARSER="gbif-parse"
 export HASH_ALGO="md5"
 
 export PRESTON_VERSION=0.10.5
-export PRESTON_JAR="$PWD/preston.jar"
 export PRESTON_OPTS=" --algo ${HASH_ALGO}"
-export PRESTON_DATA_DIR="$PWD/data/"
-
 
 export GLOBINIZER_VERSION=0.4.0
 export NOMER_VERSION=0.6.7
-export NOMER_JAR="$PWD/nomer.jar"
 export NOMER_REPLACE_PROPERTIES="$(mktemp)"
 export NOMER_APPEND_PROPERTIES="$(mktemp)"
 export NOMER_CACHE_DIR="${NOMER_CACHE_DIR:-$PWD/.cache/nomer}"
@@ -469,7 +464,7 @@ _EOF_
 }
 
 function get_eml {
-  find "${PRESTON_DATA_DIR}" -type f\
+  find data/ -type f\
   | grep -E "[a-f0-9]{64}$"\
   | awk '{ print "-p " $1 " eml.xml" }'\
   | xargs -L1 unzip\
@@ -938,8 +933,9 @@ function clean_review_dir {
 
 function use_review_dir {
   clean_review_dir
-  mkdir -p ${REVIEW_DIR}
-  cd ${REVIEW_DIR}
+  mkdir -p "${REVIEW_DIR}"
+  cd "${REVIEW_DIR}"
+  echo "using [${REVIEW_DIR}] to store review files"
 }
 
 function tee_readme {
@@ -1039,7 +1035,8 @@ function configure_elton {
     echo using local elton found at [$(which elton)]
     export ELTON_CMD="elton"
   else
-    local ELTON_DOWNLOAD_URL="https://github.com/globalbioticinteractions/elton/releases/download/${ELTON_VERSION}/elton.jar"
+    local ELTON_JAR="elton.jar"
+    local ELTON_DOWNLOAD_URL="https://github.com/globalbioticinteractions/elton/releases/download/${ELTON_VERSION}/${ELTON_JAR}"
     echo elton not found... installing from [${ELTON_DOWNLOAD_URL}]
     curl --silent -L "${ELTON_DOWNLOAD_URL}" > "${ELTON_JAR}"
     export ELTON_CMD="java -Xmx4G -jar ${ELTON_JAR}"
@@ -1071,9 +1068,10 @@ function configure_preston {
     echo using local preston found at [$(which preston)]
     export PRESTON_CMD="preston"
   else
-    local PRESTON_DOWNLOAD_URL="https://github.com/bio-guoda/preston/releases/download/${PRESTON_VERSION}/preston.jar"
+    local PRESTON_JAR="preston.jar"
+    local PRESTON_DOWNLOAD_URL="https://github.com/bio-guoda/preston/releases/download/${PRESTON_VERSION}/${PRESTON_JAR}"
     echo preston not found... installing from [${PRESTON_DOWNLOAD_URL}]
-    curl --silent -L "${PRESTON_DOWNLOAD_URL}" > "${PRESTON_JAR}"
+    curl --silent -L "${PRESTON_DOWNLOAD_URL}" > ${PRESTON_JAR}
     export PRESTON_CMD="java -Xmx4G -jar ${PRESTON_JAR}"
   fi
 
@@ -1106,7 +1104,8 @@ function configure_nomer {
     echo using local nomer found at [$(which nomer)]
     export NOMER_CMD="nomer"
   else
-    local NOMER_DOWNLOAD_URL="https://github.com/globalbioticinteractions/nomer/releases/download/${NOMER_VERSION}/nomer.jar"
+    local NOMER_JAR="nomer.jar"
+    local NOMER_DOWNLOAD_URL="https://github.com/globalbioticinteractions/nomer/releases/download/${NOMER_VERSION}/${NOMER_JAR}"
     echo nomer not found... installing from [${NOMER_DOWNLOAD_URL}]
     curl --silent -L "${NOMER_DOWNLOAD_URL}" > "${NOMER_JAR}"
     export NOMER_CMD="java -Xmx4G -jar ${NOMER_JAR}"
@@ -1456,7 +1455,7 @@ function upload_package {
 #fi
 
 mkdir -p tmp-review
-zip -r data.zip "${PRESTON_DATA_DIR}"
+zip -r data.zip "${PWD}/data/"
 
 # attempt to use s3cmd tool if available and configured
 if [[ -n $(which s3cmd) ]] && [[ -n ${S3CMD_CONFIG} ]]
