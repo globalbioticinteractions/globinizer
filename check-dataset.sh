@@ -1455,7 +1455,7 @@ function upload_package {
 #fi
 
 mkdir -p tmp-review
-zip -r data.zip "${PWD}/data/"
+zip -r data.zip data/
 
 # attempt to use s3cmd tool if available and configured
 if [[ -n $(which s3cmd) ]] && [[ -n ${S3CMD_CONFIG} ]]
